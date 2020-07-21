@@ -1,0 +1,735 @@
+<div class="cri-inner-container">
+  <div class="col-md-12">
+    <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess">
+      <i class="fa-check"></i> {{displaySuccessMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess = false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+      <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <model-library-tabs [selectedTab]="2" [status]="modelObj.status"></model-library-tabs>
+
+  <div class="scenario-info">
+    <div class="row">
+      <div class="col-md-6 pr-0 ">
+        <div class="cri-sin-li-input form-group pl-0  mb-0">
+          <label class="list-name col-md-12 mr-3 p-0">{{modelObj.modelName}}</label>
+          <p *ngIf="modelObj.id"> Last Modified On
+            <span>{{modelObj.lastModifiedDate | date:'dd MMM yyyy'}}</span> by
+            <span>{{modelObj.lastModifiedBy}}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row mt-2 col-md-12 p-0 m-0">
+    <div class="col pl-0">
+      <label class="cri-label" for="inputState">START DATE<span class="text-danger">*</span></label>
+      <div class="input-group mt-2" id="startDate">
+        <input class="form-control" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="modelObj.startDate"
+        ngbDatepicker [minDate]="minDate" [maxDate]="maxDate" #d1="ngbDatepicker" readonly="true" (click)="d1.toggle()">
+        <div class="input-group-prepend">
+          <div class="input-group-text" (click)="d1.toggle()">
+            <img src="../../../content/images/svg/callender.png" alt="semicons">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="cri-label" for="inputState">END DATE<span class="text-danger">*</span></label>
+      <div class="input-group mt-2" id="endDate">
+        <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="modelObj.endDate"
+        ngbDatepicker [minDate]="minDate" [maxDate]="maxDate" #d2="ngbDatepicker" readonly="true" (click)="d2.toggle()">
+        <div class="input-group-prepend">
+          <div class="input-group-text" (click)="d2.toggle()">
+            <img src="../../../content/images/svg/callender.png" alt="semicons">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col">
+      <label class="title mt-2" for="inputState">RETURN HORIZON<span class="text-danger">*</span></label>
+      <div class="select-wrapper mt-1" id="returnHorizon">
+        <ng-select [items]="frequencyList"
+          bindLabel="label"
+          bindValue="value"
+          appendTo="body"
+          placeholder="Select"
+          [clearable]="false"
+          [(ngModel)]="modelObj.returnHorizon">
+        </ng-select>
+      </div>
+    </div>
+    <div class="form-group col">
+      <label class="title mt-2" for="inputState">OVERLAPPING <span class="text-danger">*</span></label>
+      <div class="select-wrapper mt-1" id="overlapping">
+        <ng-select [items]="overlappingList"
+          bindLabel="label"
+          bindValue="value"
+          appendTo="body"
+          placeholder="Select"
+          [clearable]="false"
+          [(ngModel)]="modelObj.overlapping">
+        </ng-select>
+      </div>
+    </div>
+    
+    <div class="form-group col-md-4 toltip-icon text-right">
+      <button type="button" id="evaluate" class="btn btn-outline-primary sm-icons btn-sm mr-2 btn-eva" [disabled]='!minimumData || !userCanAccess' (click)="getQualityCheck();">
+        <img src="../../../content/images/svg/evaluate.png" alt="semicons"> EVALUATE
+      </button>
+      <button (click)="openMetdlgyConfgMdl()" type="button" id="methodologysettings" class="btn btn btn-outline-primary sm-icons mr-2 btn-seting"
+        placement="top" ngbTooltip="Methodology Config ">
+        <img src="../../../content/images/svg/methodologysettings.png" alt="semicons">
+
+      </button>
+      <button [disabled]='!minimumData' (click)="getChartPopup();" type="button" id="correlationmatrixChart"
+        class="btn btn btn-outline-primary sm-icons mr-2 btn-seting-2" placement="top" ngbTooltip="Correlation Matrix">
+        <img class="cormatrix-img" src="../../../content/images/svg/CorrelationMatrix.png" alt="semicons">
+
+      </button>
+      <button class="btn btn-outline-primary sm-icons sm-icons-not btn-sm opacity-point-5" id="marketData" *ngIf="downloadType=='Downloading'" ngbTooltip="Downloading MarketData"><i class="fa-download-icon md-k3" aria-hidden="true" titile="Download Template"></i></button>
+      <button class="btn btn-outline-primary sm-icons sm-icons-not btn-sm" id="marketData" *ngIf="downloadType!='Downloading'" ngbTooltip="Download MarketData" (click)="downloadTimeSeriesData()"><i class="fa-download-icon md-k3" aria-hidden="true" titile="Download Template"></i></button>
+
+     <!--  <button [disabled]='!isTransformationChanged || !userCanAccess' (click)="refreshDP()" type="button"
+        class="btn btn btn-outline-primary sm-icons mr-2" placement="top" ngbTooltip="Refresh">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M14.7083 5.29232C13.5 4.08398 11.8417 3.33398 10 3.33398C6.31667 3.33398 3.34167 6.31732 3.34167 10.0007C3.34167 13.684 6.31667 16.6673 10 16.6673C13.1083 16.6673 15.7 14.5423 16.4417 11.6673H14.7083C14.025 13.609 12.175 15.0007 10 15.0007C7.24167 15.0007 5.00001 12.759 5.00001 10.0007C5.00001 7.24232 7.24167 5.00065 10 5.00065C11.3833 5.00065 12.6167 5.57565 13.5167 6.48398L10.8333 9.16732H16.6667V3.33398L14.7083 5.29232Z"
+            fill="#375889" />
+        </svg>
+      </button> -->
+      
+    </div>
+  </div>
+  <!--row end-->
+  <div class=" col-md-12 p-0">
+    <div class="dotted-divider mt-1 mb-3"></div>
+  </div>
+  <!--top table header Start-->
+  <div class="row col-md-12 m-0 p-0">
+
+    <div class="table-titles col p-0">
+      <h4> DEPENDENT RISK FACTOR </h4>
+    </div>
+    <div class="col" *ngIf="userCanAccess">
+      <span id="dependentdeleteSelected" (click)="openDeleteFactorsModal('DEPENDENT')" class="text-primary"
+        [ngClass]="{disabled:!checkedDepList || checkedDepList.length == 0}"><img src="../../../content/images/svg/delete-sm-1.png" alt="semicons" class="discard-img"> DELETE SELECTED</span>
+    </div>
+    <div class="col" *ngIf="userCanAccess">
+      <span id="dependentAddRiskFactor " class="text-primary plus-circle-icon" (click)="openPopup('DEPENDENT')">ADD RISK FACTOR</span>
+    </div>
+   <!--  <div class="col-md-4 text-right p-0">
+      <span id="dependentPlotTimeSeries" class="text-primary">
+        <svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0.75 2C0.75 2.825 1.425 3.5 2.25 3.5C2.385 3.5 2.5125 3.485 2.6325 3.4475L5.3025 6.11C5.265 6.23 5.25 6.365 5.25 6.5C5.25 7.325 5.925 8 6.75 8C7.575 8 8.25 7.325 8.25 6.5C8.25 6.365 8.235 6.23 8.1975 6.11L10.11 4.1975C10.23 4.235 10.365 4.25 10.5 4.25C10.635 4.25 10.77 4.235 10.89 4.1975L14.3025 7.6175C14.265 7.7375 14.25 7.865 14.25 8C14.25 8.825 14.925 9.5 15.75 9.5C16.575 9.5 17.25 8.825 17.25 8C17.25 7.175 16.575 6.5 15.75 6.5C15.615 6.5 15.4875 6.515 15.3675 6.5525L11.9475 3.14C11.985 3.02 12 2.885 12 2.75C12 1.925 11.325 1.25 10.5 1.25C9.675 1.25 9 1.925 9 2.75C9 2.885 9.015 3.02 9.0525 3.14L7.14 5.0525C7.02 5.015 6.885 5 6.75 5C6.615 5 6.48 5.015 6.36 5.0525L3.6975 2.3825C3.735 2.2625 3.75 2.135 3.75 2C3.75 1.175 3.075 0.5 2.25 0.5C1.425 0.5 0.75 1.175 0.75 2Z"
+            fill="#375889" />
+        </svg> PLOT TIMESERIES
+      </span>
+    </div> -->
+  </div>
+  <!--top table header end-->
+
+  <!--table start-->
+  <div class="row col-md-12 m-0 p-0">
+    <div class="table-start table-responsive"  (scroll)="onScroll($event)">
+      <table class="table table-bordered tables-view mb-2 table-resizable dependent-table-rz " id="dependentRFTable" [ngClass]="{'table-expand':metaDataShow}">
+        <thead class="tables-head">
+          <tr>
+            <th scope="col" class="riskfactorsName">
+              <span class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" [checked]="selectAllRFDep"
+                  (change)="selectAllChangeDep($event);" id="customCheck_{{i}}">
+                <label class="custom-control-label" for="customCheck_{{i}}">Risk Factor (S)</label>
+              </span> </th>
+              <th class="arrow-view expandbtn">
+                <div class="arrow-btn-r">
+                  <div (click)="metaDataShow=!metaDataShow" *ngIf="!metaDataShow" >
+                    <img src="../../../content/images/svg/arrowleft.png" alt="semicons">                                 
+                   </div>
+                  <div (click)="metaDataShow=!metaDataShow" *ngIf="metaDataShow" >
+                      <img src="../../../content/images/svg/arrowright.png" alt="semicons">                                     
+                  </div>
+              </div>
+              </th>
+              <th scope="col" class=" dependentAssetClass" *ngIf="metaDataShow">Asset Class  </th>
+              <th scope="col" class=" dependentRiskFactorType" *ngIf="metaDataShow">Sub Risk Factor   </th>
+              <th scope="col" class=" dependentCountry" *ngIf="metaDataShow">Country </th>
+              <th scope="col" class=" dependentCurrency" *ngIf="metaDataShow">Currency </th>
+              <th scope="col" class=" dependentMaturity" *ngIf="metaDataShow">Maturity  </th>
+              <th scope="col" class=" dependentSector" *ngIf="metaDataShow">Sector  </th>
+              <th scope="col" class=" dependentRating" *ngIf="metaDataShow">Rating   </th>
+              <th scope="col" class=" dependentUnit" *ngIf="metaDataShow">Unit </th>
+              <th class=" dependentCurveFamily" *ngIf="metaDataShow">Curve Family  </th>  
+            <th scope="col" class="position-relative dependentDataQuality model-dq">Data Quality Score<br> (Missing|Outliers|Static)
+              <span class="fr tooltipbottom-tablebtm-small info-icon-2">
+                
+                <div class="bottom-btm error-message-small">
+                  <small class="pop-text ">Raw Data</small>
+                </div>
+            </span>
+            </th>
+            <th scope="col" class="position-relative dependentStationaryResults model-st">Stationarity Test <br>(ADF|KPSS|PP|COMMENT)
+              <span class="fr tooltipbottom-tablebtm-small info-icon-2">
+               
+                <div class="bottom-btm error-message-small">
+                  <small class="pop-text ">Transformed Data</small>
+                </div>
+            </span>
+            </th>
+             <th scope="col" class="dependentTransformation model-tr">Transformation</th>
+            <th scope="col" class="date-freq dependentDatafreq">Data Frequency</th>
+            <th scope="col" class="pre-variabe dependentPrefferedVariables model-pv">Preferred Variables</th>
+            <th scope="col" class="non-pre-variabe dependentNonPrefferedVariables model-npv">Non Preferred Variables
+               <div class="fr tooltipbottom-tablebtm info-icon-2">
+                  
+                  <div class="bottom-btm error-message">
+                    <small class="pop-text ">Selected Risk Factors has User Defined Non Preferential Variable.</small>
+                  </div>
+                </div>     
+            </th>
+            <th scope="col" class="cyclicDependencyVariables model-cd">Cyclic Dependency Variables
+              <div class="fr tooltipbottom-tablebtm info-icon-2">
+               
+                <div class="bottom-btm error-message">
+                  <small class="pop-text ">Displayed Risk Factors has System Generated Circular Reference.</small>
+                </div>
+              </div>   
+            </th>
+            <th scope="col" class="onlyWithPreffered model-owp">Only with Preffered</th>
+            <th scope="col" class="dependentGraph model-g">Graph</th>
+          </tr>
+        </thead>
+        <tbody class="tables-boby" id= "model_config_dep_tbody">
+          <tr *ngFor="let riskFactor of depRiskFactors;let i=index;">
+            <td class="riskfactorsName"><span class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input"
+                  [checked]="checkedDepList.indexOf(riskFactor.id) != -1" (change)="selectRFDep($event,riskFactor.id);"
+                  id="riskfactorCheck_{{riskFactor.id}}">
+                <label class="custom-control-label"
+                  for="riskfactorCheck_{{riskFactor.id}}">{{riskFactor.shockRuleKeyName}}</label>
+              </span></td>
+              <td *ngIf="i==0" class="text-rotation expandbtn" rowspan="100%" (click)="metaDataShow=!metaDataShow">
+                  <span *ngIf="depRiskFactors.length >= 4" class="text-rotation">Risk Factor Attributes</span>
+                  <span class="double-arrow-td double-right-icon" *ngIf="!metaDataShow && depRiskFactors.length < 4"></span>
+                  <span class="double-arrow-td double-left-icon" *ngIf="metaDataShow && depRiskFactors.length < 4"></span>
+              </td>
+              <td class="dependentAssetClass" *ngIf="metaDataShow">{{getValue(riskFactor.ASSET_CLASS_ID,'DIM_AST_CLS_MST')}}</td>
+              <td class="dependentRiskFactorType" *ngIf="metaDataShow">{{getValue(riskFactor.RISK_FACTOR_TYPE_ID,"DIM_RSKFCT_TYP_MST")}}</td>
+              <td class="dependentCountry" *ngIf="metaDataShow">{{getValue(riskFactor.COUNTRY_ID,"DIM_CNTRY_MST")}}</td>
+              <td class="dependentCurrency" *ngIf="metaDataShow">{{getValue(riskFactor.CURRENCY_ID,"DIM_CURNCY_MST")}}</td>
+              <td class="dependentMaturity" *ngIf="metaDataShow">{{getValue(riskFactor.MATURITY_ID,"DIM_MTURTY_MST")}}</td>
+              <td class="dependentSector" *ngIf="metaDataShow">{{getValue(riskFactor.SECTOR_ID,"DIM_SETR_MST")}}</td>
+              <td class="dependentRating" *ngIf="metaDataShow">{{getValue(riskFactor.RATING_ID,"DIM_RTNG_MST")}} </td>
+              <td class="dependentUnit" *ngIf="metaDataShow">{{getValue(riskFactor.UNIT_ID,"DIM_UNIT_MST")}} </td>
+              <td class="dependentCurveFamily" *ngIf="metaDataShow">{{getValue(riskFactor.CURVE_FAMILY_ID,"MST_CURVE_FAMILY")}} </td>
+            <td class="dependentDataQuality" [ngClass]="{'redclrtxt': validatedataQuality(riskFactor.dataQuality)}">{{riskFactor.dataQuality}}</td>
+            <td class="dependentStationaryResults" [ngClass]="{'redclrtxt': validateStationary(riskFactor.stationaryResults)}">{{riskFactor.stationaryResults}}</td>
+
+            <td class="dependentTransformation">
+              <div class="select-wrapper-table">
+                <ng-select [items]="transformationList"
+                bindLabel="label"
+                bindValue="value"
+                appendTo="body"
+                [clearable]="false"
+                [(ngModel)]="riskFactor.transformationId">
+                </ng-select></div>
+            </td>
+            <td class="dependentDatafreq">
+              <div >
+                   {{getFrequencyValue(riskFactor.dataFrequencyId)}} 
+                <!-- <ng-select [items]="frequencyList"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  [clearable]="false" 
+                  [(ngModel)]="riskFactor.dataFrequencyId">
+                </ng-select> --></div>
+            </td>
+            <td class="dependentPrefferedVariables">
+              <div class="multi-select-table" id="preferred_{{riskFactor.id}}">
+                <custom-multi-select
+                  [items] = "riskFactor.preferredVariableListForSelect"
+                  [multiple]="true"
+                  class="drpdn"
+                  data-boundary="window"
+                  data-toggle="dropdown"
+                  [selectedItems] = "riskFactor.preferredVaribles"
+                  bindLabel="shockRuleKeyName" 
+                  bindValue="shockRuleKeyId"
+                  [searchForItems] = "true"
+                  [searchForSelectedItems] = "true"
+                  (selectChange) = "riskFactor.preferredVaribles = $event"
+                  (change)="changePreferredAndNonPreferred(riskFactor, 'PREFERRED')">
+                </custom-multi-select>
+            </div>
+              <!-- <div class="select-wrapper-table">
+                <ng-select [items]="indepRiskFactorsForSelect" bindLabel="shockRuleKeyName" bindValue="shockRuleKeyId"
+                  appendTo="body" [multiple]="true" [clearable]="true" placeholder=""
+                  (click)="selectChangePrefVar(riskFactor.shockRuleKeyId, riskFactor.id)"
+                  [(ngModel)]="riskFactor.preferredVaribles">
+                </ng-select>
+              </div> -->
+            </td>
+            <td class="dependentNonPrefferedVariables">
+             <!--  <div *ngFor="let npvShockRuleKey of riskFactor.npvShockRuleKeys" class="badge badge-light">
+                {{getShockRuleName(npvShockRuleKey)}}</div> -->
+                <div class="multi-select-table" id="nonpreferred_{{riskFactor.id}}">
+                <custom-multi-select 
+                  [items] = "riskFactor.nonPreferredVariableListForSelect"
+                  [multiple]="true"
+                  class="drpdn"
+                  data-boundary="window"
+                  [selectedItems] = "riskFactor.nonPreferredVaribles"
+                  bindLabel="shockRuleKeyName" 
+                  bindValue="shockRuleKeyId"
+                  [searchForItems] = "true"
+                  [searchForSelectedItems] = "true"
+                  (selectChange) = "riskFactor.nonPreferredVaribles = $event"
+                  (change)="changePreferredAndNonPreferred(riskFactor, 'NON_PREFERRED')">
+              </custom-multi-select>
+            </div>
+             <!--  <div class="select-wrapper-table">
+                <ng-select [items]="indepRiskFactorsForSelect" bindLabel="shockRuleKeyName" bindValue="shockRuleKeyId"
+                  appendTo="body" [multiple]="true" [clearable]="true" placeholder=""
+                  (click)="selectChangeNonPrefVar(riskFactor.shockRuleKeyId, riskFactor.id)"
+                  [(ngModel)]="riskFactor.nonPreferredVaribles">
+                </ng-select>
+              </div> -->
+            </td>
+            <td class = "td-word-break cyclicDependencyVariables">
+                <div *ngFor="let npvShockRuleKey of riskFactor.npvShockRuleKeys" class="badge badge-light">
+                    {{getShockRuleName(npvShockRuleKey)}}</div> 
+            </td>
+            <td  class="text-center onlyWithPreffered">
+              <span class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" [(ngModel)]="riskFactor.onlyWithPreffered" 
+                       [checked] = "riskFactor.onlyWithPreffered" name="selected" id="onlyPrefferedCheck__{{riskFactor.id}}">
+                       <label class="custom-control-label" for="onlyPrefferedCheck__{{riskFactor.id}}"></label>
+              </span>
+            </td>
+            <td  class="spark-line dependentGraph" id="td_spark_{{riskFactor.shockRuleKeyId}}" (click)="getSparkLineForRiskfactor(riskFactor.shockRuleKeyId,riskFactor.shockRuleKeyName)">
+              <div id="td_spark_div_{{riskFactor.shockRuleKeyId}}" (ngInit)="renderSparkLine('td_spark_div_'+riskFactor.shockRuleKeyId, riskFactor.shockRuleKeyId);"></div>
+          </td>
+          </tr>
+
+
+        </tbody>
+      </table>
+      <small class="table-b-text mt-0">{{depRiskFactors.length}} Dependent risk factor added</small>
+    </div>
+    <!--responsive-table end-->
+  </div>
+  <!--row end-->
+  <!--top table header Start-->
+  <div class="row mt-5 col-md-12 m-0 p-0">
+    <div class="table-titles col p-0">
+      <h4> INDEPENDENT RISK FACTOR</h4>
+    </div>
+
+    <div class="col" *ngIf="userCanAccess">
+      <span id="independentdeleteSelected" (click)="openDeleteFactorsModal('INDEPENDENT')" class="text-primary"
+        [ngClass]="{disabled:!checkedInDepList || checkedInDepList.length == 0}"><img src="../../../content/images/svg/delete-sm-1.png" alt="semicons" class="discard-img"> DELETE SELECTED</span>
+    </div>
+    <div class="col" *ngIf='userCanAccess'>
+      <span id="independentAddRiskFactor" class="text-primary plus-circle-icon" (click)="openPopup('INDEPENDENT')">ADD RISK FACTOR</span>
+    </div>
+   <!--  <div class="col-md-4 text-right p-0">
+      <span id="independentPlotTimeSeries" class="text-primary">
+        <svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0.75 2C0.75 2.825 1.425 3.5 2.25 3.5C2.385 3.5 2.5125 3.485 2.6325 3.4475L5.3025 6.11C5.265 6.23 5.25 6.365 5.25 6.5C5.25 7.325 5.925 8 6.75 8C7.575 8 8.25 7.325 8.25 6.5C8.25 6.365 8.235 6.23 8.1975 6.11L10.11 4.1975C10.23 4.235 10.365 4.25 10.5 4.25C10.635 4.25 10.77 4.235 10.89 4.1975L14.3025 7.6175C14.265 7.7375 14.25 7.865 14.25 8C14.25 8.825 14.925 9.5 15.75 9.5C16.575 9.5 17.25 8.825 17.25 8C17.25 7.175 16.575 6.5 15.75 6.5C15.615 6.5 15.4875 6.515 15.3675 6.5525L11.9475 3.14C11.985 3.02 12 2.885 12 2.75C12 1.925 11.325 1.25 10.5 1.25C9.675 1.25 9 1.925 9 2.75C9 2.885 9.015 3.02 9.0525 3.14L7.14 5.0525C7.02 5.015 6.885 5 6.75 5C6.615 5 6.48 5.015 6.36 5.0525L3.6975 2.3825C3.735 2.2625 3.75 2.135 3.75 2C3.75 1.175 3.075 0.5 2.25 0.5C1.425 0.5 0.75 1.175 0.75 2Z"
+            fill="#375889" />
+        </svg>
+        PLOT TIMESERIES</span>
+    </div> -->
+  </div>
+  <!--top table header end-->
+
+  <!--table 2nd start-->
+  <div class="row  col-md-12 m-0 p-0">
+    <div class="table-start table-responsive">
+      <table class="table table-bordered tables-view mb-2 table-resizable table-independent-rz" id="inDependentRfTable" [ngClass]="{'table-expand2':IndMetaDataShow}">
+        <thead class="tables-head">
+          <tr>
+            <th scope="col" class="inDependentRiskFactors">
+              <span class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" [checked]="selectAllRFInDep"
+                  (change)="selectAllChangeInDep($event);" id="customCheck1_{{i}}">
+                <label class="custom-control-label" for="customCheck1_{{i}}">Risk Factor (S)</label>
+              </span> </th>
+              <th class="arrow-view expandbtn">
+                  <div class="arrow-btn-r">
+                    <div (click)="IndMetaDataShow=!IndMetaDataShow" *ngIf="!IndMetaDataShow" >
+                      <img src="../../../content/images/svg/arrowleft.png" alt="semicons">                                 
+                     </div>
+                    <div (click)="IndMetaDataShow=!IndMetaDataShow" *ngIf="IndMetaDataShow" >
+                        <img src="../../../content/images/svg/arrowright.png" alt="semicons">                                     
+                    </div>
+                </div>
+                </th>
+                <th scope="col" class=" inDependentAssetClass" *ngIf="IndMetaDataShow">Asset Class  </th>
+                <th scope="col" class=" inDependentRiskFactorType" *ngIf="IndMetaDataShow">Sub Risk Factor   </th>
+                <th scope="col" class=" inDependentCountry" *ngIf="IndMetaDataShow">Country </th>
+                <th scope="col" class=" inDependentCurrency" *ngIf="IndMetaDataShow">Currency </th>
+                <th scope="col" class=" inDependentMaturity" *ngIf="IndMetaDataShow">Maturity  </th>
+                <th scope="col" class=" inDependentSector" *ngIf="IndMetaDataShow">Sector  </th>
+                <th scope="col" class=" inDependentRating" *ngIf="IndMetaDataShow">Rating   </th>
+                <th scope="col" class=" inDependentUnit" *ngIf="IndMetaDataShow">Unit </th>
+                <th class=" inDependentCurveFamily" *ngIf="IndMetaDataShow">Curve Family  </th> 
+            <th scope="col" class="position-relative inDependentDataQuality model-dqs">Data Quality <br>Score (Missing|Outliers|Static)
+              <span class="fr tooltipbottom-tablebtm-small info-icon-2">
+               
+                <div class="bottom-btm error-message-small">
+                  <small class="pop-text ">Raw Data</small>
+                </div>
+            </span>
+            </th>
+            <th scope="col" class="position-relative inDependentStationaryResults model-st">Stationarity Test <br>(ADF|KPSS|PP|COMMENT)
+              <span class="fr tooltipbottom-tablebtm-small info-icon-2">
+                
+                <div class="bottom-btm error-message-small">
+                  <small class="pop-text ">Transformed Data</small>
+                </div>
+            </span>
+            </th>
+              <th scope="col" class="inDependentTransformation model-t">Transformation</th>
+            <th scope="col" class="date-freq inDependentDataFreq model-df">Data Frequency</th>
+            <th scope="col" class="inDependentGraph ">Graph</th>
+          </tr>
+        </thead>
+        <tbody class="tables-boby"  id= "model_config_pre_dep_tbody">
+          <tr *ngFor="let riskFactor of indepRiskFactors;let i=index;">
+            <td class="inDependentRiskFactors"><span class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input"
+                  [checked]="checkedInDepList.indexOf(riskFactor.id) != -1"
+                  (change)="selectRFInDep($event,riskFactor.id);" id="riskfactorCheck_{{riskFactor.id}}">
+                <label class="custom-control-label"
+                  for="riskfactorCheck_{{riskFactor.id}}">{{riskFactor.shockRuleKeyName}}</label>
+              </span></td>
+              <td *ngIf="i==0" class="text-rotation expandbtn" rowspan="100%" (click)="IndMetaDataShow=!IndMetaDataShow">
+                  <span *ngIf="indepRiskFactors.length >= 4" class="text-rotation">Risk Factor Attributes</span>
+                  <span class="double-arrow-td double-right-icon" *ngIf="!IndMetaDataShow && indepRiskFactors.length < 4"></span>
+                  <span class="double-arrow-td double-left-icon" *ngIf="IndMetaDataShow && indepRiskFactors.length < 4"></span>
+              </td>
+              <td class="inDependentAssetClass" *ngIf="IndMetaDataShow">{{getValue(riskFactor.ASSET_CLASS_ID,'DIM_AST_CLS_MST')}}</td>
+              <td class="inDependentRiskFactorType" *ngIf="IndMetaDataShow">{{getValue(riskFactor.RISK_FACTOR_TYPE_ID,"DIM_RSKFCT_TYP_MST")}}</td>
+              <td class="inDependentCountry" *ngIf="IndMetaDataShow">{{getValue(riskFactor.COUNTRY_ID,"DIM_CNTRY_MST")}}</td>
+              <td class="inDependentCurrency" *ngIf="IndMetaDataShow">{{getValue(riskFactor.CURRENCY_ID,"DIM_CURNCY_MST")}}</td>
+              <td class="inDependentMaturity" *ngIf="IndMetaDataShow">{{getValue(riskFactor.MATURITY_ID,"DIM_MTURTY_MST")}}</td>
+              <td class="inDependentSector" *ngIf="IndMetaDataShow">{{getValue(riskFactor.SECTOR_ID,"DIM_SETR_MST")}}</td>
+              <td class="inDependentRating" *ngIf="IndMetaDataShow">{{getValue(riskFactor.RATING_ID,"DIM_RTNG_MST")}} </td>
+              <td class="inDependentUnit" *ngIf="IndMetaDataShow">{{getValue(riskFactor.UNIT_ID,"DIM_UNIT_MST")}} </td>
+              <td class="inDependentCurveFamily" *ngIf="IndMetaDataShow">{{getValue(riskFactor.CURVE_FAMILY_ID,"MST_CURVE_FAMILY")}} </td>
+            <td class="inDependentDataQuality" [ngClass]="{'redclrtxt': validatedataQuality(riskFactor.dataQuality)}">{{riskFactor.dataQuality}}</td>
+            <td class="inDependentStationaryResults" [ngClass]="{'redclrtxt': validateStationary(riskFactor.stationaryResults)}" >{{riskFactor.stationaryResults}}</td>
+
+            <td class="inDependentTransformation">
+              <div class="select-wrapper-table">
+                  <ng-select [items]="transformationList"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  [clearable]="false"
+                  [(ngModel)]="riskFactor.transformationId">
+                  </ng-select></div>
+            </td>
+            <td class="inDependentDataFreq">
+              <div >
+                   {{getFrequencyValue(riskFactor.dataFrequencyId)}} 
+               <!--  <ng-select [items]="frequencyList"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  [clearable]="false" 
+                  [(ngModel)]="riskFactor.dataFrequencyId">
+                </ng-select> --></div>
+            </td>
+            <td class="spark-line inDependentGraph" id="td_spark_{{riskFactor.shockRuleKeyId}}" (click)="getSparkLineForRiskfactor(riskFactor.shockRuleKeyId,riskFactor.shockRuleKeyName)">
+              <div id="td_spark_div_{{riskFactor.shockRuleKeyId}}" (ngInit)="renderSparkLine('td_spark_div_'+riskFactor.shockRuleKeyId, riskFactor.shockRuleKeyId);"></div>
+          </td>
+          </tr>
+        </tbody>
+      </table>
+      <small class="table-b-text mt-0">{{indepRiskFactors.length}} Dependent risk factor added</small>
+    </div>
+    <!--responsive-table end-->
+  </div>
+  <!--row end-->
+
+  <div class="dotted-divider mt-3"></div>
+  <!--footer buttons end-->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <div class="next-pre mb-3 mt-4 ">
+              <button type="button" id="discard" class="btn btn-outline cri-btn-outline" (click)="cancel();">
+                <img src="../../../content/images/svg/delete-sm.png" alt="semicons" class="discard-img"> DISCARD</button>
+              <button *ngIf="userCanAccess" type="button" id="saveExit" class="btn btn-outline cri-btn-outline"
+                (click)="updateModelRiskFactorsData('model')">
+                <img src="../../../content/images/svg/save.png" alt="semicons" class="discard-img"> SAVE & EXIT</button>
+            </div>
+          </div>
+          <div class="form-group col-md-6 ">
+            <div class="next-pre mb-3 mt-4 text-right">
+              <button type="button" class="cri-btn btn btn-outline-danger mr-3"
+                (click)="navigateTo('model/modelDefinition');"><img src="../../../content/images/svg/previous.png" alt="semicons">&nbsp;&nbsp;PREVIOUS</button>
+              <button *ngIf="userCanAccess" type="button" class="cri-btn btn btn-outline-secondary btn-danger"
+                (click)="updateModelRiskFactorsData('model/modelReview');">NEXT &nbsp;&nbsp;<img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+              <button *ngIf="!userCanAccess" type="button" class="cri-btn btn btn-outline-secondary btn-danger"
+                (click)="navigateTo('model/modelReview');">NEXT &nbsp;&nbsp;<img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+            </div>
+          </div>
+        </div>
+        <!--first row-end-->
+      </div>
+    </div>
+  </div>
+  <!-- footer buttons end-->
+
+</div>
+<!--cri-inner-container-->
+
+
+<!-- Modal Create Set-->
+<!-- Modal Create Set-->
+<!-- Modal Create Set-->
+<!-- Modal Create Set-->
+<ng-template #addriskfactor let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 *ngIf="isdependent" class="cri-modal-titles modal-titles ml-4">Select Dependent Risk Factor<br></h4>
+    <h4 *ngIf="!isdependent" class="cri-modal-titles modal-titles ml-4">Select Independent Risk Factor<br></h4>
+    <!--<label class="title-name"> Filter and add  risk factor</label>-->
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="cri-modal-body modal-body ">
+    <div class="alert alert-danger" *ngIf="isFailure==true">
+      {{displayFailureMessage}}
+    </div>
+    <div class="card-main col-lg-12 p-0">
+      <div class="row">
+        <div class="col-lg-12">
+          <metadata-filter (loadMetaData)="loadMetaDataByAppliedFilter($event)" (clearMetaData)="clearMetaData()" (errorMessage)="showFilterComponentMessage($event)"> </metadata-filter>
+        </div>
+        <!--col-md-12 ned-->
+      </div>
+      <!--row end-->
+
+
+      <div class="row">
+        <div class="col-lg-5">
+          <select multiple="multiple" (scroll)="changeScroll($event)" style="height: 250px !important;" id="my-select" class="risk-factor-mul-sel "
+            [(ngModel)]="dataLeft">
+            <option *ngFor="let data of dataListTemp;let i=index;" [ngValue]="data"
+              (dblclick)="moveRiskFactorToRight(data,i);">{{data[1]}}</option>
+          </select>
+        </div>
+        <div class="col text-center mb-4">
+          <button class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToRight('ALL');"
+            [disabled]="dataListTemp.length == 0"> <span class="fa-chevron-right"></span> <span
+              class="fa-chevron-right"></span></button>
+          <button class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToRight('');"
+            [disabled]="dataLeft.length == 0"> <span class="fa-chevron-right"></span> </button>
+          <!-- <div _ngcontent-c2="" class="dotted-divider"> </div> -->
+          <button class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToLeft('');"
+            [disabled]="dataRight.length == 0"> <span class="fa-chevron-left"></span> </button>
+          <button class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToLeft('ALL');"
+            [disabled]="dataListTempNext.length == 0"> <span class="fa-chevron-left"></span> <span
+              class="fa-chevron-left"></span></button>
+        </div>
+        <div class="col-lg-5 p-0">
+          <select multiple="multiple" style="height: 250px !important;" id="my-select" class="risk-factor-mul-sel"
+            [(ngModel)]="dataRight">
+            <option *ngFor="let data of dataListTempNext;let i=index;" [ngValue]="data"
+              (dblclick)="moveRiskFactorToLeft(data,i);">{{data[1]}}</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+    <!--card main end-->
+  </div>
+  <!--modal body-->
+  <div class="modal-footer modal-cri-foot mb-3">
+    <button type="button" id="riskfactorDiscard" class=" btn btn-outline-danger" (click)="modal.close('Close click')">
+       <img src="../../../content/images/svg/delete-red.png" alt="semicons" class="discard-img">DISCARD</button>
+    <button type="button" id="riskFactorSave" class="btn btn-danger cri-btn mr-2" (click)="saveModelRiskFactors();">
+      <img src="../../../content/images/svg/save-white.png" alt="semicons" class="discard-img">SAVE</button>
+  </div>
+</ng-template>
+<!-- Modal Create Set end-->
+<!-- Modal Create Set end-->
+<!-- Modal Create Set end-->
+
+<!-- Model Create Set-->
+<!-- Model Create Set-->
+<!-- Model Create Set-->
+<!-- Model Create Set-->
+<ng-template #metdlgyConfgMdl let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Methodology Configuration<br>
+        <label class="title-name"> Select Methodology To Include In The Model</label></h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="cri-modal-body modal-body mt-2">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+      <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="card-main col-lg-12 p-0">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row ml-0 mb-3">
+            <div class="table-start table-responsive">
+              <table *ngIf="columns && columns.length != 0 " class="table table-bordered tables-view mb-2 ">
+                <thead class="tables-head-2">
+                  <tr>
+                    <th class="position-relative" *ngFor="let header of headersList;let i=index;"
+                    [hidden]="header == 'Id'">
+                      {{header}}</th>
+                  </tr>
+                </thead>
+                <tbody class="tables-boby">
+                  <tr *ngIf="records.length == 0" class="no_data_found">
+                    <td [colSpan]="headersList.length + 1">No Data Found</td>
+                  </tr>
+                  <tr *ngFor="let record of records;let i=index;">
+                    <td class="text-center">
+                        <span class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" [(ngModel)]="record.SELECTED" 
+                                [checked]="record.SELECTED" name="selected" id="methodologyCheck_{{i}}">
+                            <label class="custom-control-label" for="methodologyCheck_{{i}}"></label>
+                        </span>
+                    </td>
+                    <td class="col-form-label form-control-sm">{{record.NAME}}</td>
+                    <td><input  [ngClass]="(record.NO_OF_VAR == '' || record.NO_OF_VAR == null) ? 'bdred' : ''" class="form-control form-control-sm" type="number" [(ngModel)]="record.NO_OF_VAR" /></td>
+                    <td><input  [ngClass]="(record.LEVEL_OF_SIG == '' || record.LEVEL_OF_SIG == null) ? 'bdred' : ''" class="form-control form-control-sm" type="text" [(ngModel)]="record.LEVEL_OF_SIG" /></td>
+                    <td><input  [ngClass]="(record.BACKTESTING_ANALYSIS == '' || record.BACKTESTING_ANALYSIS == null) ? 'bdred' : ''" class="form-control form-control-sm" type="text" [(ngModel)]="record.BACKTESTING_ANALYSIS" /></td>
+                    <td><input  [ngClass]="(record.STABILITY_ANALYSIS == '' || record.STABILITY_ANALYSIS == null) ? 'bdred' : ''"class="form-control form-control-sm" type="text" [(ngModel)]="record.STABILITY_ANALYSIS" /></td>
+                    <td><input  [ngClass]="(record.BOOTSTRAP == '' || record.BOOTSTRAP == null) ? 'bdred' : ''" class="form-control form-control-sm" type="number" [(ngModel)]="record.BOOTSTRAP " /></td>
+                    <td class="p-2">
+                      <div class="select-wrapper">
+                        <ng-select [items]="modelConfigEleList"
+                          bindLabel="label"
+                          bindValue="value"
+                          appendTo="body"
+                          [clearable]="false"
+                          [ngClass]="{'bdred' : record.DROP_VARIABLE == '' || record.DROP_VARIABLE == null}"
+                          [(ngModel)]="record.DROP_VARIABLE">
+                        </ng-select>
+                      </div>
+                    </td>
+                    <td class="p-2">
+                      <div class="select-wrapper">
+                        <ng-select [items]="modelConfigEleList"
+                          bindLabel="label"
+                          bindValue="value"
+                          appendTo="body"
+                          [clearable]="false"
+                          [ngClass]="{'bdred' : record.FULL_SUITE == '' || record.FULL_SUITE == null}"
+                          [(ngModel)]="record.FULL_SUITE">
+                        </ng-select>
+                      </div>
+                    </td>
+                    <td class="p-2">
+                        <div class="select-wrapper">
+                          <ng-select [items]="modelConfigEleList"
+                            bindLabel="label"
+                            bindValue="value"
+                            appendTo="body"
+                            [clearable]="false"
+                            [ngClass]="{'bdred' : record.INTERCEPT == '' || record.INTERCEPT == null}"
+                            [(ngModel)]="record.INTERCEPT">
+                          </ng-select>
+                        </div>
+                      </td>
+                    <td><input class="form-control form-control-sm" type="number" [(ngModel)]="record.MAX_ORDER " /></td>
+                    <td><input class="form-control form-control-sm" type="number" [(ngModel)]="record.MAX_PC " /></td>
+                    <td><input class="form-control form-control-sm" type="number" [(ngModel)]="record.MAX_LAG " /></td>
+                    <td><input class="form-control form-control-sm" type="text" [(ngModel)]="record.CUT_OFF " /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="userCanAccess" class="modal-footer modal-cri-foot mb-3">
+      <button type="button" id="methodologyDiscard" class=" btn btn-outline-danger" (click)="modal.dismiss('Cross click');">
+        <img src="../../../content/images/svg/delete-red.png" alt="semicons" class="discard-img"> DISCARD</button>
+      <button type="button" id="methodologySave" class="btn btn-danger cri-btn mr-2" (click)="saveModelConfigData('model/modelConfig');">
+        <img src="../../../content/images/svg/save-white.png" alt="semicons" class="discard-img">SAVE</button>
+  </div>
+</ng-template>
+
+<!-- Model Create Set-->
+<!-- Model Create Set-->
+<!-- Model Create Set-->
+<!-- Model Create Set-->
+<ng-template #deleteRFModal let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">{{modalHeader}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="deleteRiskFactors();">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="modal.dismiss()">No</button>
+  </div>
+</ng-template>
+<ng-template #correlationMatrixChart let-modal class="modal fade">
+       <div class="cri-modal-h modal-header">
+      <h4 class="cri-modal-titles modal-titles ml-4">Chart Information</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+      <div class="modal-body">
+        <div class= "text-right">
+            <button  type="button" class="btn btn btn-outline-primary btn-sm sm-icons"  (click)="download()">
+                <i class="fa-download-icon" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="row"> <div  class="col-md-12 mt-2 chart-veiw" id="chart"></div></div>
+         
+      </div>
+</ng-template>
+<ng-template #timeSeriesplotly let-modal class="modal fade">
+    <div class="cri-modal-h modal-header">
+   <h4 class="cri-modal-titles modal-titles ml-4">Time Series For Risk Factor</h4>
+   <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+     <span aria-hidden="true">&times;</span>
+   </button>
+ </div>
+   <div class="modal-body">
+       <div  class="col-md-12 mt-2" id="timeseriesChart"></div>
+   </div>
+</ng-template>

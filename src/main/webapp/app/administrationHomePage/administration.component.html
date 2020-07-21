@@ -1,0 +1,124 @@
+<div class="cri-inner-container customheight">
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="cri-main-heading mt-2">
+
+               <img src="../../content/images/svg/administrtion-heading.png" alt="sem-icons">
+                <strong>  Administration Dashboard </strong></h1>
+            <label class="title text-dark">Select a task below</label>
+        </div>
+        <!--use this for right side button-->
+        <div class="col-md-12">
+            <div class="content-divider"></div>
+        </div>
+
+        <!--hearder-title end-->
+        <!--Scenario Analysis start-->
+
+        <div class="row col-md-12 mt-5 pr-0">
+            <div class="col-sm-3 mb-3" *jhiHasAnyAuthority="['ROLE_SEM_ADMIN']">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/administrationHome/clientList">
+                        <div class="p-2"> 
+                                <img src="../../content/images/svg/create-client.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Create Clients</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3" *jhiHasAnyAuthority="['ROLE_SEM_ADMIN']">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/administrationHome/clientAdminList">
+                        <div class="p-2"> 
+                                <img src="../../content/images/svg/client-admin.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Create Admin</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3" *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_SEM_ADMIN']">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/administrationHome/clientUsers">
+                        <div class="p-2"> 
+                           <img src="../../content/images/svg/client-user.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Create Users</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-sm-3 mb-3 pr-0" *jhiHasAnyAuthority="['ROLE_ADMIN']">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/administrationHome/clientApproval">
+                        <div class="p-2"><svg width="37" height="43" viewBox="0 0 37 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M30.8182 42H2.86364C1.83864 42 1 41.1614 1 40.1364V2.86364C1 1.83864 1.83864 1 2.86364 1H24.2955L31.75 8.45455V33.6136" stroke="#5F79A1" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M28.9581 9.38632H23.3672V3.79541" stroke="#5F79A1" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M15.9084 34.5453C22.0839 34.5453 27.0902 29.539 27.0902 23.3635C27.0902 17.1879 22.0839 12.1816 15.9084 12.1816C9.73283 12.1816 4.72656 17.1879 4.72656 23.3635C4.72656 29.539 9.73283 34.5453 15.9084 34.5453Z" stroke="#5F79A1" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M24.2969 30.8184L35.4787 42.0002" stroke="#5F79A1" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M10.3203 21.5V28.0227" stroke="#FD7070" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M14.0469 24.2954V28.0227" stroke="#5F79A1" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M17.7734 18.7046V28.0228" stroke="#FD7070" stroke-width="2" stroke-miterlimit="10"/>
+                                                    <path d="M21.5 22.4316V28.0225" stroke="#5F79A1" stroke-width="2" stroke-miterlimit="10"/>
+                                                    </svg>
+
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Client Approvals</strong></div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- </div> Scenario Analysis row End -->
+            <!--Time Series Analysis start-->
+
+            <!-- <div class="row col-md-12 mb-5 mt-4"> -->
+
+
+            <div class="col-sm-3 mb-3" *ngIf="user['typeOfUser'] == 'INTERNAL'" (click)="changeClientModal(clientChangeModal);" (click) ="collapseNavbar()">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard">
+                        <div class="p-2"> 
+                           <img src="../../content/images/svg/change-client.png">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Change Client</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Time Series Analysis row End-->
+    </div><!--mainrow end-->
+</div>
+    <ng-template #clientChangeModal let-modal class="alertmodal" >
+        <div class="cri-modal-h modal-header">
+            <h4 class="cri-modal-titles modal-titles">Change Client</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isError">
+                <i class="fa-exclamation-triangle-icon"></i>Exception while changing client.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isError=false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="form-group">
+                <label class="cri-label" for="inputState">Client</label>
+                <div class="select-wrapper" tabindex="0">
+                    <ng-select [items]="clientList"
+                        bindLabel="clientName" 
+                        bindValue="id"
+                        appendTo="body"
+                        name = "client"
+                        placeholder="Select Client"
+                        [(ngModel)]="clientId">
+                    </ng-select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline-danger btn-sm" (click)="changeClient();">Change</button>
+            <button class="btn btn-outline-danger btn-sm" (click)="modal.dismiss('Cross click');">Cancel</button>
+        </div>
+    </ng-template>
+
+<!--stepcontainer end-->

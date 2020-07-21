@@ -1,0 +1,67 @@
+<div class="form-row">
+  <div class="alert alert-success" *ngIf="isSuccess==true">
+    {{displaySuccessMessage}}
+  </div>
+  <div class="alert alert-danger" *ngIf="isFailure==true">
+    {{displayFailureMessage}}
+  </div>
+  <div class="col-12 no-padding">
+    <jhi-scenario-tabs selectedTab="2" [status]="scenarioObj.status"></jhi-scenario-tabs>
+    <div class="cri-inner-container">
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="staticEmail" class="col-sm-12 col-form-label "> Start Date<span class="field-mandatory">*</span></label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="scenarioObj.startDate"
+              ngbDatepicker #d1="ngbDatepicker" readonly="true" (click)="d1.toggle()">
+            <div class="input-group-prepend ">
+              <div class="input-group-text" (click)="d1.toggle()"><i class="far fa-calendar-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="staticEmail" class="col-sm-12 col-form-label "> End Date<span class="field-mandatory">*</span></label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="scenarioObj.endDate"
+              ngbDatepicker #d2="ngbDatepicker" readonly="true" (click)="d2.toggle()">
+            <div class="input-group-prepend ">
+              <div class="input-group-text" (click)="d2.toggle()"><i class="far fa-calendar-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="staticEmail" class="col-sm-12 col-form-label "> Shock Date<span class="field-mandatory">*</span></label>
+          <div class="input-group">
+            <input class="form-control " placeholder="yyyy-mm-dd" [(ngModel)]="scenarioObj.shockDate"
+              ngbDatepicker #d3="ngbDatepicker" (click)="d3.toggle()">
+            <div class="input-group-prepend ">
+              <div class="input-group-text" (click)="d3.toggle()"><i class="far fa-calendar-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+   
+        <div class="form-group col-md-3" >
+          <label for="staticEmail" class="col-sm-12 col-form-label form-control-sm"> Shock template<span class="field-mandatory" *ngIf="scenarioObj.classification=='1'" >*</span></label>
+          <select class="form-control mb-0 form-control-sm" [(ngModel)]="scenarioObj.shockTemplate">
+            <option *ngFor="let master of shockTemplateList" [ngValue]="master.value">{{master.label}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+          
+          <a (click)="navigateTo('scenario/createScenario');" class="btn btn-sm btn-secondary"> Previous</a>
+        </div>
+        <div class="col-md-6 text-right" *ngIf="userCanAccess">
+          <a class="btn btn-sm btn-default" routerLink="/"> Cancel</a>
+          <a (click)="saveScenarioConfig();" class="btn btn-danger btn-sm"> Next</a>
+        </div>
+        <div class="col-md-6 text-right" *ngIf="!userCanAccess && scenarioObj.status >= 2">
+            <a class="btn btn-sm btn-default" routerLink="/"> Cancel</a>
+          <a  (click)="navigateTo('scenario/selectRiskFactor');" class="btn btn-danger btn-sm"> Next</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

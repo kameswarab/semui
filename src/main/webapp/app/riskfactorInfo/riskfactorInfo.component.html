@@ -1,0 +1,107 @@
+<div class="cri-inner-container">
+    <div class="row mb-1">
+        <div class="col-md-6">
+            <h1 class="cri-main-heading ml-1 mt-2">
+                <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                <strong class="color9" routerLink="/dataUtility">Data Utility</strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1 "> Risk Factor Management</strong>
+
+            </h1>
+        </div>
+        <div class="col-md-6 text-right mt-2"> 
+            <button class="btn btn-outline-primary btn-sm sm-icons mr-2"
+                (click)="goToBulkRiskinfo()">
+                <img src="../../content/images/svg/edit.png" alt="semicons">
+                <span class="ml-1 buttontext2">BULK EDIT</span>
+            </button>
+            <button class="btn btn-outline-primary btn-sm sm-icons mr-2 plusicon"
+                (click)="navigateToNewRF('dataUtility/riskfactorinfo/createNewRiskFactor')">
+                <img src="../../content/images/svg/create-plus.png" alt="semicons">
+
+                <span class="ml-1 buttontext2 ">CREATE RISK FACTOR</span>
+            </button>
+            <button class="btn btn-outline-primary btn-sm sm-icons plusicon opacity-point-5"
+                *ngIf="downloadType=='Downloading'" ngbTooltip="Downloading MarketData" placement='top'><i
+                    class="fa-download-icon md-k2" aria-hidden="true"></i></button>
+             <button class="btn btn-outline-primary btn-sm sm-icons plusicon" *ngIf="downloadType!= 'Downloading'"
+                ngbTooltip="Download MarketData" placement='top' (click)="downloadTimeSeriesData()"><i
+                    class="fa-download-icon md-k2" aria-hidden="true"></i>
+             </button>
+          </div>
+    </div>
+
+    <div class="alert alert-success" *ngIf="isSuccess==true">
+        {{displaySuccessMessage}}
+    </div>
+    <div class="alert alert-danger" *ngIf="isFailure==true">
+        {{displayFailureMessage}}
+    </div>
+    <div class="row">
+      </div>
+    <div class="row ">
+        <div class="col-md-12">
+            <div class="main-riskfactor-grid">
+                <div class="test-header mb-2">
+                    <div class="row ml-0 mr-0 mt-3">
+                        <div class="col-md-12">
+                            <metadata-filter [filtersData]="createFilter"
+                                [masterDataObjForFilters]="masterDataObjForFilters"
+                                (loadMetaData)="loadMetaDataByAppliedFilter($event)" (clearMetaData)="clearMetaData()"
+                                (errorMessage)="showFilterComponentMessage($event)"> </metadata-filter>
+                        </div>
+                   </div>
+                </div>
+                <div class="overflow-auto" *ngIf="filtersApplied">
+                    <ag-grid-angular style="width: 100%; height: 530px;" class="ag-theme-balham pageNationHide"
+                        [rowData]="itemList" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef"
+                        [sideBar]="sideBar" [components]="components" [enableFilter]="true"
+                        [rowModelType]="rowModelType"
+                        [paginationPageSize]="paginationPageSize"
+                        [cacheOverflowSize]="cacheOverflowSize"
+                        [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+                        [infiniteInitialRowCount]="infiniteInitialRowCount"
+                        [enableServerSideFilter]="true" [rowHeight]="rowHeight" (cellClicked)="onRowClicked($event)"
+                        [overlayNoRowsTemplate]="overlayNoRowsTemplate"  (gridReady)="onGridReady($event)">
+                </ag-grid-angular>
+                </div>
+                <div class="fotter-btn " *ngIf="filtersApplied">
+                    <div class="col-md-12 row ">
+                      <div class="col-md-12">
+                        <nav class="c-pagination">
+                            <ul class="c-pagination__list pl-3">
+                              <li class="c-pagination__next">
+                                    <a><small class="dis-page">Displaying {{[rowEnds]}} of {{[totalSize]}} Total Filtered Records</small></a>
+                              </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12" *ngIf="!filtersApplied">
+            <div class="blur">
+                <img src="../../content/images/spreadsheet.jpg">
+            </div>
+        </div>
+        <div class="customtitle2 positioncenter2 bolder" *ngIf="!filtersApplied">
+            <i class="info-icon-hm error-icon" aria-hidden="true"></i>Use Filter To View Table
+        </div>
+    </div>
+</div>
+<ng-template #sparkLineRFModal let-modal class="modal fade">
+    <div class="cri-modal-h modal-header">
+        <h4 class="cri-modal-titles modal-titles ml-4">Spark line for Risk factor</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div id="sparkLineChartId"></div>
+    </div>
+</ng-template>

@@ -1,0 +1,27 @@
+  <div ngbDropdown #calendarPanel="ngbDropdown">
+   <div class="input-group">
+    <input type="text" min="1" class="form-control" [(ngModel)]="data" [placeholder]="mask" [disabled]="disabled">
+    <div class="input-group-append">
+      <div class="input-group-text" ngbDropdownToggle (click)="calenderClick(data);" [ngClass]="{'disabled' : disabled}"><i class="fa fa-calendar" aria-hidden="true"></i>
+      </div>
+  </div>
+  </div>
+  <div ngbDropdownMenu class="dropdown-menu dropdown-menu-year-picker year-picker-sh" >
+    <div class="form-row">
+      <div class="year-disp col-md-12">
+          <button class="btn btn-link col-3" (click)="prevYears($event)">
+              <span class="ngb-dp-navigation-arrow left"></span>
+            </button>
+            <button class="btn btn-link col-6">{{data}}</button>
+            <button class="btn btn-link col-3" (click)="nextYears($event)">
+              <span class="ngb-dp-navigation-arrow right"></span>
+            </button>
+      </div>
+      <div *ngFor="let year of years; let i = index; let first = first; let last = last" class="col-3" (click)="selectYear(year)">
+        <div [ngClass]="{'select': year==data}" class="card-body yearpickerbody outrange">
+          <span>{{year}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

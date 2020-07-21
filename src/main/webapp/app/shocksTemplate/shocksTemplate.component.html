@@ -1,0 +1,125 @@
+<div class="cri-inner-container">
+        <div class="col-md-12">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+                <i class="fa-check"></i> {{displaySuccessMessage}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-8 pl-0">
+                <h1 class="cri-main-heading mt-2">
+                        <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                    <strong class="ml-1 color9" routerLink="/dataUtility">  Data Utility </strong>
+                    <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                    <strong class=" ml-1 ">Shock Template Management  </strong>
+                </h1>
+            </div>
+            <div class="col-md-4 pr-0 pt-2 mt-1 text-right">
+                <button class="btn btn-outline-primary btn-sm sm-icons" (click)="navigateToConfigure()">
+                                <i class="plus-circle-icon" aria-hidden="true"></i> <span class="ml-1 font-weight-bold">CREATE </span></button>
+            </div>
+    
+        </div>
+    
+    
+        <div class="row ">
+            <div class="table-start table-responsive">
+                <table *ngIf="columns && columns.length != 0 " class="table table-bordered tables-view mb-2">
+                    <thead>
+                        <tr class="thead-light">
+                            <th class="position-relative" *ngFor="let header of headerList;let i=index;" [hidden]="header=='ID'">{{header}}
+                                <span class="sorting" >
+                                                    <a *ngIf="filter.sortMap[columns[i]] == '' || filter.sortMap[columns[i]] == 'ASC'"
+                                                        (click)="updateSortDataMap(columns[i],filter.sortMap[columns[i]],'ASC');"
+                                                        class="sort-down">▾</a>
+                                                    <a *ngIf="filter.sortMap[columns[i]] == '' || filter.sortMap[columns[i]] == 'DESC'"
+                                                        (click)="updateSortDataMap(columns[i],filter.sortMap[columns[i]],'DESC');"
+                                                        class="sort-up">▴</a>
+                                                </span>
+                            </th>
+                            <th>ACTION</th>
+                        </tr> 
+                        <tr class="search_tr" >
+                            <th *ngFor="let header of headerList;let i=index" [hidden]="header=='ID'">
+                                <input type="text" (keyup)="updateFilterDataMap(columns[i],$event);" />
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="!records || records.length == 0" class="no_data_found">
+                            <td [colSpan]="headerList.length + 1">No Data Found</td>
+                        </tr>
+                        <tr *ngFor="let record of records">
+                            <td *ngFor="let column of columns" [hidden]="column=='ID'">{{record[column]}}</td>
+                            <td>
+                                <a class="btn btn-sm" (click)="viewData(record);">
+                                  <img src="../../content/images/svg/edit.png" alt="semicons">
+                                                </a>
+                                <a class="btn btn-sm" (click)="openDeleteDataModal(record);">
+                                        <img src="../../content/images/svg/delete.png" alt="sem-icons" class="discard-img">
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+            </div>
+            <!--responsive-table end-->
+            <div class="fotter-btn ">
+                    <div class="col-md-12">
+                        <nav class="c-pagination">
+                            <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                                <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}">
+                                    <a href="javascript:void(0)" (click)="getMasterDataByPage(pager.currentPage - 1)">
+    
+                                        <i aria-hidden="true" class="fa-long-arrow-left-icon" *ngIf="records.length > 0"></i>
+                                    </a>
+                                </li>
+                                <li *ngFor="let page of pager.pages" class="c-pagination__item">
+                                    <a *ngIf="records.length > 0" (click)="getMasterDataByPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                                </li>
+    
+                                <li class="c-pagination__next" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                    <a href="javascript:void(0)" (click)="getMasterDataByPage(pager.currentPage + 1)">
+                                        <i aria-hidden="true" class="fa-long-arrow-right-icon" *ngIf="records.length > 0"></i>
+                                    </a>
+                                </li>
+                                <li class="c-pagination__next" *ngIf="records.length > 0">
+                                    <a href="javascript:void(0)">
+                                        <small class="dis-page">Displaying {{pager.startIndex + 1}} to {{pager.endIndex + 1}} Of {{pager.totalItems}} Records</small>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+            </div>
+        </div>
+    
+    
+    </div>
+    <ng-template #deleteDataModal let-modal>
+        <div class="cri-modal-h modal-header">
+            <h4 class="cri-modal-titles modal-titles" id="modal-basic-title">Confirm</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline-danger btn-sm sm-icons" (click)="deleteData()">Yes</button>
+            <button class="btn btn-danger btn-sm" (click)="cancel()">No</button>
+        </div>
+    </ng-template>

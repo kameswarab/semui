@@ -1,0 +1,107 @@
+.scnro-list-span {
+    overflow-wrap: break-word;
+    font-size: 10px;
+}
+
+.br-1 {
+    border: 1px solid #c1c1c1;
+}
+.cd-breadcrumb {
+    margin: 0;
+    position: relative;
+    padding: 0px;
+}
+
+.cd-breadcrumb li {
+    display: inline-block;
+    width: 200px;
+    margin-right: 5px;
+}
+
+.cd-breadcrumb li a {
+    width: 100%;
+    padding: 5px 15px;
+}
+
+.cd-breadcrumb.triangle li a:hover {
+    text-decoration: none;
+}
+
+.cd-breadcrumb li > * {
+    /* single step */
+    display: inline-block;
+    font-size: 1.4rem;
+    color: #2c3f4c;
+}
+
+@media only screen and (min-width: 768px) {
+    .cd-breadcrumb li > * {
+        font-size: 1.6rem;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .cd-breadcrumb li:last-of-type {
+        margin-right: 0;
+    }
+
+    .cd-breadcrumb li > * {
+        position: relative;
+        padding: 0.3em;
+        color: #2c3f4c;
+        background-color: #ececec;
+        /* the border color is used to style its ::after pseudo-element */
+        border-color: #ececec;
+        font-size: 0.9rem;
+        padding-left: 0;
+    }
+
+    .cd-breadcrumb li.current > * {
+        /* selected step */
+        color: #ffffff;
+        background-color: #d90a36;
+        border-color: #d90a36;
+        font-style: normal;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        background: -webkit-linear-gradient(0deg, #f9486b 0, #d90a36 100%);
+        background: -moz-linear-gradient(90deg, #f9486b 0, #d90a36 100%);
+        background: linear-gradient(90deg, #f9486b 0, #d90a36 100%);
+        background-position: 50% 50%;
+    }
+
+    .cd-breadcrumb li:last-of-type > * {
+        padding-right: 1.6em;
+    }
+
+    .no-touch .cd-breadcrumb a:hover {
+        /* steps already visited */
+        color: #ffffff;
+        background-color: #2c3f4c;
+        border-color: #2c3f4c;
+    }
+    .custom-modal-class .modal-dialog {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+    }
+    .custom-modal-class .modal-body {
+        overflow: auto;
+    }
+    .custom-modal-class .modal-header {
+        padding: 10px 16px;
+    }
+}
+
+div.d3-tip {
+    line-height: 1;
+    font-weight: 100;
+    font-size: 12px;
+    padding: 5px;
+    background: #fff;
+    color: #375889;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 999;
+    border: 1px solid #999;
+}

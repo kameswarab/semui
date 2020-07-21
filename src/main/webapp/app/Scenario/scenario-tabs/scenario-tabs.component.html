@@ -1,0 +1,24 @@
+<div class="wizards mt-0">
+  <div class="steps p-2 mb-2">
+    <div *ngFor="let tab of tabsets; let i=index;let last = last; let first = first;" (click)="navigateTo(tab);" class="custom-control custom-radio custom-control-inline mr-0" [ngClass]="{'dot-label' : !last, 'last-step' : last}">
+      <input type="radio" id="customRadioInline_{{i}}" class="custom-control-input"  [checked]="status >= tab.status || selectedTab == tab.id" [disabled]="status  < tab.status || !status">
+      <label class="cus-active custom-control-label" for="customRadioInline_{{i}}" [ngClass]="{'check': status >= tab.status && selectedTab != tab.id}">{{tab.name}}</label>
+      <span *ngIf="!last" class="dotval" [ngClass]="{'dotval-1' : first}"></span>
+    </div>
+  </div>
+</div>
+<ng-template #changeValues let-modal>
+  <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+      <p>Do you want to save changes? please close this window and click on Save as draft</p>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success btn-sm" (click)="updatePopUp()">Close</button>
+      <button class="btn btn-light btn-sm" (click)="navigateToTab()">Proceed</button>
+  </div>
+</ng-template>

@@ -1,0 +1,298 @@
+
+  <div class="col-12 no-padding form-start">
+    <div class="cri-inner-container p-5">
+      <jhi-scenario-tabs selectedTab="1" [onChangeScreen] = "onChangeScreen" [status]="scenarioObj.status"></jhi-scenario-tabs>
+        <section>
+          <div class="form-main">
+            <div class="scenario-info">
+              <div class="row"> 
+                    <div class="col-md-12">
+                        <div class="form-row form-start">
+                            <div class="col-md-12">
+                              <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+                                <i class="fa-check"></i> {{displaySuccessMessage}}
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                            </div>
+                            <div class="col-md-12"> 
+                              <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                                <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                <div class="col-md-6 pr-0">  
+                  <div class="cri-sin-li-input form-group pl-0  mb-0">
+                    <input *ngIf="!(scenarioObj.id && !isNameEdit)" type="text" class="list-name " [(ngModel)]="scenarioObj.scenarioName" aria-describedby="emailHelp" placeholder="Untitled Scenario" id="sceName" minlength="1" maxlength="100">
+                    <label *ngIf="scenarioObj.id && !isNameEdit" class="list-name mr-3">{{scenarioObj.scenarioName}}</label>
+                    <p *ngIf="scenarioObj.id"> Created on <span>{{scenarioObj.createdDate | date:'dd MMM yyyy'}}</span> by <span>{{scenarioObj.createdBy}}</span></p>
+                    <p *ngIf="scenarioObj.id"> Last Modified On <span>{{scenarioObj.lastModifiedDate | date:'dd MMM yyyy'}}</span> by <span>{{scenarioObj.lastModifiedBy}}</span></p>
+                  </div>
+                </div>
+
+                <div class="col-md-1 pl-0 editpencil"> 
+                 <span class="img-icons" (click)="isNameEdit = true"><img  src="../../../content/images/svg/edit.png" alt="sem-icon"></span>
+                   <div class="tooltipRight info-icon">
+                      <div class="right">
+                          <div class="text-content">
+                              <h3>SCENARIO NAME</h3>
+                              <p> We noticed you haven’t changed the scenario name. Would you like to change it? </p>
+                            <!--  <button class="btn btn-outline cri-btn-outline"> Dismiss </button> --> 
+                           <button class="btn btn-secondary" (click)="editScenarioName()"> Yes </button> 
+                          </div>
+                          <i></i>
+                      </div>
+                  </div>            
+                </div>
+
+
+              </div>
+            </div> 
+          </div> 
+
+          <div class="form-details mb-4">
+            <h4>DEFINITION</h4>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label class="cri-label"> CLASSIFICATION <span class="text-danger">*</span></label>
+                <div class="btn-group btn-group-toggle" id="classification" data-toggle="buttons" tabindex="0">
+                  <label class="btn btn-secondary" (change) = "change('CLASSIFICATION');" id="classification_{{master.label}}" [ngClass]="{'active': master.value == scenarioObj.classification}" *ngFor="let master of classificationList">
+                    <input type="radio" name="options_classification" [value]="master.value" autocomplete="off" checked  [(ngModel)]="scenarioObj.classification" [disabled]="scenarioObj.status != null && possibleStatuses.indexOf(scenarioObj.status) == -1">
+                    {{master.label}}
+                  </label>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="cri-label" for="inputState">SUB CLASSIFICATION <span class="text-danger" *ngIf="scenarioObj.classification != scenarioAdhoc">* </span></label>
+               <div class="select-wrapper" tabindex="0" id="subclassification">
+                <ng-select [items]="subClassificationListTemp"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  name = "subClassification"
+                  placeholder="Select Sub Classification"
+                  (change) = "change('SUB_CLASSIFICATION');"
+                  [disabled]="scenarioObj.status != null && possibleStatuses.indexOf(scenarioObj.status) == -1"
+                  [(ngModel)]="scenarioObj.subClassification">
+                </ng-select>
+              </div>
+                <!-- <select class="form-control " (change) = "change('SUB_CLASSIFICATION');" [(ngModel)]="scenarioObj.subClassification" [disabled]="scenarioObj.status != null && possibleStatuses.indexOf(scenarioObj.status) == -1">
+                  <option value=null>Select</option>
+                  <option *ngFor="let master of subClassificationListTemp" [ngValue]="master.value">{{master.label}}</option>
+                </select> -->
+              </div>
+              <div class="form-group col-md-4">
+                <label class="cri-label"> SEVERITY <span class="text-danger" *ngIf="scenarioObj.classification != scenarioAdhoc">*</span></label>
+                <div class="btn-group btn-group-toggle" id="severity" data-toggle="buttons" tabindex="0">
+                  <label class="btn btn btn-secondary" id="severity_{{master.label}}" (change) = "change('SEVERITY');" [ngClass]="{'active': master.value == scenarioObj.severity}" *ngFor="let master of severityList">
+                    <input type="radio" name="options_severity" [value]="master.value" autocomplete="off" [(ngModel)]="scenarioObj.severity" [disabled]="scenarioObj.status != null && possibleStatuses.indexOf(scenarioObj.status) == -1">
+                    {{master.label}} </label>
+                </div>
+              </div>
+            </div><!--first row-end-->
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label class="cri-label"> SCENARIO TYPE <span class="text-danger"  *ngIf="scenarioObj.classification != scenarioAdhoc">* </span></label>
+                <div class="btn-group btn-group-toggle" id="scenarioType" data-toggle="buttons" tabindex="0">
+                  <label class="btn btn-secondary" id="scenarioType_{{master.label}}" (change) = "change('SCENARIO_TYPE');changeScenrioType('NEW');" [ngClass]="{'active': master.value == scenarioObj.type}" *ngFor="let master of scenarioTypeList">
+                    <input type="radio" name="options_scenario" [value]="master.value" autocomplete="off" checked  [(ngModel)]="scenarioObj.type" [disabled]="scenarioObj.status != null && possibleStatuses.indexOf(scenarioObj.status) == -1">
+                    {{master.label}}
+                  </label>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="cri-label" for="inputState">ESTIMATION FREQUENCY &nbsp; <span class="field-mandatory">*</span></label>
+                <div class="select-wrapper" id="estimationFrequency">
+                <ng-select [items]="frequencyList"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  name = "returnHorizon"
+                  (change) = "change('ESTIMATION_FREQUENCY');"
+                  placeholder="Select Estimation Frequency"
+                  [(ngModel)]="scenarioObj.returnHorizon"
+                  >
+                </ng-select>
+                </div>
+              </div>
+
+              <div class="form-group col-md-4" *ngIf="scenarioObj.type=='2'">
+                <label class="cri-label" for="projects">NO OF PROJECTIONS</label>
+                <input type="number" class="form-control" id="projections" (keyup)="changeProjectionNo($event)" placeholder="No Of Projection" min="2" max="20" placeholder="Enter 2 To 20" name="projectionPeriod" [(ngModel)]="scenarioObj.projectionPeriod" [disabled]="scenarioObj.status != null && possibleStatuses.indexOf(scenarioObj.status) == -1"/> 
+              </div>
+            </div><!--2nd row-end-->
+            <div class="form-row">
+              <!-- <div class="form-group col-md-4">
+                  <label for="staticEmail" class="col-sm-12 col-form-label form-control-sm"> Year <span class="text-danger" *ngIf="scenarioObj.classification != scenarioAdhoc">*</span></label>
+                  <year-picker [data] = "scenarioObj.year" (valueChange)="yearChange($event);"></year-picker>
+                </div>
+                <div class="form-group col-md-4" *ngIf="scenarioObj.classification != scenarioRegualtory">
+                  <label for="staticEmail" class="col-sm-12 col-form-label form-control-sm"> Quarter <span class="text-danger" *ngIf="scenarioObj.classification == scenarioInternal">*</span></label>
+                  <select class="form-control mb-0 form-control-sm" (change) = "change('QUARTER');" [(ngModel)]="scenarioObj.quarter">
+                    <option value=null>Select</option>
+                    <option *ngFor="let master of quarterList" [ngValue]="master.value">{{master.label}}</option>
+                  </select>
+                </div>
+              </div> -->
+              <div class="form-group col-md-4">
+                <label class="cri-label" for="inputState">BUSINESS OWNER(S)  <span class="text-danger" *ngIf="scenarioObj.classification != scenarioAdhoc">*</span></label>
+                <div id="businessOwners" class="mb-4">
+                <custom-multi-select
+                  [items] = "businessUserList"
+                  [multiple]="true"
+                  [inputName] = "'Business Owners'"
+                  [selectedItems] = "scenarioObj.businessUsers"
+                  [searchForItems] = "true"
+                  [searchForSelectedItems] = "true"
+                  (change) = "changeValb()"
+                  (selectChange) = "scenarioObj.businessUsers = $event">
+                </custom-multi-select>
+                </div>
+                <label class="title mb-2" for="inputState">DESIGNER(S) <span class="text-danger">*</span></label>
+                <div id="designers">
+                <custom-multi-select
+                  [items] = "designerList"
+                  [multiple]="true"
+                  [inputName] = "'Designers'"
+                  [selectedItems] = "scenarioObj.designerUsers"
+                  [searchForItems] = "true"
+                  [searchForSelectedItems] = "true"
+                  (change) = "changeVald()"
+                  (selectChange) = "scenarioObj.designerUsers = $event">
+                </custom-multi-select>
+              </div>
+              </div>
+              <div class="form-group  col-md-8">
+                <label class="cri-label" for="exampleFormControlTextarea1">DESCRIPTION <span class="text-danger">*</span></label>
+                <textarea [(ngModel)]="scenarioObj.description"  (change) = "changedValue()" name="description" class="form-control textarea-sc"  rows="7" maxlength="4000" id="comment" placeholder="Description Of Scenario " style="resize: none;"></textarea>
+              </div>
+            </div><!--3rd row-end-->
+            <!--configuration-->
+            <div class="dotted-divider"></div>
+            <h4 > CONFIGURATION</h4>
+            <div class="form-row mb-3 mt-3">
+              <div class="col">
+                <label class="cri-label" for="inputState">START DATE<span class="text-danger">*</span></label>
+                <div class="input-group" id="startDate">
+                  <input class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="scenarioObj.startDate"
+                    ngbDatepicker [minDate]="minDate" [maxDate]="maxDate" #d1="ngbDatepicker"  (change) = "changedValue()" readonly="true" (click)="d1.toggle()">
+                  <div class="input-group-prepend ">
+                    <div class="input-group-text" (click)="d1.toggle()">
+                        <img src="../../../content/images/svg/clalender2.png" alt="sem-icons">
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <label class="cri-label" for="inputState">END DATE <span class="text-danger">*</span></label>
+                <div class="input-group" id="endDate">
+                    <input class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="scenarioObj.endDate"
+                      ngbDatepicker [minDate]="minDate" [maxDate]="maxDate" #d2="ngbDatepicker" readonly="true" (click)="d2.toggle()" (change) = "changedValue()">
+                    <div class="input-group-prepend ">
+                      <div class="input-group-text" (click)="d2.toggle()">
+                        <img src="../../../content/images/svg/clalender2.png" alt="sem-icons">
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <!-- <div class="col">
+                <small class="cri-label" for="inputState">SHOCK DATE</small>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></div>
+                    </div>
+                  </div>
+              </div> -->
+              <div class="col">
+                <label class="cri-label" for="inputState">OVERLAPPING <span class="text-danger">*</span></label>
+                <div class="select-wrapper" id="overlapping">
+                    <ng-select [items]="overlappingList"
+                    bindLabel="label"
+                    bindValue="value"
+                    appendTo="body"
+                    (click) = "changedValue()"
+                    [clearable]="false"
+                    [(ngModel)]="scenarioObj.overlapping">
+                  </ng-select>
+              </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="cri-label" for="inputState">SHOCK TEMPLATE <span class="text-danger">*</span></label>
+                <div class="select-wrapper" id="shockTemplate"> 
+                <ng-select [items]="shockTemplateList"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  name = "shockTemplate"
+                  (click) = "getScenarioConfigureMasterData('Y')"
+                  placeholder="Select Shock Template"
+                  [clearable]="false"
+                  [(ngModel)]="scenarioObj.shockTemplate">
+                </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="dotted-divider"></div>
+        <!--footer buttons end-->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <div class="next-pre mb-3 mt-4 ">
+                    <button type="button" id="discard" class="btn btn-outline cri-btn-outline" (click) = "navigateTo('/scenario')">
+                      <img src="../../../content/images/svg/delete.png" alt="sem-icons" class="discard-img">
+                       DISCARD</button>
+                      <button *ngIf="userCanAccess" id="saveExit" type="button" class="btn btn-outline cri-btn-outline" (click) = "saveScenario('/scenario')">
+                            <img src="../../../content/images/svg/save.png" alt="sem-icons">
+                        SAVE & EXIT
+                      </button>
+                      <button *ngIf="userCanAccess" id="saveExit" type="button" class="btn btn-outline cri-btn-outline" (click) = "saveScenario('')">
+                        <img src="../../../content/images/svg/savedraft.png" alt="sem-icons">
+                    SAVE AS DRAFT
+                  </button>
+                  </div>
+                </div>
+                <div class="form-group col-md-6 ">
+                  <div class="next-pre mb-3 mt-4 text-right">
+                    <!-- <button type="button" class="cri-btn btn btn-outline-danger mr-3"><i  aria-hidden="true" class="fa fa-long-arrow-left" (click) = "navigateTo(path)"></i>&nbsp;&nbsp;&nbsp;PREVIOUS</button> -->
+                    <button *ngIf="userCanAccess" id="next" type="button" (click)="saveScenario('scenario/selectRiskFactor');" class="btn btn-danger">NEXT 
+                      <img src="../../../content/images/svg/next.png" alt="sem-icons">
+                       </button>
+                       <button *ngIf="!userCanAccess" id="next1" type="button" (click)="navigateTo('scenario/selectRiskFactor');" class="btn btn-danger">NEXT
+                        <img src="../../../content/images/svg/next.png" alt="sem-icons">
+                      </button>
+                  </div>
+                </div>
+              </div><!--first row-end-->
+            </div>
+        </div>
+      </div>
+      <!-- footer buttons end--> 
+    </div><!-- step container  end--> 
+  </div>
+  <ng-template #updateShockValues let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+            <span aria-hidden="true">&times;</span>
+          </button>
+    </div>
+    <div class="modal-body">
+        <p>Shock Template values are updated would you like to update?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-sm" (click)="updateShockTemplate('scenario/selectRiskFactor')">Yes</button>
+        <button class="btn btn-light btn-sm" (click)="closeShockTemplate('N')">No</button>
+    </div>
+</ng-template>
+
+      

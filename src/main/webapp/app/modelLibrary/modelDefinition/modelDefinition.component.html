@@ -1,0 +1,159 @@
+<div class="cri-inner-container">
+  <div class="col-md-12">
+    <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+      <i class="fa-check"></i> {{displaySuccessMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+      <i class="fa-exclamation-triangle-icon" aria-hidden="true"></i> {{displayFailureMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+
+  <model-library-tabs [selectedTab]="1" [status]="modelObj.status"></model-library-tabs>
+
+
+  <div class="scenario-info ">
+    <div class="row">
+      <div class="col-md-6 pr-0">
+        <div class="cri-sin-li-input form-group pl-0  mb-0">
+          <input type="text" class=" list-name" [(ngModel)]="modelObj.modelName" aria-describedby="emailHelp"
+            placeholder="Untitled Model" minlength="1" maxlength="100" id="model_Name">
+          <p *ngIf="modelObj.id"> Created on <span>{{modelObj.createdDate | date:'dd MMM yyyy'}}</span> by
+            <span>{{modelObj.createdBy}}</span></p>
+          <p *ngIf="modelObj.id"> Last Modified On <span>{{modelObj.lastModifiedDate | date:'dd MMM yyyy'}}</span>
+            by <span>{{modelObj.lastModifiedBy}}</span></p>
+        </div>
+      </div>
+      <div class="col-md-1 pl-0 editpencil ">
+        <!-- <svg *ngIf="modelObj.id" width="20" height="20" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M2.5 14.3749V17.4999H5.625L14.8417 8.28322L11.7167 5.15822L2.5 14.3749ZM17.2583 5.86655C17.5833 5.54155 17.5833 5.01655 17.2583 4.69155L15.3083 2.74155C14.9833 2.41655 14.4583 2.41655 14.1333 2.74155L12.6083 4.26655L15.7333 7.39155L17.2583 5.86655Z"
+            fill="#375889" />
+        </svg> -->
+        <img *ngIf="modelObj.id" src="../../../content/images/svg/edit.png" alt="semicons">
+        <!-- <i *ngIf="modelObj.id" class="fa fa-pencil mr-3" aria-hidden="true"></i> -->
+        <div class="tooltipRight info-icon">
+           <!-- <div class="right" *ngIf="criPopover"> -->
+          <div class="right">
+            <div class="text-content" id="modelName">
+              <h5>MODEL NAME</h5>
+              <P>We noticed you haven’t changed the model name. Would you like to change it?</P>
+              <!--  <button class="btn btn-outline cri-btn-outline"> Dismiss </button> -->
+              <button class="btn btn-secondary" (click)="editModelName()"> Yes </button>
+            </div>
+            <i></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div *ngIf="criPopover" class=" popover-cri p-4">
+            <div class="arrow-left"></div>
+            <h5>MODEL NAME</h5>
+            <P>Lorem Ipsum is simply dummy text of the printing and typesetting industry ...
+              Lorem Ipsum is simply ...
+            </P>
+            <div class="cri-btn-popover mt-2">
+              <button type="button" class="btn btn-outline cri-btn-outline btn-sm" (click)="criPopover=!criPopover">DISMISS</button>
+            </div>
+          </div> -->
+
+
+  <!--title row end-->
+  <!--  row start-->
+  <form>
+    <div class="form-row mt-5">
+      <div class="form-group col-md-4">
+        <label for="exampleFormControlSelect1">MODEL OWNER <span class="text-danger">*</span></label>
+        <!-- <div class="select-wrapper">
+          <ng-select [items]="businessUsersList" bindLabel="label" bindValue="value" appendTo="body"
+            name="businessUsers" [multiple]="true" placeholder="Select Model Owner"
+            [(ngModel)]="modelObj.businessUsers">
+          </ng-select>
+        </div> -->
+        <div class="mb-4" id="modelOwner">
+        <custom-multi-select
+        [items] = "businessUsersList"
+        [multiple]="true"
+        [inputName] = "'Business Owners'"
+        [selectedItems] = "modelObj.businessUsers"
+        bindLabel="label" 
+        bindValue="value"
+        [searchForItems] = "true"
+        [searchForSelectedItems] = "true"
+        (selectChange) = "modelObj.businessUsers = $event">
+      </custom-multi-select>
+    </div>
+
+        <label for="exampleFormControlSelect1">MODEL DEVELOPER <span class="text-danger">*</span></label>
+        <!-- <div class="select-wrapper">
+          <ng-select [items]="designerList" bindLabel="label" bindValue="value" appendTo="body" name="designerUsers"
+            [multiple]="true" placeholder="Select Model Developer" [(ngModel)]="modelObj.designerUsers">
+          </ng-select>
+        </div> -->
+        <div class="select-value" id="modelDeveloper">
+        <custom-multi-select
+        [items] = "designerList"
+        [multiple]="true"
+        [inputName] = "'Developers'"
+        [selectedItems] = "modelObj.designerUsers"
+        bindLabel="label" 
+        bindValue="value"
+        [searchForItems] = "true"
+        [searchForSelectedItems] = "true"
+        (selectChange) = "modelObj.designerUsers = $event">
+      </custom-multi-select>
+      </div>
+      </div>
+      <div class="form-group col-md-8">
+        <label for="example1">DESCRIPTION <span class="text-danger"> *</span></label>
+        <textarea class="form-control mr-textarea" [(ngModel)]="modelObj.description" name="description" rows="6"
+          maxlength="4000" id="comment" placeholder="Description Of Model Definition " style="resize: none;"></textarea>
+      </div>
+
+    </div>
+    <!--form-row end-->
+  </form>
+
+  <div class="dotted-divider"></div>
+  <!--footer buttons end-->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <div class="next-pre mb-3 mt-4 ">
+              <button type="button" id="discard" class="btn btn-outline cri-btn-outline" (click)="cancel();">
+                  <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+              <button *ngIf="userCanAccess" type="button" id="saveExit" class="btn btn-outline cri-btn-outline"
+                (click)="saveDataSets('model');">
+                <img src="../../../content/images/svg/save.png" alt="semicons">SAVE & EXIT</button>
+            </div>
+          </div>
+          <div class="form-group col-md-6 ">
+            <div class="next-pre mb-3 mt-4 text-right">
+              <!--                  <button type="button" class="cri-btn btn btn-outline-danger mr-3"><i  aria-hidden="true" class="fa fa-long-arrow-left"></i>&nbsp;&nbsp;&nbsp;PREVIOUS</button> -->
+              <button *ngIf="userCanAccess" type="button" id="saveNext" class="cri-btn btn btn-outline-secondary btn-danger"
+                (click)="saveDataSets('model/modelConfig');">NEXT &nbsp;&nbsp;<img src="../../../content/images/svg/next.png" alt="semicons"></button>
+              <button *ngIf="!userCanAccess" type="button" id="onlyNext" class="cri-btn btn btn-outline-secondary btn-danger"
+                (click)="navigateTo('model/modelConfig');">NEXT &nbsp;&nbsp;&nbsp; <img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+            </div>
+          </div>
+        </div>
+        <!--first row-end-->
+      </div>
+    </div>
+  </div>
+  <!-- footer buttons end-->
+
+</div>
+<!--cri-inner-container-->

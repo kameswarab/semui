@@ -1,0 +1,84 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+
+.hipster {
+    display: inline-block;
+    width: 347px;
+    height: 497px;
+    background: url('../../content/images/jhipster_family_member_0.svg') no-repeat center top;
+    background-size: contain;
+}
+
+/* wait autoprefixer update to allow simple generation of high pixel density media query */
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (-moz-min-device-pixel-ratio: 2),
+    only screen and (-o-min-device-pixel-ratio: 2/1),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+    .hipster {
+        background: url('../../content/images/jhipster_family_member_0.svg') no-repeat center top;
+        background-size: contain;
+    }
+}
+
+section.slide-1 {
+    background-color: #a6a6a6;
+    color: #fff;
+}
+h1.text-center {
+    font-size: 2rem;
+}
+.bg-dark {
+    background-color: #324042 !important;
+}
+.jumbotron {
+    padding: 3rem 1rem;
+    margin-bottom: 0.5rem;
+    background-color: #a6a6a6 !important;
+    border-radius: 0.3rem;
+}
+label.mxmum {
+    color: orange;
+}
+
+.form-group.fg {
+    margin-bottom: 0rem !important;
+}
+.card-body.create-cb {
+    padding: 1rem;
+    background-color: #cccccc2b;
+}
+span.form-check.fc {
+    display: inline-block !important;
+    margin-left: 25px;
+}
+label.col-sm-3.col-form-label.fl {
+    text-align: right;
+}
+.pull-right.mt-2.mb-2 {
+    float: right;
+}
+.btngrp {
+    padding-top: 24px !important;
+    float: right;
+}
+
+/*teja*/
+
+.btn-add {
+    background-color: white;
+    padding: 0.6rem 2.4rem;
+    cursor: pointer;
+}
+
+.btn-remove {
+    padding: 0.6rem 2.4rem !important;
+    border: 0.05rem solid #d6002a;
+    cursor: pointer;
+}
+
+/* .ng-invalid[required],
+.ng-invalid.required {
+    border-left: 5px solid red;
+} */

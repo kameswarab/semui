@@ -1,0 +1,1031 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+
+.stepNumber {
+    background: #bbbbbb;
+    padding: 4px;
+    padding-left: 6px;
+    font-size: 12px;
+    margin-right: 10px;
+    color: #fff;
+}
+
+.review-div-list .td-data-center {
+    text-align: center;
+}
+
+.review-div-list .td-data-center img {
+    width: 50px;
+    height: 25px;
+}
+
+.review-div-list {
+    overflow: auto;
+}
+
+.review-div-list ul {
+    margin: 6px 3% 0 2%;
+    padding: 0;
+    width: 95%;
+}
+
+.review-div-list ul li span {
+    font-size: 11px;
+    font-weight: 100;
+    overflow-wrap: break-word;
+}
+
+.review-div-list ul li {
+    background-color: #c1c1c1;
+    display: block;
+    margin-top: 5px;
+    position: relative;
+    padding: 0px 3px;
+    cursor: pointer;
+}
+
+.review-div-list ul li.active {
+    background-color: #d90a36;
+    color: #fff;
+}
+
+.review-div-list ul li.active:after {
+    border-bottom: 12px solid #ffffff;
+    border-left: 7px solid #d90a36;
+    border-top: 12px solid #ffffff;
+    content: '';
+    height: 0;
+    margin-top: -12px;
+    position: absolute;
+    right: -7px;
+    top: 50%;
+    width: 0;
+}
+
+.review-div-list tr .back-blue {
+    background: #5070b3;
+    border-bottom-width: 2px;
+    color: #fff;
+}
+
+.review-div-list tr .width-150 {
+    width: 150px;
+}
+
+.review-div-list th,
+.review-div-list td {
+    white-space: normal;
+}
+
+.custom-modal-class .modal-dialog {
+    min-height: 80%;
+    max-height: 100%;
+    width: 80%;
+    max-width: 100%;
+}
+
+.custom-modal-class .modal-body {
+    overflow: auto;
+}
+
+.custom-modal-class .modal-header {
+    padding: 10px 16px;
+}
+
+.table td .text-center {
+    text-align: center;
+}
+
+.table td {
+    padding: 2px 2px;
+    vertical-align: middle;
+}
+
+.card {
+    background-color: #f1f1f1;
+}
+
+.card-header {
+    padding: 0px !important;
+}
+.card-header .btn {
+    width: 100% !important;
+    color: #696979 !important;
+    font-size: 13px !important;
+    padding-left: 0px;
+}
+
+.card-body {
+    font-size: 13px !important;
+    padding: 4px 20px !important;
+}
+
+.stepNumber.active {
+    background: #91a9ce;
+}
+.btn-danger {
+    color: #fff !important;
+}
+
+/*!
+ * SmartWizard v4.3.x
+ * jQuery Wizard Plugin
+ * http://www.techlaboratory.net/smartwizard
+ *
+ * Created by Dipu Raj
+ * http://dipuraj.me
+ *
+ * Licensed under the terms of MIT License
+ * https://github.com/techlab/SmartWizard/blob/master/LICENSE
+ */
+/* SmartWizard Theme: Arrows */
+.sw-theme-arrows {
+    border: 1px solid #ddd;
+}
+
+.sw-theme-arrows > .sw-container {
+    min-height: 200px;
+}
+
+.sw-theme-arrows .step-content {
+    padding: 10px;
+    border: 0px solid #d4d4d4;
+    background-color: #fff;
+    text-align: left;
+}
+
+.sw-theme-arrows .sw-toolbar {
+    padding: 10px;
+    margin-bottom: 0 !important;
+}
+
+.sw-theme-arrows > ul.step-anchor {
+    border: 0;
+    border-bottom: 1px solid #ddd;
+    padding: 0px;
+    background: #f5f5f5;
+    border-radius: 0;
+    border-top-right-radius: 5px;
+    list-style: none;
+    overflow: hidden;
+}
+
+.sw-theme-arrows > ul.step-anchor li + li:before {
+    padding: 0;
+}
+
+.sw-theme-arrows > ul.step-anchor > li {
+    font-size: 14px;
+}
+
+.sw-theme-arrows > ul.step-anchor > li > a,
+.sw-theme-arrows > ul.step-anchor > li > a:hover {
+    color: #bbb;
+    text-decoration: none;
+    padding: 10px 0 10px 45px;
+    position: relative;
+    display: block;
+    border: 0 !important;
+    border-radius: 0;
+    outline-style: none;
+    background: #f5f5f5;
+}
+
+.sw-theme-arrows > ul.step-anchor > li > a:after {
+    content: ' ';
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #f5f5f5;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+
+.sw-theme-arrows > ul.step-anchor > li > a:before {
+    content: ' ';
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #ddd;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
+.sw-theme-arrows > ul.step-anchor > li:first-child > a {
+    padding-left: 15px;
+}
+
+.sw-theme-arrows > ul.step-anchor > li > a:hover {
+    color: #bbb;
+    text-decoration: none;
+    outline-style: none;
+    background: #f5f5f5;
+    border-color: #f5f5f5;
+}
+
+.sw-theme-arrows > ul.step-anchor > li > a:hover:after {
+    border-left-color: #f5f5f5;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.clickable > a:hover {
+    color: #4285f4 !important;
+    background: #46b8da !important;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.active > a {
+    border-color: #d90a36 !important;
+    color: #fff !important;
+    background: #d90a36 !important;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.active > a:after {
+    border-left: 30px solid #d90a36 !important;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.done > a {
+    border-color: #b1dfbb !important;
+    /*  #5cb85c */
+    background: #f1f1f1 !important;
+    color: #777;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.done > a:after {
+    border-left: 30px solid #f1f1f1;
+    /* c3e6cb */
+}
+
+.sw-theme-arrows > ul.step-anchor > li.danger > a {
+    border-color: #d9534f !important;
+    color: #fff !important;
+    background: #d9534f !important;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.danger > a:after {
+    border-left: 30px solid #d9534f !important;
+}
+
+.sw-theme-arrows > ul.step-anchor > li.disabled > a,
+.sw-theme-arrows > ul.step-anchor > li.disabled > a:hover {
+    color: #eee !important;
+}
+
+/* Responsive CSS */
+@media screen and (max-width: 768px) {
+    .sw-theme-arrows > ul.step-anchor {
+        border: 0;
+        background: #ddd !important;
+    }
+
+    .sw-theme-arrows > .nav-tabs > li {
+        float: none !important;
+        margin-bottom: 0;
+    }
+
+    .sw-theme-arrows > ul.step-anchor > li > a,
+    .sw-theme-arrows > ul.step-anchor > li > a:hover {
+        padding-left: 15px;
+        margin-right: 0;
+        margin-bottom: 1px;
+    }
+
+    .sw-theme-arrows > ul.step-anchor > li > a:after,
+    .sw-theme-arrows > ul.step-anchor > li > a:before {
+        display: none;
+    }
+}
+
+/* Loader Custom Style */
+.sw-theme-arrows::before {
+    border: 10px solid #f3f3f3;
+    border-top: 10px solid #5cb85c;
+}
+.nav-tabs {
+    position: relative;
+}
+.btn-review {
+    position: absolute;
+    right: 5.3rem;
+    top: 0.3rem;
+}
+.btn-secondary {
+    color: #fff !important;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+.btn-save {
+    position: absolute;
+    right: 13.3rem;
+    top: 0.3rem;
+}
+.btn-back {
+    position: absolute;
+    right: 1.3rem;
+    top: 0.3rem;
+}
+.risk-factor-select {
+    height: 26px;
+    padding: 0px;
+    font-size: 12px;
+    background: none;
+    border: none;
+}
+.risk-sel-asset-filter {
+    margin-right: 5px;
+}
+label.risk-sel-asset-filter {
+    border-radius: 0.2rem;
+}
+.risk-factor-mul-sel {
+    width: 100%;
+    overflow-y: auto;
+    height: 200px;
+}
+.risk-factor-mul-sel option {
+    border-bottom: 1px solid #bdbdbd;
+    margin: 4px 0px;
+    font-size: 13px;
+}
+.bg-filter {
+    background: #f0f0f5;
+    max-height: 165px;
+    overflow-y: auto;
+}
+
+.risk-factor-sets-div {
+    background: #fff;
+    border: 1px solid #b9b9b9;
+    border-radius: 3px;
+    min-height: 200px;
+    overflow-y: auto;
+}
+.risk-factor-sets-div-div {
+    background: #6c757d;
+    color: #fff;
+}
+.risk-factor-sets-div ul {
+    padding: 0px;
+    width: 100%;
+}
+.risk-factor-sets-div ul li {
+    list-style: none;
+    background: #ebedef;
+    border: 1px solid #b9b9b9;
+    margin: 3px;
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.multiselect-dropdown-filters {
+    font-size: 12px;
+}
+.dropdown-down {
+    border-top: 7px solid #adadad !important;
+    border-left: 6px solid transparent !important;
+    border-right: 6px solid transparent !important;
+}
+.filters-list-div {
+    font-size: 13px;
+}
+h3 span.scn-name {
+    font-size: 16px;
+    color: #00f;
+}
+
+.cri-inner-container {
+    padding: 1rem;
+    background: #fff;
+    border-top: none;
+    margin-bottom: 20px;
+    box-shadow: 0px 2px 4px rgba(126, 142, 177, 0.12);
+    border: 1px solid #dde0e8;
+}
+/* 
+.cri-inner-container .form-row > .col,
+.cri-inner-container .form-row > [class*='col-'] {
+    padding-left: 15px;
+    padding-right: 15px;
+} */
+
+.heading-border {
+    padding-bottom: 0.5rem;
+}
+
+.shock-risk-factor,
+.shock-risk-factor .btn {
+    font-size: 0.85rem;
+}
+
+.shock-risk-factor p {
+    margin-bottom: 0.5rem;
+}
+
+.card-header .h6 {
+    font-size: 0.9rem;
+}
+
+.card-body .bg-info {
+    background: #818bc3 !important;
+}
+
+.card-body .bg-warning {
+    background: #b18686 !important;
+}
+
+.card-body .bg-danger {
+    background: #85acc3 !important;
+}
+
+.card-body .bg-success {
+    background: #9ca0b9 !important;
+}
+
+.card-body .bg-primary {
+    background: #a97a7a !important;
+}
+
+.contentBox .accordion .card-body {
+    background-color: rgba(0, 0, 0, 0.03);
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-top: none;
+}
+
+.card .card-header {
+    font-size: 0.8rem;
+    padding: 0px 0px;
+    background: transparent;
+}
+
+.card-header .table thead th {
+    padding: 0;
+    font-weight: normal;
+    font-size: 0.8rem;
+}
+
+.card-body tbody td,
+.card-body .table thead th {
+    font-size: 0.8rem;
+}
+
+.progress {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    font-size: 0.75rem;
+    background-color: #fff;
+    border-radius: 0rem;
+}
+
+.progress-bar {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #4e73df;
+    -webkit-transition: width 0.6s ease;
+    transition: width 0.6s ease;
+    font-size: 0.7rem;
+}
+
+.clone-risk-factor,
+.risk-factor-set {
+    box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out;
+    transition-delay: 0.03s;
+    transform: translateZ(0);
+    margin: 1.2rem 0;
+    overflow: hidden;
+    padding: 1rem;
+    border: 1px solid #d5daff;
+    -webkit-box-shadow: 0 1px 6px -1px rgba(108, 128, 202, 0.15);
+    -moz-box-shadow: 0 1px 6px -1px rgba(108, 128, 202, 0.15);
+    box-shadow: 0 1px 6px -1px rgba(108, 128, 202, 0.15);
+}
+
+.clone-risk-factor:hover,
+.risk-factor-set:hover {
+    transform: translate(0, -4px);
+}
+
+.clone-risk-factor p,
+.risk-factor-set p {
+    margin: 0;
+    font-size: 1rem;
+    padding-top: 0.7rem;
+    color: #000;
+    font-weight: bold;
+}
+
+a .clone-risk-factor,
+a .risk-factor-set {
+    color: #6d6d6d;
+}
+
+.risk-factor-title .btn {
+    right: 0;
+    bottom: 0.2rem;
+    position: relative;
+}
+
+.clone-risk-factor .fas,
+.risk-factor-set .fas {
+    font-size: 2rem;
+    float: left;
+    text-align: center;
+    color: #ffffff;
+    padding: 10px;
+    margin-right: 1rem;
+    background: #929ad0;
+    -webkit-box-shadow: 0px 9px 19px -9px rgb(146, 154, 208);
+    -moz-box-shadow: 0px 9px 19px -9px rgba(17, 178, 198, 0.65);
+    box-shadow: 0px 9px 19px -9px rgb(146, 154, 208);
+}
+
+.horizon-divider {
+    display: block;
+    text-align: center;
+    position: relative;
+    margin: 3rem 0;
+}
+
+.horizon-divider span {
+    background: #e7e8e8;
+    padding: 0.6rem;
+    color: #000;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    position: relative;
+    z-index: 9;
+}
+
+.horizon-divider:before {
+    height: 1px;
+    width: 48%;
+    background: #e4e4e4;
+    position: absolute;
+    content: '';
+    left: 0;
+    top: 50%;
+    z-index: 0;
+}
+
+.horizon-divider:after {
+    height: 1px;
+    width: 48%;
+    background: #e4e4e4;
+    position: absolute;
+    content: '';
+    right: 0;
+    top: 50%;
+    z-index: 0;
+}
+
+/*Table show hide CSS */
+#risk-factor-table .progress-bar-1 {
+    background: #74b9ff;
+}
+
+#risk-factor-table .progress-bar-2 {
+    background: #4cf3ef;
+}
+
+#risk-factor-table .progress-bar-3 {
+    background: #ff7675;
+}
+
+/*Table show hide CSS https://jsfiddle.net/KyleMit/rr96p4vv/ */
+.table-hideable th {
+    white-space: nowrap;
+}
+
+.table-hideable .hide-column.float-right {
+    float: none !important;
+}
+
+.table-hideable td,
+.table-hideable th {
+    transition: width 0.5s, margin 0.5s;
+}
+
+.btn-condensed.btn-condensed {
+    padding: 0 5px;
+    box-shadow: none;
+}
+
+.table-hideable {
+    overflow: auto;
+}
+
+.hide-col {
+    width: 0px !important;
+    height: 0px !important;
+    display: block !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.thead-light .hide-column .fas {
+    color: #b0b3b5;
+    font-size: 0.8rem;
+}
+
+.risk-factor-selected {
+    font-size: 1rem;
+}
+
+.cri-inner-container .btn-group.btn-group-toggle {
+    width: 100%;
+}
+
+ng-multiselect-dropdown .dropdown-down {
+    border-top: 8px solid #adadad !important;
+    border-left: 5px solid transparent !important;
+    border-right: 5px solid transparent !important;
+}
+
+.cd-breadcrumb,
+.cd-multi-steps {
+    padding: 0.5em 1em;
+    margin: 0;
+    background-color: #edeff0;
+    border-radius: 0.25em;
+    position: relative;
+    top: 0.25rem;
+}
+
+.cd-breadcrumb.triangle li a:hover {
+    text-decoration: none;
+}
+.cd-breadcrumb .fas {
+    color: #ffffff;
+}
+.cd-breadcrumb:after,
+.cd-multi-steps:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.cd-breadcrumb li,
+.cd-multi-steps li {
+    display: inline-block;
+    /* float: left; */
+    margin: 0.5em 0;
+}
+
+.cd-breadcrumb li::after,
+.cd-multi-steps li::after {
+    /* this is the separator between items */
+    display: inline-block;
+    content: '\00bb';
+    margin: 0 0.6em;
+    color: #959fa5;
+}
+
+.cd-breadcrumb li > *,
+.cd-multi-steps li > * {
+    /* single step */
+    display: inline-block;
+    font-size: 1.4rem;
+    color: #2c3f4c;
+}
+
+.cd-breadcrumb.custom-icons li > *::before,
+.cd-multi-steps.custom-icons li > *::before {
+    /* add a custom icon before each item */
+    content: '';
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    margin-right: 0.4em;
+    margin-top: -2px;
+    vertical-align: middle;
+}
+
+.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(2) > *::before,
+.cd-multi-steps.custom-icons li:not(.current):nth-of-type(2) > *::before {
+    /* change custom icon using image sprites */
+    background-position: -20px 0;
+}
+
+.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(3) > *::before,
+.cd-multi-steps.custom-icons li:not(.current):nth-of-type(3) > *::before {
+    background-position: -40px 0;
+}
+
+.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(4) > *::before,
+.cd-multi-steps.custom-icons li:not(.current):nth-of-type(4) > *::before {
+    background-position: -60px 0;
+}
+
+.cd-breadcrumb.custom-icons li.current:first-of-type > *::before,
+.cd-multi-steps.custom-icons li.current:first-of-type > *::before {
+    /* change custom icon for the current item */
+    background-position: 0 -20px;
+}
+
+.cd-breadcrumb.custom-icons li.current:nth-of-type(2) > *::before,
+.cd-multi-steps.custom-icons li.current:nth-of-type(2) > *::before {
+    background-position: -20px -20px;
+}
+
+.cd-breadcrumb.custom-icons li.current:nth-of-type(3) > *::before,
+.cd-multi-steps.custom-icons li.current:nth-of-type(3) > *::before {
+    background-position: -40px -20px;
+}
+
+.cd-breadcrumb.custom-icons li.current:nth-of-type(4) > *::before,
+.cd-multi-steps.custom-icons li.current:nth-of-type(4) > *::before {
+    background-position: -60px -20px;
+}
+
+@media only screen and (min-width: 768px) {
+    .cd-breadcrumb,
+    .cd-multi-steps {
+        padding: 0 1.2em;
+    }
+
+    .cd-breadcrumb li,
+    .cd-multi-steps li {
+        margin: 1.2em 0;
+    }
+
+    .cd-breadcrumb li::after,
+    .cd-multi-steps li::after {
+        margin: 0 1em;
+    }
+
+    .cd-breadcrumb li > *,
+    .cd-multi-steps li > * {
+        font-size: 1.6rem;
+    }
+}
+
+/* -------------------------------- 
+
+Triangle breadcrumb
+
+-------------------------------- */
+@media only screen and (min-width: 768px) {
+    .cd-breadcrumb.triangle {
+        /* reset basic style */
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .cd-breadcrumb.triangle li {
+        position: relative;
+        padding: 0;
+        margin: 4px 4px 4px 0;
+    }
+
+    .cd-breadcrumb.triangle li:last-of-type {
+        margin-right: 0;
+    }
+
+    .cd-breadcrumb.triangle li > * {
+        position: relative;
+        padding: 0.3em;
+        color: #2c3f4c;
+        background-color: #ececec;
+        /* the border color is used to style its ::after pseudo-element */
+        border-color: #ececec;
+        font-size: 0.9rem;
+        padding-left: 0;
+    }
+
+    .cd-breadcrumb.triangle li.current > * {
+        /* selected step */
+        color: #ffffff;
+        background-color: #d90a36;
+        border-color: #d90a36;
+        font-style: normal;
+    }
+
+    .cd-breadcrumb.triangle li:last-of-type > * {
+        padding-right: 1.6em;
+        border-radius: 0 0.25em 0.25em 0;
+    }
+
+    .no-touch .cd-breadcrumb.triangle a:hover {
+        /* steps already visited */
+        color: #ffffff;
+        background-color: #2c3f4c;
+        border-color: #2c3f4c;
+    }
+
+    .cd-breadcrumb.triangle li::after,
+    .cd-breadcrumb.triangle li > *::after {
+        /* 
+      li > *::after is the colored triangle after each item
+      li::after is the white separator between two items
+    */
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 100%;
+        content: '';
+        height: 0;
+        width: 0;
+        /* 48px is the height of the <a> element */
+        border: 24px solid transparent;
+        border-right-width: 0;
+        border-left-width: 12px;
+    }
+
+    .cd-breadcrumb.triangle li::after {
+        /* this is the white separator between two items */
+        z-index: 1;
+        -webkit-transform: translateX(4px);
+        -moz-transform: translateX(4px);
+        -ms-transform: translateX(4px);
+        -o-transform: translateX(4px);
+        transform: translateX(4px);
+        border-left-color: #ffffff;
+        /* reset style */
+        margin: 0;
+    }
+
+    .cd-breadcrumb.triangle li > *::after {
+        /* this is the colored triangle after each element */
+        z-index: 2;
+        border-left-color: inherit;
+    }
+
+    .cd-breadcrumb.triangle li:last-of-type::after,
+    .cd-breadcrumb.triangle li:last-of-type > *::after {
+        /* hide the triangle after the last step */
+        display: none;
+    }
+
+    .cd-breadcrumb.triangle.custom-separator li::after {
+        /* reset style */
+        background-image: none;
+    }
+
+    .cd-breadcrumb.triangle.custom-icons li::after,
+    .cd-breadcrumb.triangle.custom-icons li > *::after {
+        /* 50px is the height of the <a> element */
+        border-top-width: 14px;
+        border-bottom-width: 16px;
+    }
+
+    @-moz-document url-prefix() {
+        .cd-breadcrumb.triangle li::after,
+        .cd-breadcrumb.triangle li > *::after {
+            /* fix a bug on Firefix - tooth edge on css triangle */
+            border-left-style: dashed;
+        }
+    }
+}
+.risk-factor-switch-div {
+    position: relative;
+}
+/* .risk-factor-switch {
+     position: absolute;
+    top: 45%;
+} */
+
+.risk-factor-switch img {
+    height: 27px;
+    width: 25px;
+}
+.output-chart {
+    padding: 0.5rem;
+    margin-bottom: 20px;
+    box-shadow: 0px 2px 4px rgba(126, 142, 177, 0.12);
+    border: 1px solid #dde0e8;
+}
+
+.output-chart p {
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.output-chart img {
+    height: 200px;
+}
+/*Table show hide CSS */
+/* main styles */
+.switch {
+    position: relative;
+}
+
+.switch input {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.switch input:checked {
+    z-index: 1;
+}
+
+.switch input:checked + label {
+    opacity: 1;
+    cursor: default;
+}
+
+.switch label {
+    cursor: pointer;
+}
+
+.switch .toggle-outside {
+    height: 100%;
+    border-radius: 2rem;
+    padding: 0.25rem;
+    overflow: hidden;
+    transition: 0.25s ease all;
+}
+
+.switch .toggle-inside {
+    border-radius: 5rem;
+    background: #4a4a4a;
+    position: absolute;
+    transition: 0.25s ease all;
+}
+
+.switch--horizontal {
+    height: 1.5rem;
+    margin: 0 auto;
+    font-size: 0;
+}
+
+.switch--horizontal input {
+    height: 2rem;
+    width: 7rem;
+    left: 7rem;
+    margin: 0;
+}
+
+.switch--horizontal label {
+    font-size: 0.8rem;
+    line-height: 1.6rem;
+    display: inline-block;
+    width: 6rem;
+    height: 100%;
+    margin: 0;
+    font-weight: 500;
+}
+
+.switch--horizontal label:last-of-type {
+    margin-left: 4rem;
+}
+
+.switch--horizontal .toggle-outside {
+    background: #fff;
+    position: absolute;
+    width: 4rem;
+    left: 5.5rem;
+    border: 1px solid #6c757d;
+}
+
+.switch--horizontal .toggle-inside {
+    height: 1rem;
+    width: 1rem;
+}
+
+.switch--horizontal input:checked ~ .toggle-outside .toggle-inside {
+    left: 0.25rem;
+}
+
+.switch--horizontal input ~ input:checked ~ .toggle-outside .toggle-inside {
+    left: 2.55rem;
+}
+
+.strike-through {
+    text-decoration: line-through;
+}
+.table .badge.badge-light {
+    color: #8a8a8a;
+    background-color: #e0e6ec;
+}

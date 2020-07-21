@@ -1,0 +1,44 @@
+
+<div class="custom-multi-select" id="custom-multi-select_{{id}}" ngbDropdown [autoClose]="autoClose">
+  <a class="nav-link dropdown-toggle selectbox-icon multi-select-cust" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+    <span *ngIf="selectedItemsMain.length > 0">{{selectedItemsMain.length}} {{inputName}} Selected</span>
+    <span *ngIf="selectedItemsMain.length == 0">Select {{inputName}}</span>
+  </a>
+  <ul class="dropdown-menu analysis-select" ngbDropdownMenu aria-labelledby="admin-select">
+    <li class="title-analys">
+      <span class="custom-control custom-checkbox">
+        <input *ngIf="selectedItemsMain.length > 0" id="select_item_all_radio_{{id}}" [hidden] = "true" checked type="checkbox" class="custom-control-input" (change)="selectAll($event);">
+        <label class="custom-control-label" for="select_item_all_radio_{{id}}"><strong> SELECTED {{inputName | uppercase}}</strong></label>
+      </span>
+      <input *ngIf="selectedItemsMain.length > 0 && searchForSelectedItems" id="select_item_search_{{id}}" [(ngModel)]="searchSelectedItemStr" (keyup)="searchSelectedItems();" class="form-control form-control-sm search" placeholder="Search"></li>
+    <div class="select-scenario" id="scrool-3" >
+      <li *ngFor="let selectedItem of selectedItemsTemp; let i=index;">
+        <a class="dropdown-item">
+          <span class="custom-control custom-checkbox">
+            <input [hidden] = "true" id="select_item_radio_{{id}}_{{i}}" checked type="checkbox" class="custom-control-input" (change)="changeSelection($event,selectedItem);">
+            <label class="custom-control-label" id="selectedlist_{{i}}" for="select_item_radio_{{id}}_{{i}}">{{selectedItem[bindLabel]}}</label>
+          </span>
+          </a>
+      </li>
+    </div>
+    <li class="title-analys">
+      <span class="custom-control custom-checkbox">
+        <input *ngIf="multiple && selectAllItems && items.length != selectedItemsMain.length" id="item_all_radio_{{id}}" [hidden] = "true" type="checkbox" class="custom-control-input" (change)="selectAll($event);">
+        <label *ngIf="selectAllItems" class="custom-control-label" for="item_all_radio_{{id}}"><strong>All {{inputName | uppercase}} [{{items.length - selectedItemsMain.length}}]</strong></label>
+      </span>
+      <input *ngIf="serverSideSearch || items.length != selectedItemsMain.length && searchForItems" id="item_search_{{id}}" [(ngModel)]="searchItemStr" (keyup)="searchItems();" class="form-control form-control-sm search" placeholder="Search">
+    </li>
+    <div class="select-scenario" id="scrool-3">
+      <ng-container *ngFor="let item of itemsTemp; let i=index;">
+        <li *ngIf="addItemCheck(item)">
+          <a class="dropdown-item">
+            <span class="custom-control custom-checkbox">
+              <input [hidden] = "true" type="checkbox" class="custom-control-input" id="item_radio_{{id}}_{{i}}" (change)="changeSelection($event,item);">
+              <label class="custom-control-label" id="selectionlist_{{i}}"  for="item_radio_{{id}}_{{i}}">{{item[bindLabel]}}</label>
+            </span>
+          </a>
+        </li>
+      </ng-container>
+    </div>
+  </ul>
+</div>

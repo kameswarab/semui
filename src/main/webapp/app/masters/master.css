@@ -1,0 +1,80 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+
+.contentBox {
+    padding: 0.8rem;
+    background: #fff;
+    border-top: none;
+    margin-bottom: 20px;
+}
+
+.card {
+    background-color: #f1f1f1;
+}
+
+a:not([href]):not([tabindex]) {
+    color: inherit;
+    text-decoration: none;
+}
+a:not([href]):not([tabindex]):hover,
+a:not([href]):not([tabindex]):focus {
+    color: inherit;
+    text-decoration: none;
+}
+a:not([href]):not([tabindex]):focus {
+    outline: 0;
+}
+.la-edit:before {
+    content: '\f1c1';
+    color: #5281e8;
+}
+
+td a {
+    color: #f00;
+}
+
+tr.search_tr th,
+tr.page_details_tr th {
+    background: transparent;
+    text-align: right;
+}
+tr.search_tr th,
+tr.page_details_tr th {
+    padding: 5px;
+}
+tr.page_details_tr th select,
+tr.page_details_tr th input {
+    height: 20px;
+    width: 50px;
+    font-size: 12px;
+}
+tr.page_details_tr th span {
+    font-size: 12px;
+}
+tr.search_tr th input {
+    height: 20px;
+    width: 100%;
+}
+.no_data_div {
+    padding: 5px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+.no_data_found {
+    text-align: center;
+}
+
+.seq_td_select {
+    width: 100%;
+    border: none;
+}
+.btn-addData {
+    position: absolute;
+    right: 0;
+}
+
+.master-config {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}

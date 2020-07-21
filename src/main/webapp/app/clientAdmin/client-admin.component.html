@@ -1,0 +1,179 @@
+<div class="cri-inner-container p-5">
+    <div class="wizards mt-0">
+        <div class="steps p-2 mb-2">
+            <div class="custom-control custom-radio custom-control-inline mr-0">
+                <input type="radio" id="customRadioInline_1" class="custom-control-input" checked>
+                <label class="cus-active custom-control-label" for="customRadioInline_1">Create Admin</label>
+            </div>
+        </div>
+    </div>
+    <section class="slide-2" id="slide-2">
+        <form name="admin" role="form" novalidate #admin="ngForm" (ngSubmit)="admin.valid && submitData(admin)">
+            <div class="create-client mt-4">
+                <div class="main-view">
+                    <jhi-alert></jhi-alert>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group pb-2">
+                                <label for="FirstName" class="  title">First Name <span class="text-danger"> *</span> :</label>
+                                <input type="text" id="FirstName" name="FirstName" #firstName="ngModel" [(ngModel)]="user.firstName" data-placeholder="Enter first Name"
+                                        maxlength="50" class="form-control" [required]="true" pattern="^[a-zA-Z0-9'_-]+" autocomplete="nope">
+                                <label *ngIf="(admin.submitted || firstName.dirty) && firstName.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="firstName.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class="form-text text-danger" *ngIf="firstName.errors.pattern">
+                                        This field allows only valid first name.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="form-group  pb-2">
+                                <label for="MiddleName" class="cri-label">Middle Name:</label>
+                                <input type="text" name="MiddleName" #middleName="ngModel" [(ngModel)]="user.middleName" data-placeholder="Enter middle Name"
+                                    maxlength="50" class="form-control" pattern="^[a-zA-Z0-9'_-]+" autocomplete="nope"/>
+                                <label *ngIf="(admin.submitted || middleName.dirty) && middleName.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="middleName.errors.pattern">
+                                        This field allows only valid middle name.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="form-group pb-2">
+                                <label for="LastName" class="cri-label">Last Name <span class="text-danger"> *</span>:</label>
+                                <input type="text" name="LastName" #lastName="ngModel" [(ngModel)]="user.lastName" data-placeholder="Enter last Name"  maxlength="50"
+                                    class="form-control" [required]="true" pattern="^[a-zA-Z0-9'_-]+" autocomplete="nope"/>
+                                <label *ngIf="(admin.submitted || lastName.dirty) && lastName.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="lastName.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+                                        This field allows only valid last name.
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group pb-2">
+                                <label for="Email" class="cri-label">Email <span class="text-danger"> *</span>:</label>
+                                <input type="text" name="Email" autocomplete="off"  #email="ngModel" [(ngModel)]="user.emailAddress" data-placeholder="Enter Email" [readonly]="isUpdateUser"
+                                    class="form-control" [required]="true" pattern="^[a-zA-Z0-9.!#$%&’'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" maxlength="250" />
+                                <label *ngIf="(admin.submitted || email.dirty) && email.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="email.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class="form-text text-danger" *ngIf="email.errors.pattern">
+                                        This field allows only valid email.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="form-group pb-2">
+                                <label for="bank" class="cri-label">Bank <span class="text-danger"> *</span>:</label>
+                                <div class="select-wrapper" tabindex="0">
+                                    <ng-select 
+                                        [items]="banks" 
+                                        bindLabel="clientName" 
+                                        bindValue="id" 
+                                        name="bank" 
+                                        id="bank" 
+                                        class="ngselectdropdown" 
+                                        #bank="ngModel"
+                                        appendTo="body" 
+                                        [(ngModel)]="user.clientId" 
+                                        [disabled]="isUpdateUser || fromCreateClient"
+                                        required>
+                                    </ng-select>
+                                </div>
+                                <label *ngIf="(admin.submitted || bank.dirty) && bank.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="bank.errors.required">
+                                        This field is required.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="form-group pb-2">
+                                <label for="Department" class="cri-label">Department <span class="text-danger">*</span>:</label>
+                                <input type="text" name="Department" #department="ngModel" [(ngModel)]="user.department" data-placeholder="Enter Department"
+                                    maxlength="50" class="form-control" [required]="true" autocomplete="off"/>
+                                <label *ngIf="(admin.submitted || department.dirty) && department.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="department.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class="form-text text-danger" *ngIf="department.errors.pattern">
+                                        This field allows only valid department.
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group  pb-2">
+                                <label for="Designation" class="cri-label">Designation:</label>
+                                <input type="text" name="Designation" #designation="ngModel" [(ngModel)]="user.designation" data-placeholder="Enter Designation"
+                                        maxlength="50" class="form-control" autocomplete="off" />
+                                <label *ngIf="(admin.submitted || designation.dirty) && designation.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="designation.errors.pattern">
+                                        This field allows only valid designation.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="form-group pb-2">
+                                <label for="Location" class="cri-label">Location:</label>
+                                <input type="text" name="Location" #location="ngModel" [(ngModel)]="user.location" data-placeholder="Enter Location" 
+                                        class="form-control" maxlength="50" autocomplete="off"/>
+                                <label *ngIf="(admin.submitted || location.dirty) && location.invalid" class="errortext2">
+                                    <small class="form-text text-danger" *ngIf="location.errors.pattern">
+                                        This field allows only valid location.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="form-group pb-2">
+                                <label for="Comments" class="  title">Comments:</label>
+                                
+                                    <textarea style="resize: none;"  #comments="ngModel" class="form-control formtextarea clint-textarea" name="Comments" id="Comments" [(ngModel)]="user.approvalComment" maxlength="200"></textarea>
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row attachment-div">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="Attachment" class="cri-label">Attachment:(if any)</label>
+                                <div class="wrapper clientadminwrapper">
+                                    <div class="files clientadminfiles">
+                                        <div class="cont">
+                                        <i class="material-icons">Description</i>
+                                        <div class="tit">
+                                            Attach or drag and drop data sheet
+                                        </div>
+                                        <div class="desc">
+                                            Support File Format: .PDF. Max file size: 10MB 
+                                        </div>
+                                        </div>
+                                        <input #fileUpload type="file" class="file-upload-field  form-control input-sm" name="semDocument" (change)="browsFile($event)"
+                                        accept=".xls,.xlsx,.xlsm,.pdf">
+                                    </div>
+                                    <div *ngIf="!isUpdateUser">{{user.filePath}}</div>
+                                    <a *ngIf="isUpdateUser" (click)="download(user.filePath, user.id)">{{user.filePath}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class=" col-md-4 text-left mt-4 mb-4 ">
+                            <button type="button" class="btn btn-outline cri-btn-outline" (click)="clearClientAdminScreen(admin)" >
+                              <img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">
+                              DISCARD
+                            </button>
+                          </div>
+                        <div class="col-md-8 text-right">
+                        <span *ngIf="isUpdateUser">
+                            <button class="btn btn-danger btntxt">UPDATE ADMIN</button>
+                        </span>
+                        <span *ngIf="!isUpdateUser">
+                            <button class="btn btn-danger btntxt">CREATE ADMIN</button>
+                        </span>
+                        <button type="button" class="btn btn-outline-danger btntxt btn-add pl-4 pr-4" (click)="navigateToListingScreen()">BACK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

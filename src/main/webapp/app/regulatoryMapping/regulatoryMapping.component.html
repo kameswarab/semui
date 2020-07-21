@@ -1,0 +1,150 @@
+<div class="cri-inner-container">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-10 mb-3">
+
+            <h1 class="cri-main-heading mt-2">
+                    <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                <strong class="ml-1 color9" routerLink="/dataUtility"> Data Utility </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1 color9 " routerLink="/dataUtility/regulatorinfo" (click)="discardRegulatoryConfigData()"> Regulatory Risk Factor Management </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1"> Edit Risk Factors </strong>
+            </h1>
+
+        </div>
+        <div class="col-md-12">
+            <div class="header-title"></div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-md-12 mt-3">
+            <label class="customlabel">SHOCK RULE KEY</label>
+            <div class="customtitle bolder">{{regulatoryMappingDTO.shockRuleKey}}</div>
+        </div>
+    </div>
+
+
+    <div class="row col-md-12 pr-0  mb-4 mt-3">
+
+
+        <div class="col-md-3 pl-0">
+            <label class="customlabel">REGULATOR</label>
+            <div class="select-wrapper2" id="sub_classification_id">
+             <ng-select [items]="regulatoryList" 
+             bindLabel="label" 
+             bindValue="value"
+             appendTo="body" 
+             placeholder="Select" 
+             [(ngModel)]="regulatoryMappingDTO.sub_classification_id"
+             (ngModelChange)=getRegulatorRFName($event)>
+            </ng-select>
+            </div>
+        </div>
+        <div class="col-md-3 pl-0">
+            <label class="customlabel">REGULATOR RISK FACTOR NAME</label>
+            <div class="select-wrapper2"  id="regularity_rf_id">
+            <ng-select [items]="RegulatorRFNameList" 
+             bindLabel="label" 
+             bindValue="value"
+             appendTo="body" 
+             placeholder="Select" 
+             [(ngModel)]="regulatoryMappingDTO.regularity_rf_id">
+            </ng-select>
+            </div>
+
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-start table-responsive">
+                <table *ngIf="columns && columns.length != 0 " class="table table-bordered tables-view mb-2">
+                    <thead class="tables-head">
+                        <tr>
+                            <th class="position-relative" *ngFor="let header of headerList;let i=index;">{{header}}
+                            </th>
+
+                        </tr>
+
+                    </thead>
+                    <tbody class="tables-boby">
+                        <tr *ngIf="!records || records.length == 0" class="no_data_found">
+                            <td [colSpan]="headerList.length + 1">No Data Found</td>
+                        </tr>
+                        <tr *ngFor="let record of records">
+                            <td *ngFor="let column of columns">{{record[column]}}</td>
+                            <td>
+                                <a class="btn btn-sm" (click)="getRegulationEdit(record[0]);" id="regulationEditId">
+                                  <img src="../../content/images/svg/edit.png" alt="semicons">
+                                </a>
+                                <a class="btn btn-sm" (click)="openDeleteDataModal(record[0]);" id="regulationDeleteId">
+                                        <img src="../../content/images/svg/delete.png" alt="semicons">
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--responsive-table end-->
+    </div>
+    <div class="dotted-divider2 mt-4"></div>
+
+    <div class="container-fluid">
+        <div class="row form-group mb-0">
+
+
+
+            <div class="col-md-6">
+
+            </div>
+
+            <div class="col-md-6 pr-0">
+                <div class="next-pre mb-3 mt-3 pr-0 text-right">
+                    <button type="button" class="cri-btn btn btn-outline-danger mr-3" (click)="discardRegulatoryConfigData()"  routerLink="/dataUtility/regulatorinfo">
+                        <img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">
+                        DISCARD</button>
+                    <button type="button" class="cri-btn btn btn-outline-danger btn-danger" (click)="saveRegulatoryMappingData()">
+                            <img src="../../content/images/svg/save.png" alt="semicons">
+                        SAVE </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<ng-template #deleteDataModal let-modal>
+    <div class="cri-modal-h modal-header">
+        <h4 class="cri-modal-titles modal-titles ml-4" id="modal-basic-title">Confirm</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-sm" (click)="deleteMasterConfigData()">Yes</button>
+        <button class="btn btn-light btn-sm" (click)="cancel()">No</button>
+    </div>
+</ng-template>

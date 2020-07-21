@@ -1,0 +1,22 @@
+{
+    "generator-jhipster": {
+        "jhipsterVersion": "5.8.1",
+        "applicationType": "monolith",
+        "baseName": "sem",
+        "clientFramework": "angularX",
+        "useSass": false,
+        "clientPackageManager": "npm",
+        "authenticationType": "oauth2",
+        "cacheProvider": "no",
+        "databaseType": "sql",
+        "devDatabaseType": "mysql",
+        "prodDatabaseType": "mysql",
+        "testFrameworks": ["protractor"],
+        "jhiPrefix": "jhi",
+        "entitySuffix": "",
+        "dtoSuffix": "DTO",
+        "otherModules": [],
+        "enableTranslation": false,
+        "skipServer": true
+    }
+}

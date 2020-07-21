@@ -1,0 +1,1004 @@
+
+
+  <div class="col-12 no-padding form-start">
+    <div class="cri-inner-container">
+      <div class="row">
+        
+              <div class="col-md-12">
+                <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+                  <i class="fa-check-ci-icon" aria-hidden="true"></i> {{displaySuccessMessage}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+              </div>
+              <div class="col-md-12"> 
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                  <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+          
+      </div>
+  
+      <jhi-scenario-tabs selectedTab="4" [status]="scenarioObj.status"></jhi-scenario-tabs>
+      <div class="row">
+        <div class="scenario-info col-lg-7">
+          <label class="list-name mr-3">{{scenarioObj.scenarioName}}</label>
+          <p *ngIf="scenarioObj.id"> Last Modified On <span>{{scenarioObj.lastModifiedDate | date:'dd MMM yyyy'}}</span> by <span>{{scenarioObj.lastModifiedBy}}</span></p>
+        </div> 
+        <span class="rf-stats col text-right">
+          <button type="button" class="btn border-primary btn-sm mt-4 mr-3" (click)="openModel();" *ngIf="actionButton!=null && userCanAccess">{{actionButton}}</button>
+          <button type="button" class="btn border-primary btn-sm mt-4 mr-3" (click)="openModel();" *ngIf="(!userCanAccess  && actionButton!=null) || (!designerCanAccess && actionButton==null)">View Review Status</button>
+          <button type="button" class="btn border-primary btn-sm mt-4 mr-3" (click)="openModel();" *ngIf="designerCanAccess"> SEND FOR REVIEW</button>
+          <!-- <button type="button" class="btn border-primary btn-sm mt-4 " > <i class="fa fa-list-ul" aria-hidden="true"></i></button>
+          <span _ngcontent-c4="" class="badge badge-danger badge-counter graphcount ">3+</span> -->
+          <!-- <button type="button" class="btn btn-outline-primary btn-sm mt-4 mr-3 sm-icons" (click)="openModel();" *ngIf="actionButton!=null && userCanAccess">{{actionButton}}</button>
+          <button type="button" class="btn btn-outline-primary btn-sm mt-4 mr-3 sm-icons" (click)="openModel();" *ngIf="(isAuthorized || !userCanAccess) && actionButton!=null || (!isAuthorized && actionButton==null)">View Review Status</button>
+          <button type="button" class="btn btn-outline-primary btn-sm mt-4 mr-3 sm-icons" (click)="openModel();" *ngIf="isAuthorized  && actionButton==null"> SEND FOR REVIEW</button> -->
+          <div class="btn btn-sm mt-4 mr-3 dis-btn-sceout" *ngIf="selectedScenarioFromAnalysis == null">
+            <div ngbDropdown>
+
+              <a id="output_export" [ngClass]="{'disabled btn-group': activeIds.indexOf('analysis_tab')!=-1 ,'btn-group':activeIds.indexOf('analysis_tab')==-1}" class="scenout-drop btn border-primary btn-sm btn-sm dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="export-menu">
+                  <span>EXPORT OUTPUT</span>
+              </a>
+              <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="export-menu">
+                <li class="nav-item">
+                  <a class="nav-link" id="output_export_excel" (click)="exportTo('EXCEL');">
+                    <span>EXPORT EXCEL</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="output_export_pdf" (click)="exportTo('PDF');">
+                    <span>EXPORT PDF</span>
+                  </a>
+                </li>
+              </ul>
+            </div> 
+          </div>   
+          <button class="btn btn-sm mt-4 mr-3 pl-0 pr-0 pt-2" (click)="getUserComments();">
+           <img src="../../../content/images/svg/list.png" alt="semicons">
+          </button>
+          
+        </span>
+      </div>
+      <div class="row tabst">
+        <div class="col-md-12">
+          <ngb-tabset (tabChange)="toggleInfoAndAnalysis($event);">
+            <ngb-tab id="info_tab" title="INFO">
+              <ng-template ngbTabContent>
+                <div class="row pl-3 mb-3 pt-3 pr-3">
+                  <div class="col-lg-12 search-box mb-3 ml-3">
+                    <label  class="title fil-title">Filters </label>
+                    <div class="row">
+                      <div class="col-sm p-0" *ngIf="scenarioObj.type == scenarioProjectionType">
+                        <ng-select  [items]="shockPeriods | keyvalue"
+                            class="select-lst"
+                            bindLabel="key"
+                            bindValue="key"
+                            appendTo="body"
+                            [clearable]="true"
+                            placeholder="Select"
+                            (change)="generateCharts()"
+                            [(ngModel)]="selectedPeriod"> 
+                        </ng-select>      
+                      </div>
+                      <div class="col-sm p-0">
+                        <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['setId'] && createFilter['setId'].length>0}">
+                          <li ngbDropdown class="nav-item dropdown pointer">
+                            <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle>
+                              <span>Risk factor set</span> 
+                            </a>
+                            <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3" *ngIf="riskFactorSetListTemp !== undefined">
+                              <li *ngFor="let master of riskFactorSetListTemp | orderBy : 'label'">
+                              <a class="dropdown-item">
+                                  <span class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'setId',master.value)" [checked]="createFilter['setId'] && createFilter['setId'].indexOf(master.value) != -1" id="setId_{{master.value}}">
+                                      <label class="custom-control-label" for="setId_{{master.value}}">{{master.label}}</label>
+                                    </span>
+                                  </a>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-sm p-0">
+                        <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['astClsId'] && createFilter['astClsId'].length>0}">
+                          <li ngbDropdown class="nav-item dropdown pointer">
+                            <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle>
+                              <span>Asset Class</span> 
+                            </a>
+                            <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3" *ngIf="masterDataObjForFilters['DIM_AST_CLS_MST'] !== undefined">
+                              <li *ngFor="let master of masterDataObjForFilters['DIM_AST_CLS_MST'] | orderBy : 'label'">
+                              <a class="dropdown-item">
+                                  <span class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'astClsId',master.value)" [checked]="createFilter['astClsId'] && createFilter['astClsId'].indexOf(master.value) != -1" id="astClsId_{{master.value}}">
+                                      <label class="custom-control-label" for="astClsId_{{master.value}}">{{master.label}}</label>
+                                    </span>
+                                  </a>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm p-0">
+                      <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['subRskFctrId'] && createFilter['subRskFctrId'].length>0}">
+                        <li ngbDropdown class="nav-item dropdown pointer">
+                          <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+                          <span>Risk Factor Type</span>
+                          </a>
+                          <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3" *ngIf="masterDataObjForFilters['DIM_RSKFCT_TYP_MST'] !== undefined">
+                            <li *ngFor="let master of masterDataObjForFilters['DIM_RSKFCT_TYP_MST'] | orderBy : 'label'">
+                              <a class="dropdown-item">
+                                <span class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'subRskFctrId',master.value)" [checked]="createFilter['subRskFctrId'] && createFilter['subRskFctrId'].indexOf(master.value) != -1" id="subRskFctrId_{{master.value}}">
+                                  <label class="custom-control-label" for="subRskFctrId_{{master.value}}">{{master.label}}</label>
+                                  </span>
+                                </a>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-sm p-0">
+                      <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['crncyId'] && createFilter['crncyId'].length>0}">
+                        <li ngbDropdown class="nav-item dropdown pointer">
+                          <a class="nav-link dropdown-teoggl selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+                            <span>Currency</span>
+                          </a>
+                          <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3" *ngIf="masterDataObjForFilters['DIM_CURNCY_MST'] !== undefined">
+                            <li *ngFor="let master of masterDataObjForFilters['DIM_CURNCY_MST'] | orderBy : 'label'">
+                              <a class="dropdown-item">
+                                <span class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'crncyId',master.value)" [checked]="createFilter['crncyId'] && createFilter['crncyId'].indexOf(master.value) != -1" id="crncyId_{{master.value}}">
+                                  <label class="custom-control-label" for="crncyId_{{master.value}}">{{master.label}}</label>
+                                </span>
+                              </a>
+                            </li>
+                          </ul>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-sm p-0">
+                        <ul class="searchbox" [ngClass]="{'filt-icon': filterIcon}">
+                          <li ngbDropdown class="nav-item dropdown pointer">
+                            <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+                              <span>Advanced Filters</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-large reviewout-fil row" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+                              <!-- <label> ONLY AVAILABLE FILTER VALUES SHOWN<small><a>Show All</a></small></label> -->
+                              <li class="col" *ngFor="let filter of filterAdvanceList">
+                                <ul class="drop-lag-min" *ngIf="masterDataObjForFilters[filter.table] !== undefined">
+                                  <li class="dropdown-header">{{filter.label}}</li>
+                                  <li *ngFor="let master of masterDataObjForFilters[filter.table] | orderBy : 'label'">
+                                    <a class="dropdown-item">
+                                      <span class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,filter.value,master.value)" [checked]="createFilter[filter.value] && createFilter[filter.value].indexOf(master.value) != -1" id="{{filter.value}}_{{master.value}}">
+                                        <label class="custom-control-label" for="{{filter.value}}_{{master.value}}">{{master.label}}</label>
+                                      </span>
+                                    </a>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-sm-1 p-0">
+                        <i *ngIf="filtersApplied" (click)='resetFilters();' class="filter-icon filter-clear" aria-hidden="true">
+                          <i class="fa-times-icon-2" aria-hidden="true"></i>
+                        </i>
+                      </div>
+                    </div>
+                  </div>
+      
+                  <div class="col-md-12">
+                    <div class="graphset row" id="graphset_div">
+                      <div class="col-md-3 col-sm-6">
+                        <div class="output-chart" id="chartOptionsABSSigmaData">
+                          <highcharts-chart
+                            [Highcharts] = "highcharts" 
+                            [options] = "chartOptionsABSSigma" 
+                            style = "width: 100%; height: 100%; display: block;">
+                          </highcharts-chart>
+                        </div>
+                      </div>
+                      <div class="col-md-3 col-sm-6">
+                        <div class="output-chart" id="chartOptionsRSQBucketData">
+                          <highcharts-chart
+                            [Highcharts] = "highcharts" 
+                            [options] = "chartOptionsRSQBucket" 
+                            style = "width: 100%; height: 100%; display: block;">
+                          </highcharts-chart>
+                        </div>
+                      </div>
+                      <div class="col-md-3 col-sm-6">
+                        <div class="output-chart" [chart]="mapChart" id="chartOptionsABSStdShockData">
+                        </div>
+                      </div>
+                      <div class="col-md-3 col-sm-6">
+                        <div class="output-chart" id="chartOptionsAvgABSStdShockData">
+                          <highcharts-chart
+                            [Highcharts] = "highcharts" 
+                            [options] = "chartOptionsAvgABSStdShock" 
+                            style = "width: 100%; height: 100%; display: block;">
+                          </highcharts-chart>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+          
+                </div>
+                <div class="ml-3 mr-3">
+                    <div class="dotted-divider mt-4 mb-4"> </div>
+                </div>
+                <div class="table-start table-responsive tableclass mb-3">
+                  <table class="table table-bordered tables-view table-resizable scenarioout" [ngClass]="metadataShow ? 'resize-table-witdhsout' : ''">
+                    <thead class="tables-head">
+                      <tr>
+                        <th class="riskfactorsName">Risk Factor Name
+                          <span (click)="criFilter = !criFilter" class="fr filter-icon"></span>  
+                        
+                                 
+                        </th>
+                      <th class="arrow-view expandbtn"> 
+                          <div class="arrow-btn-r" >
+                              <div (click)="metadataShow=!metadataShow" *ngIf="!metadataShow" >
+                                <img src="../../../content/images/svg/arrowleft.png" alt="semicons">
+                                </div>
+                              <div (click)="metadataShow=!metadataShow" *ngIf="metadataShow">
+                                  <img src="../../../content/images/svg/arrowright.png" alt="semicons">
+                              </div>
+                          </div>
+                      </th>
+                        <th class="position-relative assetClass" *ngIf="metadataShow">ASSET CLASS  </th>
+                        <th class="position-relative riskFactorType" *ngIf="metadataShow">RISK FACTOR TYPE </th>
+                        <th class="position-relative country" *ngIf="metadataShow">COUNTRY </th>
+                        <th class="position-relative currency" *ngIf="metadataShow">CURRENCY </th>
+                        <th class="position-relative frequency" *ngIf="metadataShow">FREQUENCY  </th>
+                        <th class="position-relative maturity" *ngIf="metadataShow">MATURITY </th>
+                        <th class="position-relative sector" *ngIf="metadataShow">SECTOR  </th>
+                        <th class="position-relative rating" *ngIf="metadataShow">RATING  </th>
+                        <th class="position-relative curveFamily" *ngIf="metadataShow">CURVE FAMILY</th>
+                        <th class="methodology">Methodology</th>
+                        <th class="selectPeriod">{{selectedPeriod}}</th>
+                        <th class="units">Units </th>
+                        <th class="overrideShocks">Override Shocks </th>
+                        <th class="stdShocks">Std Shocks </th>
+                        <th class="rsq">R-SQ (%) </th>
+                        <th scope="col" class="selectedVariables" >Selected Variables</th>
+                        <th class="comments">Comments</th>
+                      </tr>
+                 
+                    <tbody class="tables-boby">
+                        <tr  *ngIf="criFilter">
+                            <td>
+                              <section  *ngIf="criFilter" id="search-2" class="search-3">
+                                <label for="search-input"><i class="fa-search-icon" aria-hidden="true"></i><span class="sr-only">Search icons</span></label>
+                                <input id="search-input" class="form-control input-lg" [(ngModel)]="filterObj.rfName" (keyup)="filterData()" placeholder="Search Risk Factors" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+                           </section>
+                          </td>
+                          <td></td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="assetList = filterMasterData(masterDataObj['DIM_AST_CLS_MST'], 'astClsId');">
+                                      <ng-select [items]="assetList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.astClsId">  
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow"> 
+                            <div class="cri-form-group" *ngIf="criFilter">
+                              <div class="select-wrapper-table-2" (ngInit)="subrskList = filterMasterData(masterDataObj['DIM_RSKFCT_TYP_MST'], 'subRskFctrId');">
+                                  <ng-select [items]="subrskList"
+                                  bindLabel="label"
+                                  bindValue="value"
+                                  appendTo="body"
+                                  [multiple]="true"
+                                  [clearable]="true"
+                                  placeholder="Select"
+                                  (change)="filterData()"
+                                  [(ngModel)]="filterObj.subRskFctrId">
+                                </div>
+                            </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="cntyList = filterMasterData(masterDataObj['DIM_CNTRY_MST'], 'cntryId');">
+                                      <ng-select [items]="cntyList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.cntryId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="crcyList = filterMasterData(masterDataObj['DIM_CURNCY_MST'], 'crncyId');">
+                                      <ng-select [items]="crcyList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select "
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.crncyId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="fqncyList = filterMasterData(masterDataObj['DIM_FREQUENCY_MST'], 'frqncyId');">
+                                      <ng-select [items]="fqncyList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.frqncyId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="mtrtyList = filterMasterData(masterDataObj['DIM_MTURTY_MST'], 'mtrtyId');">
+                                      <ng-select [items]="mtrtyList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.mtrtyId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="strList = filterMasterData(masterDataObj['DIM_SETR_MST'], 'sctrId');">
+                                      <ng-select [items]="strList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.sctrId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="ratngList = filterMasterData(masterDataObj['DIM_RTNG_MST'], 'rtngId');">
+                                      <ng-select [items]="ratngList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.rtngId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="metadataShow">
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="crvfmlyList = filterMasterData(masterDataObj['MST_CURVE_FAMILY'], 'crvfmlyId');">
+                                      <ng-select [items]="crvfmlyList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.crvfmlyId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td>
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="mthdlgyList = filterMasterData(masterDataObj['MST_METHDLGY'], 'mthdlgyType');">
+                                      <ng-select [items]="mthdlgyList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.mthdlgyType">
+                                    </div>
+                                </div>
+                          </td>
+                          <td></td>
+                          <td>
+                              <div class="cri-form-group" *ngIf="criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="untsList = filterMasterData(masterDataObj['DIM_UNIT_MST'], 'units');">
+                                      <ng-select [items]="untsList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData()"
+                                      [(ngModel)]="filterObj.units">
+                                    </div>
+                                </div>
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      <tr *ngFor="let riskFactor of riskFactorListSub; let j=index;" (ngInit)="isClickedSelectedVariables(riskFactor)">
+                        <td class="riskfactorsName">{{riskFactor.name}}</td>
+                        <td *ngIf="j==0" class="text-rotation expandbtn" rowspan="100%" (click)="metadataShow=!metadataShow">
+                            <span *ngIf="riskFactorListSub.length >= 4" class="text-rotation">Risk Factor Attributes</span>
+                            <span class="double-arrow-td double-right-icon" *ngIf="!metadataShow && riskFactorListSub.length < 4"></span>
+                            <span class="double-arrow-td double-left-icon" *ngIf="metadataShow && riskFactorListSub.length < 4"></span>
+                        </td>
+                        <td class="assetClass" *ngIf="metadataShow">{{getValue(riskFactor.astClsId,"DIM_AST_CLS_MST")}}</td>
+                        <td class="riskFactorType" *ngIf="metadataShow">{{getValue(riskFactor.subRskFctrId,"DIM_RSKFCT_TYP_MST")}}</td>
+                        <td class="country" *ngIf="metadataShow">{{getValue(riskFactor.cntryId,"DIM_CNTRY_MST")}}</td>
+                        <td class="currency" *ngIf="metadataShow">{{getValue(riskFactor.crncyId,"DIM_CURNCY_MST")}}</td>
+                        <td class="frequency" *ngIf="metadataShow">{{getValue(riskFactor.frqncyId,"DIM_FREQUENCY_MST")}}</td>
+                        <td class="maturity" *ngIf="metadataShow">{{getValue(riskFactor.mtrtyId,"DIM_MTURTY_MST")}}</td>
+                        <td class="sector" *ngIf="metadataShow">{{getValue(riskFactor.sctrId,"DIM_SETR_MST")}}</td>
+                        <td class="rating" *ngIf="metadataShow">{{getValue(riskFactor.rtngId,"DIM_RTNG_MST")}} </td>
+                        <td class="curveFamily" *ngIf="metadataShow">{{getValue(riskFactor.crvfmlyId,"MST_CURVE_FAMILY")}} </td>
+                        <td class="methodology">{{getValue(riskFactor.mthdlgyType,"MST_METHDLGY")}} 
+                          <span *ngIf="riskFactor.expCat==EXPANSION_CATEGORY_MODEL_DRIVEN" class="fr blueclr fa-file-icon" title="Download Full Output" (click) = "downloadExcel(riskFactor)"></span>
+                        </td>
+                        <td class="selectPeriod" [ngClass]="{'strike-through': getProjectedShock(riskFactor, 'OVERRIDE_SHOCK')}">{{getProjectedShock(riskFactor, 'SHOCK')}}</td>
+                        <td class="units">{{getValue(riskFactor.units,"DIM_UNIT_MST")}} </td>
+                        <td class="overrideShocks" *ngIf="!isAuthorized">{{getProjectedShock(riskFactor, 'OVERRIDE_SHOCK')}}</td>
+                        <td class="overrideShocks" *ngIf="isAuthorized"(click)="openOverrideShockModalModal(riskFactor);">{{getProjectedShock(riskFactor, 'OVERRIDE_SHOCK')}}</td>
+                        <td class="stdShocks">{{getProjectedShock(riskFactor, 'STD_SHOCK')}}</td>
+                        <td class="rsq">{{riskFactor.rsq}}</td>
+                        <td class="selectedVariables" >
+                          <span *ngIf ="rowWiseControls[riskFactor.id]" (click)="rowWiseControls[riskFactor.id].isClicked =!rowWiseControls[riskFactor.id].isClicked" [ngClass]="{'gridTextOF1':!rowWiseControls[riskFactor.id].isClicked ,'workbreak' :rowWiseControls[riskFactor.id].isClicked }"
+                          placement="left" ngbTooltip="{{riskFactor.dependentFactorNames}}">{{riskFactor.dependentFactorNames}}</span>
+                        </td>
+                        <td class="comments" ><span placement="left" ngbTooltip="{{getProjectedShock(riskFactor, 'COMMENTS')}}">{{getProjectedShock(riskFactor, 'COMMENTS')}}</span></td>
+                        <!-- <td class="comments">{{getProjectedShock(riskFactor, 'COMMENTS')}}</td> -->
+                      
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="fotter-btn ">
+                    <div class="col-md-12 row ">
+                      <div class="col-md-12">
+                        <nav class="c-pagination">
+                            <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                              <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}">
+                                <a (click)="setPage(pager.currentPage - 1)"><i aria-hidden="true" class="fa-long-arrow-left-icon"></i></a>
+                              </li>
+                              <li *ngFor="let page of pager.pages" class="c-pagination__item">
+                                <a (click)="setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                              </li>
+                              <li class="c-pagination__next" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                <a (click)="setPage(pager.currentPage + 1)"><i aria-hidden="true" class="fa-long-arrow-right-icon"></i></a>
+                              </li>
+                              <li class="c-pagination__next">
+                                <a><small class="dis-page">Displaying {{pager.startIndex + 1}} to {{pager.endIndex + 1}} Of {{pager.totalItems}} Risk Factors</small></a>
+                              </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab id="analysis_tab" title="ANALYSIS">
+              <ng-template ngbTabContent>
+                <div class="row pr-0 mb-3 ml-3" *ngIf="analysisListFlag">
+                  <h4 class="col-md-12 analysis-heading">SELECT A CHART BELOW TO START ANALYSIS</h4>
+                  <div class="col-sm-3">
+                    <div class="card cri-cards">
+                      <div class="card-body cri-card-body d-flex flex-row mt-2" (click)="getAnalysis(ANALYSIS_TYPE_COMPARISION);">
+                        <div class="col-md-4"> 
+                          <img src="../../../content/images/svg/Scenario-Comparison.png" alt="semicons">
+                        </div>
+                        <div class="col-md-8"><label class="customlabel2">Scenario <br>Comparison</label></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="card cri-cards">
+                      <div class="card-body cri-card-body d-flex flex-row mt-2" (click)="getAnalysis(ANALYSIS_TYPE_PROPAGATION);">
+                        <div class="col-md-4"> 
+                            <img src="../../../content/images/svg/scenarion-out.png" alt="semicons">
+                        </div>
+                        <div class="col-md-8"><label class="customlabel2">Shock Propagation Tree</label></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                  </div>
+                  <div class="col-sm-3 pr-0">
+                  </div>
+                </div>
+                <div class="row col-md-12 ml-2 p-2" *ngIf="!analysisListFlag">
+                  <div class="col-md-4 analysis p-0">
+                    <div class="accordion-cards">
+                        <div class="card">
+                            <div role="tab" id="analysis_id_1-header" class="card-header ">
+                                <h1 class="cri-main-heading sce-ana-title">  
+                                    <img class="cri-card-titleicon" src="../../../content/images/svg/analysis-heading.png" alt="sem-icons">
+                                    <strong class="title-s color9"  (click)="analysisListFlag = true" >Analysis </strong>
+                                    <i class="fa-angle-right-icon rightangleicon" aria-hidden="true"></i>
+                                </h1>
+                                <strong class="accordion-title analysis-title sce-sub">{{analysis.name}}</strong>
+                            </div>    
+                            <div class="card-body">
+                              <div class="form-row analy-accord-openb">
+                                <ng-container *ngIf="analysis.id == ANALYSIS_TYPE_COMPARISION">
+                                  <div class="form-group col-12 mt-2">
+                                    <label for="staticEmail" class="customlabel">YOUR SCENARIO : </label>
+                                    <span class="custom-control custom-checkbox">
+                                      <input id="scenario_name_check" [hidden] = "true" checked type="checkbox" class="custom-control-input">
+                                      <label class="custom-control-label" for="scenario_name_check"><strong>{{scenarioObj.scenarioName}}</strong></label>
+                                    </span>
+                                  </div>
+                                  <div class="form-group col-12 mt-2">
+                                    <label class="customlabel">COMPARE WITH</label>
+                                    <custom-multi-select 
+                                      [items] = "analysis.scenarioList"
+                                      [bindValue] = "'value'"
+                                      [bindLabel] = "'label'"
+                                      [multiple] = "true"
+                                      [maxSelection] = "2"
+                                      [inputName] = "'Scenarios'"
+                                      [selectedItems] = "analysis.selectedScenarios"
+                                      [searchForItems] = "true"
+                                      [searchForSelectedItems] = "false"
+                                      (selectChange) = "analysis.selectedScenarios = $event">
+                                    </custom-multi-select>
+                                  </div>
+                                </ng-container>
+                                <ng-container *ngIf="analysis.id == ANALYSIS_TYPE_PROPAGATION">
+                                  <div class="form-group col-12 mt-2">
+                                    <label for="staticEmail" class="customlabel">ASSET CLASS</label>
+                                    <custom-multi-select 
+                                      [items] = "assetClassListForAnalysis"
+                                      [bindValue] = "'value'"
+                                      [bindLabel] = "'label'"
+                                      [multiple] = "true" 
+                                      [inputName] = "'Asset Class'"
+                                      [selectedItems] = "analysis.selectedAssetClassList"
+                                      [searchForItems] = "true"
+                                      [searchForSelectedItems] = "true"
+                                      (selectChange) = "analysis.selectedAssetClassList = $event"
+                                      (change)="getRiskFactorList()" >
+                                    </custom-multi-select>
+                                  </div>
+
+                                  <div class="form-group col-12 mt-2">
+                                    <label for="staticEmail" class="customlabel">SELECT RISK FACTOR(S)</label>
+                                    <custom-multi-select 
+                                      [items] = "analysis.riskFactorList"
+                                      [bindValue] = "'value'"
+                                      [bindLabel] = "'label'"
+                                      [multiple] = "true" 
+                                      [inputName] = "'Riskfactors'"
+                                      [selectedItems] = "analysis.selectedRiskFactorList"
+                                      [searchForItems] = "true"
+                                      [searchForSelectedItems] = "true"
+                                      (selectChange) = "analysis.selectedRiskFactorList = $event" >
+                                    </custom-multi-select>
+                                  </div>
+                                </ng-container>
+                                <div class="form-group col-6">
+                                  <button type="button" class="btn btn-danger btn-block" (click)="analyze()">ANALYZE</button>
+                                </div>
+                                <div class="form-group col-6">
+                                  <button type="button" class="btn btn-outline-danger btn-block" (click)="analysisListFlag = true">BACK</button>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="row">
+                      <div class="dash-board-analysis col-md-12">
+                        <div class="form-row float-right">
+                          <div *ngIf="!analysis.nullData">
+                            <div id="filter-anal" class="select-filter-analysismain" *ngIf="analysis.showPlottedRiskfactors && analysis.plottedRiskfactors.length > 0">
+                              <div class="card select-filter-analysis">
+                                <div class="card-body overflow-auto" id="scrool-3">
+                                  <div class="analysis-select2 row" *ngIf ="analysis.id == ANALYSIS_TYPE_PROPAGATION">
+                                    <ul class="graph-color col-md-6 mb-0"> 
+                                      <li *ngFor='let rf of analysis.plottedRiskfactors'>
+                                          <img [src]='"content/images/analysisicons/"+rf.label+".png"' class="graph-img pr-2">{{getAssetClassName(rf.value)}}
+                                      </li>
+                                      <!-- <li *ngIf="analysis.plottedRiskfactors.indexOf(1)!=-1"><img [src]='"content/images/analysisicons/"+{{value}}+".png"' class="graph-img pr-2">EQ</li>
+                                      <li *ngIf="analysis.plottedRiskfactors.indexOf(2)!=-1"><img [src]='"content/images/analysisicons/square2.png"' class="graph-img pr-2">IR</li>
+                                      <li *ngIf="analysis.plottedRiskfactors.indexOf(3)!=-1"><img [src]='"content/images/analysisicons/diamond2.png"' class="graph-img pr-2">CR</li>
+                                      <li *ngIf="analysis.plottedRiskfactors.indexOf(4)!=-1"><img [src]='"content/images/analysisicons/triangle2.png"' class="graph-img pr-2">FX</li>
+                                      <li *ngIf="analysis.plottedRiskfactors.indexOf(4)!=-1"><img [src]='"content/images/analysisicons/triangle-down.png"' class="graph-img pr-2">CM</li>
+                                      <li *ngIf="analysis.plottedRiskfactors.indexOf(4)!=-1"><img [src]='"content/images/analysisicons/cross.png"' class="graph-img pr-2">SP</li>-->
+                                    </ul>
+                                    
+                                    <ul class="graph-color2 mt-2 col-md-6 mb-0">
+                                      <li *ngIf="analysis.propagationColorCode.indexOf('lowest')!=-1" class="highest"><i class="fa-circle mr-2" aria-hidden="true"></i>0-1σ</li>
+                                      <li *ngIf="analysis.propagationColorCode.indexOf('lower')!=-1"  class="higher"><i class="fa-circle mr-2" aria-hidden="true"></i>1-2σ</li>
+                                      <li *ngIf="analysis.propagationColorCode.indexOf('higher')!=-1"  class="lower"><i class="fa-circle mr-2" aria-hidden="true"></i>2-3σ</li>
+                                      <li *ngIf="analysis.propagationColorCode.indexOf('highest')!=-1" class="lowest"><i class="fa-circle mr-2" aria-hidden="true"></i>3σ+</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <button (click)="analysis.showPlottedRiskfactors = !analysis.showPlottedRiskfactors" *ngIf="analysis.id != ANALYSIS_TYPE_COMPARISION && analysis.plottedRiskfactors.length > 0"
+                              [attr.aria-expanded]="!analysis.showPlottedRiskfactors" aria-controls="filter-anal" type="button" class="btn btn btn-outline-primary btn-sm sm-icons filter-icon">
+                              
+                            </button>
+                          </div>
+                        </div>
+                          <div *ngIf="analysis.nullData" class="col-md-12 p-0 m-0 dash-board-analysis single">
+                              <div class="graph-views search-null size-100">
+                                  <span class="svg-img">
+                                      <img src="../../../content/images/svg/search-analysis.png" alt="semicons"><br>
+                                      <small class="caption mt-4 mb-4">Select configuration in the left panel to being analysis</small>
+                                  </span>
+                              </div><!--search null End-->
+                          </div>
+                          <div class="col-md-12 p-0 m-0 dash-board-analysis single" *ngIf="!analysis.nullData">
+                            <div class="p-0 size-100" *ngIf="analysis.id == ANALYSIS_TYPE_COMPARISION">
+                                <ag-grid-angular 
+                                    style="width: 100%; height: 100%;" 
+                                    class="ag-theme-balham"
+                                    [rowData]="rowData"
+                                    [gridOptions]="gridOptions"
+                                    [columnDefs]="columnDefs"
+                                    [cacheBlockSize]="cacheBlockSize"
+                                    [maxBlocksInCache]="maxBlocksInCache"
+                                    [pagination]="true"
+                                    [defaultColDef]="defaultColDef"
+                                    [sideBar]="sideBar"
+                                    (rowClicked)="onRowClicked($event, analysis)"
+                                    (gridReady)="onGridReady($event)">
+                                </ag-grid-angular>
+                            </div> 
+                            <div class="p-0 size-100" *ngIf="analysis.id == ANALYSIS_TYPE_PROPAGATION"> 
+                              <div class="size-100">
+                                <div id ="plotlyChart_{{analysis.id}}" class="size-100"></div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class=" graph-pop" *ngIf="riskFactorInfoDiv">
+                    <div class=" col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title graph-pop-titl">{{riskFactorInfo['NAME']}}
+                                    <a class="close text-right" aria-label="Close" (click)="riskFactorInfoDiv = false">
+                                        <span aria-hidden="true">&times;</span>
+                                    </a>
+                                </h5>
+                                <div class="row">
+                                    <div class=" col-md-6 mb-4">
+                                        <span class="title-name-g">ASSET CLASS</span><br>
+                                        <span class="namele--g">{{riskFactorInfo['ASSET_CLASS']}}</span>
+                                    </div>
+                                    <div class=" col-md-6 mb-4">
+                                        <span class="title-name-g">RF CATEGORY</span><br>
+                                        <span class="namele--g">{{riskFactorInfo['CATEGORY']}}</span>
+                                    </div>
+                                    <div class=" col-md-6 mb-4">
+                                        <span class="title-name-g">SHOCK VALUE</span><br>
+                                        <div class="m-0 p-0 col-md-12" *ngFor="let shock of getShocksValues(riskFactorInfo, 'SHOCK')">
+                                            <span class="namele--g col-md-6 pl-0">{{shock[0]}}
+                                            </span>
+                                            <span class="namele--g col-md-6">{{shock[1]}}
+                                            </span>
+                                        </div>
+                                    </div>  
+                                    <div class=" col-md-6 mb-4">
+                                        <span class="title-name-g">STD SHOCK VALUE</span><br>
+                                        <div class="m-0 p-0 col-md-12" *ngFor="let shock of getShocksValues(riskFactorInfo, 'STD_SHOCK')">
+                                            <span class="namele--g col-md-6">{{shock[0]}}
+                                            </span>
+                                            <span class="namele--g col-md-6">{{shock[1]}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class=" col-md-6 mb-4">
+                                        <span class="title-name-g">R SQUARE</span><br>
+                                        <span class="namele--g">{{riskFactorInfo['R_SQ']}}</span>
+                                    </div>
+                                    <div class="col-md-12 mb-4">
+                                        <span class="title-name-g">ADDITIONAL DETAILS</span><br>
+                                        <span class="namele--g">{{riskFactorInfo['rfInfoAdditionalData']}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+      </div>
+      <div class="dotted-divider mt-4"></div>
+      <!--footer buttons end-->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12 p-0">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <div class="next-pre mb-3 mt-4 ">
+                  <button id="output_discard_btn" type="button" class="btn btn-outline cri-btn-outline" (click) = "navigateTo('/scenario')">
+                   <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+                  <!-- <button type="button" class="btn btn-outline cri-btn-outline" (click) = "navigateTo('/scenario')"><i class="fa fa-floppy-o"></i> &nbsp; SAVE & EXIT</button> -->
+                </div>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="next-pre mb-3 mt-4 text-right">
+                  <button id="output_previous_btn" type="button" class="cri-btn btn btn-outline-danger mr-3" (click) = "navigateTo('scenario/scenarioShocks')">
+                    <img src="../../../content/images/svg/previous.png" alt="semicons" class="discard-img">
+                     PREVIOUS</button>
+                </div>
+              </div>
+            </div><!--first row-end-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #overrideShockModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Override Shock</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+          <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+    <div class="col-md-12"> 
+      <div class="form-group row">
+        <label for="staticEmail" class="col-sm-4 col-form-label">Ticker:</label>
+        <div class="col-sm-8">
+          <label for="staticEmail" class="col-form-label disabled pl-0">{{riskFactorForOverrideObj.name}}</label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputPassword" class="col-sm-4 col-form-label"><span class="text-danger">*</span>  Market shocks:</label>
+        <div class="col-sm-8">
+          <input type="number" [(ngModel)]="overrideMarketShock" class="form-control form-control-sm" onKeyPress="if(this.value.length==10) return false;" placeholder="Shock value" onkeydown="return event.keyCode !== 69" step="0.00000001">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputPassword" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Comment :</label>
+        <div class="col-sm-8">
+            <textarea class="form-control textarea-sc" [(ngModel)]="overrideMarketShockComments" rows="5" placeholder="Shock update" style="resize:none;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="overrideRiskFactorShock();">Override</button>
+    <button class="btn btn-light btn-sm" (click)="cancel();">Cancel</button>
+  </div>
+</ng-template>
+<ng-template #workflowmodal let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+      <h4 class="cri-modal-titles modal-titles ml-4">
+        <span>Review:</span></h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+       <div class="row">
+          <div  class="form-group col-md-8">
+              <div class="row">
+                  <div class="form-group col-md-6" *ngFor="let authority of roleModelsList; let i=index;">
+                      <label class="cri-label" for="review_select_control_{{i}}">{{nameSplitJoin(authority.name)}} <span class="text-danger" *ngIf = "i==0||i==2">*</span></label>
+                      <div class="select-wrapper">
+                      <ng-select [items]="authority.ROLES"  id="review_select_control_{{i}}"
+                          bindLabel = "fullName"
+                          bindValue = "username"
+                          (click)="validateWorkflowUsers($event, i)" 
+                          [disabled]="(designerCanAccess ? null:'true')"
+                          class="designer select-option-ht"
+                          name="{{authority.name}}" 
+                          [(ngModel)]="authority.selected" >
+                      </ng-select>
+                      </div>
+                  </div> 
+              </div> 
+          </div>
+          <div class="form-group  col-md-4">
+                      <label class="cri-label" for="exampleFormControlTextarea1">COMMENTS <span class="text-danger">*</span></label>
+                      <textarea [(ngModel)]="comment"  id="comment" class="form-control textarea-sc2"  rows="7" maxlength="2000" placeholder="Enter yours comments here" style="resize: none;" required></textarea>
+          </div> 
+      </div>
+      <div  class="text-right mt-2 mb-2" [hidden]="!designerCanAccess">
+          <button class="btn btn-danger btn-sm" id="op_sendforreview" (click)="save();"> SEND FOR REVIEW <i class="fa-check-ci-icon" aria-hidden="true"></i></button>
+      </div>
+      <div class="col-md-12 text-right"  *ngIf="selectedScenarioFromAnalysis == null" [hidden]="!(actionButton=='Send For Review' && userCanAccess)">
+          <div class="text-right mt-2 mb-2">
+              <button class="cri-btn btn btn-outline-danger" id="op_reject" (click)="reject();"> REJECT <i class="fa-times-cir-icon" aria-hidden="true"></i></button>
+              <button class="cri-btn btn btn-outline-secondary btn-danger" id="op_sendforreview" (click)="sendForApprove();"> SEND FOR REVIEW <i class="fa-check-ci-icon" aria-hidden="true"></i></i></button>
+          </div>
+      </div>
+      <div *ngIf="selectedScenarioFromAnalysis == null" [hidden]="!(actionButton=='Send For Approval' && userCanAccess)">
+          <div class="text-right mt-2 mb-2">
+              <button class="cri-btn btn btn-outline-danger" id="op_reject" (click)="reject();"> REJECT <i class="fa-times-cir-icon" aria-hidden="true"></i></button>
+              <button class="cri-btn btn btn-outline-secondary btn-danger" id="op_sendforapprove" (click)="sendForApprove();"> SEND FOR APPROVAL <i class="fa-check-ci-icon" aria-hidden="true"></i></button>
+          </div>
+      </div>
+      <div *ngIf="selectedScenarioFromAnalysis == null" [hidden]="!(actionButton=='Approve' && userCanAccess)">
+          <div class="text-right mt-2 mb-2">
+              <button class="cri-btn btn btn-outline-danger" id="op_reject" (click)="reject();"> REJECT <i class="fa-times-cir-icon" aria-hidden="true"></i></button>
+              <button class="cri-btn btn btn-outline-secondary btn-danger" id="op_sendforapprove" (click)="sendForApprove();"> APPROVE <i class="fa-check-ci-icon" aria-hidden="true"></i></button>
+          </div>
+      </div>
+      <div class="dotted-divider"></div>
+      <h6> Activity Report </h6>
+      <div class="table-responsive">
+        <table class="table table-bordered tables-view mb-2" id="output_activity_report">
+          <thead class="thead-light">
+            <tr>
+              <th>Role</th>
+              <th>Name</th>
+              <th>Status</th>
+             <!--  <th>Action</th> -->
+              <th>Comments</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let comment of commentsList">
+              <td>{{comment.userName.toUpperCase()}}</td>
+              <td>{{comment.userId}}</td>
+              <td>{{comment.status}}</td>
+             <!--  <td>{{comment.userRole}}</td> -->
+              <td class = "td-word-break">  {{comment.comments}}</td>
+              <td>{{comment.lastModifiedDate | date:'yyyy-MM-dd'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+</ng-template>
+
+<ng-template #updateShockValues let-modal>
+  <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+      <p>Shock Template values are updated would you like to update?</p>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success btn-sm" id="op_updateshockVal" (click)="updateShockTemplate('scenario/selectRiskFactor')">Yes</button>
+      <button class="btn btn-light btn-sm" (click)="closeShockTemplate('N')">No</button>
+  </div>
+</ng-template>
+
+
+<ng-template #popupChartModal let-modal>
+  <div class="modal-header">
+    <h5 for="staticEmail" class="modal-title">{{modalHeader}}</h5>
+    <a class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </a>
+  </div>
+  <div class="modal-body grap-analysis">
+    <div class="form-row">
+      <div class="col d-flex align-items-center">
+        <strong *ngIf="false" class="accordion-title analysis-title"></strong>
+      </div>
+      <div class="text-right">
+        <div id="filter-anal" class="select-filter-analysismain" *ngIf="showPopupPlottedRiskfactors && popupPlottedRiskfactors.length > 0">
+            <div class="card select-filter-analysis">
+                <div class="card-body overflow-auto" id="scrool-3">
+                    <ul class="analysis-select2">
+                        <div class="allselect-scenario2">
+                            <ng-container *ngFor="let rf of popupPlottedRiskfactors;let i=index;">
+                                <li class="analysis-chart-legend" *ngIf="rf.rfName.indexOf('_BASE') == -1 " [ngClass]="{'analysis-chart-legend-disable' : !rf.show}" (click) = "showOrHideSeries(rf, popupPlottedRiskfactors, 'POPUP');">
+                                    <span class="b-check" [style.backgroundColor] ="rf.color"></span>{{rf.rfName}}
+                                </li>
+                            </ng-container>
+                        </div>
+                    </ul>
+                    </div>
+            </div>
+        </div>
+        <button  type="button" class="btn btn btn-outline-primary btn-sm sm-icons" (click)="download('POPUP',modalHeader)">
+          <i class="fa-download-icon" aria-hidden="true"></i>
+        </button>
+        <button (click)="showPopupPlottedRiskfactors = !showPopupPlottedRiskfactors" type="button" class="btn btn btn-outline-primary btn-sm sm-icons filter-icon">
+      
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12 size-100" id="plotlyPopupChart"></div>
+  </div>
+</ng-template> 
+
+<ng-template #commentsModal let-modal>
+    <div class="modal-header">
+      <h4 class="cri-modal-titles modal-titles">Activity Report</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="bottom-message" id="scrool-3">
+        <ul class="list-unstyled">
+          <li class="media my-2" *ngFor="let comment of commentsList;">
+            <div class="p-2 user-tr-icon"> <i class="fa-user-icon fx-2" aria-hidden="true"></i> </div>
+            <div class="media-body ml-3">
+              <h6 class="mt-0 mb-1">{{comment.userId}}</h6>
+              <small class="date-time">{{comment.lastModifiedDate | date :'medium'}}</small>&nbsp;
+              <small class="date-time">{{comment.status}}</small>
+              <p>{{comment.comments}}</p>
+            </div>
+          </li>
+        </ul>
+        <i></i>
+      </div>
+      <div class="dotted-divider mb-1"></div>
+      <div class="bottom-message" id="scrool-3">
+        <ul class="list-unstyled">
+          <li class="media " *ngFor="let comment of activityLog;">
+            <div class="p-2 user-tr-icon">
+              <div class="media-body">
+              <small class="mt-0 mb-1">{{comment.userId}} overrided shock on {{comment.createdDate | date :'medium'}} </small>
+              <small class="date-time"></small>&nbsp;
+              <p class="mt-0 mb-1 background-comment">{{comment.riskfactor}} from {{comment.oldValue}} to {{comment.newValue}}<ng-container *ngIf="comment.period != 'Shock'"> for Period {{comment.period}}</ng-container></p>
+              <p>{{comment.comment}}</p>
+            </div>
+          </li>
+        </ul>
+        <i></i>
+      </div>
+    </div>
+  </ng-template>

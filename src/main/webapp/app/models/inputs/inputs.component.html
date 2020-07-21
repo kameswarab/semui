@@ -1,0 +1,66 @@
+<div class="cri-inner-container">
+    <div class="col-md-12">
+      <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess">
+        <i class="fa-check"></i> {{displaySuccessMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+        <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <model-tabs [selectedTab]="3" [status]="33"></model-tabs>
+    <!-- <h5>Inputs Layout JSON</h5> -->
+    <div class="row mt-2 input-row-box">
+        <div class="col-md-6 input-rm-table"> 
+              <div *ngFor = "let modelData of modelsData" class="table-view-rmodel m-1" id="rscroll">
+                <!-- <div>{{modelData.outerLabel}}</div> -->
+                  <table class="table table-bordered tables-view table-resizable">
+                      <thead class="tables-head">
+                          <th>Field Name</th>
+                          <th>Field Type</th>
+                          <th>Is Mandatory</th>
+                      </thead>
+                    <tbody>
+                      <tr *ngFor = "let data of modelData.inputJson">
+                          <td>{{data.fieldName}}</td>
+                          <td>{{data.fieldType}}</td>
+                          <td>{{data.isMandatory}}</td>
+                      </tr>
+                  </tbody>
+                  </table>
+              </div>
+        </div>
+        <div class="col-md-6 ag-rm-grid">
+          <div class="ag-rmodel-codev m-1" id="rscroll">
+              <div>
+                  <ngx-json-viewer [json]="modelsData"></ngx-json-viewer>
+             </div>
+          </div>
+               
+        </div>
+    </div>
+    
+    <div class="mt-5">
+        <div class="row">
+            <div class="col-md-3 text-left"> 
+              </div>
+            <div class="col-md-9 text-right"> 
+                <button type="button" id="back" class=" btn btn-danger" (click)="backtoEditor()">
+                    <img src="../../../content/images/svg/previous2.png" alt="sem-icons"> BACK</button>
+        <button type="button" id="discard" class=" btn btn-danger" (click)="navigatetoModels()">
+          <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+    
+              <button id="next" (click)="nexttoOutput();" type="button" class="cri-btn btn btn-danger">Next &nbsp; 
+                 <img src="../../../content/images/svg/next.png" alt="sem-icons"></button>
+                
+                </div>
+        </div>
+    </div>
+</div>

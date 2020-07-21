@@ -1,0 +1,96 @@
+<div class="cri-inner-container">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-8 mb-3">
+            <h1 class="cri-main-heading mt-2">
+               <img src="../../content/images/svg/datautility-heading.png" alt="semicons">
+
+                <strong class="ml-1 color9" routerLink="/dataUtility">  Data Utility </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1 color9"  (click)="navigateToRegularityInfo()" > Regulatory Risk Factor Management </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1"> Bulk Edit </strong>
+
+            </h1>
+        </div>
+        <div class="col-md-12">
+            <div class="header-title"></div>
+        </div>
+
+    </div>
+
+
+    <div class="row col-md-12">
+
+
+        <div class="col-sm p-0 col-md-3 mr-2">
+            <label class="customlabel">SELECT REGULATORY TYPE</label>
+            <div class="select-wrapper bulk-select">
+                <ng-select [items]="regMapList" bindLabel="item_text" bindValue="item_id" appendTo="body" placeholder="Select Regulator Type" [(ngModel)]="regTypeId">
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-md-12">
+                <metadata-filter  [filtersData]="createFilter" [masterDataObjForFilters]="masterDataObjForFilters" (loadMetaData)="loadMetaDataByAppliedFilter($event)" (clearMetaData)="clearMetaData()" (errorMessage)="showFilterComponentMessage($event)"> </metadata-filter>
+        </div>
+     
+        <div class="col-md-2"></div>
+
+    </div>
+  
+    <div class="row">
+            <div class="col-md-12" *ngIf="filtersApplied">
+                <div id="viewSpreadSheet" class="sample-spreadsheets" style="min-height: 400px;"></div>
+            </div>
+            <div class="col-md-12" *ngIf="!filtersApplied">
+                <div class="blur">
+                    <img src="../../content/images/spreadsheet.jpg">
+                </div>
+    
+            </div>
+            <div class="customtitle2 positioncenter2 bolder" *ngIf="!filtersApplied">
+                <i class="info-icon-2 error-icon" aria-hidden="true"></i>Use Filter To View Table
+            </div>
+    </div>
+    <div class="dotted-divider mt-4 mb-2" *ngIf="filtersApplied"></div>
+  
+   
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-row mb-0">
+
+                <div class="form-group col-md-6 mb-0">
+
+                </div>
+
+                <div class="form-group col-md-6 pr-0 mb-0" *ngIf="dataList.length>0">
+                    <div class="next-pre mb-3 mt-3 text-right pr-0">
+                        <button type="button" class="cri-btn btn btn-outline-danger mr-3" (click)="navigateToRegularityInfo()">
+                            <img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">
+                                DISCARD</button>
+                        <button type="button" class="cri-btn btn btn-outline-danger btn-danger" (click)="saveBulkRegulatorData()" routerLink="/dataUtility/regulatorinfo/bulkRegulatoryMapping">
+                            <img src="../../content/images/svg/save.png" alt="semicons">
+                                SAVE </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

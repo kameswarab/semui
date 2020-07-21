@@ -1,0 +1,320 @@
+<div class="cri-inner-container">
+  <div class="row">
+    <div class="col-md-6" id="cri-main-heading-id">
+        <h1 class="cri-main-heading">
+           <img  src="../../../content/images/svg/scenario-library-heading.png" alt="Sem-icons">
+            Scenario Library </h1>    
+      
+    </div><!--hearder-title end-->
+    <div class="col-md-6"> </div> <!--for button on right-->
+  </div>
+  <!--Scenario Analysis start-->
+  <div class=" row mt-3 mb-4 p-0">
+    <div class="col pr-0">
+      <div id="scenario-creation" class="card cri-cards" [ngClass]="{'cri-cards-active': cardActive == 'ALL' }" (click)="cardClickFunction('ALL');">
+        <div class="card-body cri-card-body d-flex flex-row card-sl">
+          <div class="p-2"> <strong class="st-num">{{scenarioCreated}}</strong> </div>
+          <div class="p-2"><small class="title2">Scenarios Created</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col pr-0">
+      <div id="scenario-completion" class="card cri-cards" [ngClass]="{'cri-cards-active': cardActive == scenarioCompletedStatus }" (click)="cardClickFunction(scenarioCompletedStatus);">
+        <div class="card-body cri-card-body d-flex flex-row card-sl">
+          <div class="p-2"> <strong class="st-num">{{scenarioCompleted}}</strong> </div>
+          <div class="p-2"><small class="title2">Scenarios Completed</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col pr-0">
+      <div class="card cri-cards" [ngClass]="{'cri-cards-active': cardActive == scenarioInProgressStatus }" (click)="cardClickFunction(scenarioInProgressStatus);">
+        <div id="scenario-inProgress" class="card-body cri-card-body d-flex flex-row card-sl">
+          <div class="p-2"> <strong class="st-num">{{scenarioInProgress}}</strong> </div>
+          <div class="p-2"><small class="title2">Scenarios In Progress</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col pr-0">
+      <div class="card cri-cards" [ngClass]="{'cri-cards-active': cardActive == scenarioUnderReviewStatus }" (click)="cardClickFunction(scenarioUnderReviewStatus);">
+        <div id="scenario-underReview" class="card-body cri-card-body d-flex flex-row card-sl">
+          <div class="p-2"><strong class="st-num">{{scenarioUnderReview}}</strong> </div>
+          <div class="p-2"><small class="title2">Scenarios Under Review/In Approval</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card cri-cards" [ngClass]="{'cri-cards-active': cardActive == scenarioRejectedStatus }" (click)="cardClickFunction(scenarioRejectedStatus);">
+        <div id="scenario-rejection" class="card-body cri-card-body d-flex flex-row card-sl">
+          <div class="p-2"><strong class="st-num">{{scenarioRejected}}</strong></div>
+          <div class="p-2"><small class="title2">Scenarios Rejected</small></div>
+        </div>
+      </div>
+    </div>
+  </div><!--Scenario Analysis row End-->
+  <!--Filter Start-->
+  <div class="row col-md-10 mt-2 mb-3">
+    <div class="col-md-3 p-0">
+      <section id="search">
+        <label for="search-input"><i class="fa-search-icon" aria-hidden="true"></i><span class="sr-only">Search Scenarios</span></label>
+        <input id="search-input" class="form-control input-lg" placeholder="search scenarios" (keyup)="filterCheckboxChange($event,'SEARCH_STR',null)" [(ngModel)]="createFilter['SEARCH_STR'][0]" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+      </section>
+    </div>
+    <div class="col p-0">
+      <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['SCENARIO_TYPE'] && createFilter['SCENARIO_TYPE'].length>0}">
+        <li ngbDropdown class="nav-item dropdown pointer">
+          <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle>
+            <span>Scenario Type</span> 
+          </a>
+          <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+            <li *ngFor="let master of filters['SCENARIO_TYPE']">
+            <a class="dropdown-item">
+                <span class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'SCENARIO_TYPE',master)" [checked]="createFilter['SCENARIO_TYPE'] && createFilter['SCENARIO_TYPE'].indexOf(master) != -1" id="SCENARIO_TYPE_{{master}}">
+                    <label class="custom-control-label" for="SCENARIO_TYPE_{{master}}">{{master}}</label>
+                  </span>
+                </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="col p-0">
+      <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['CREATED_DATE'] && createFilter['CREATED_DATE'].length>0}">
+        <li ngbDropdown class="nav-item dropdown pointer" >
+          <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+            <span>Date Created</span>
+          </a>
+          <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+            <li *ngFor="let master of filters['CREATED_DATE']">
+            <a class="dropdown-item">
+                <span class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'CREATED_DATE',master)" [checked]="createFilter['CREATED_DATE'] && createFilter['CREATED_DATE'].indexOf(master) != -1" id="CREATED_DATE_{{master}}">
+                    <label class="custom-control-label" for="CREATED_DATE_{{master}}">{{master}}</label>
+                  </span>
+                </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="col p-0">
+      <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['STATUS'] && createFilter['STATUS'].length>0}">
+        <li ngbDropdown class="nav-item dropdown pointer">
+          <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle>
+            <span>Status</span> 
+          </a>
+          <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+            <li *ngFor="let master of filters['STATUS']">
+            <a class="dropdown-item">
+                <span class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'STATUS',master)" [checked]="createFilter['STATUS'] && createFilter['STATUS'].indexOf(master) != -1" id="STATUS_{{master}}">
+                    <label class="custom-control-label" for="STATUS_{{master}}">{{master}}</label>
+                  </span>
+                </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="col p-0">
+      <ul class="searchbox" [ngClass]="{'filt-icon': filterIcon}">
+        <li ngbDropdown class="nav-item dropdown pointer">
+          <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+            <span>More</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-large row" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+            <li class="col">
+              <ul class="drop-lag-min">
+                <li class="dropdown-header">Classification</li>
+                <li *ngFor="let master of filters['CLASSIFICATION']">
+                  <a class="dropdown-item">
+                    <span class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'CLASSIFICATION',master)" [checked]="createFilter['CLASSIFICATION'] && createFilter['CLASSIFICATION'].indexOf(master) != -1" id="CLASSIFICATION_{{master}}">
+                      <label class="custom-control-label" for="CLASSIFICATION_{{master}}">{{master}}</label>
+                      </span>
+                    </a>
+                  </li>
+              </ul>
+            </li>
+            <li class="col">
+              <ul class="drop-lag-min">
+                <li class="dropdown-header">Severity</li>
+                <li *ngFor="let master of filters['SEVERITY']">
+                  <a class="dropdown-item">
+                    <span class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'SEVERITY',master)" [checked]="createFilter['SEVERITY'] && createFilter['SEVERITY'].indexOf(master) != -1" id="SEVERITY_{{master}}">
+                      <label class="custom-control-label" for="SEVERITY_{{master}}">{{master}}</label>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="col-sm-1 p-0">
+      <i *ngIf="filtersApplied" (click)='resetFilters();' class="filter-icon filter-clear" aria-hidden="true">
+          <i class="fa-times-icon-2" aria-hidden="true"></i>
+      </i>
+    </div>
+  </div><!--row end-->
+  <!--  -->
+  <div class="col-md-3 text-right btn-scena" id="new-scenario-create">
+    <button type="button" class="btn btn-outline-primary sm-icons mr-2 plus-circle-icon" (click)="navigateToScenario(null)">NEW SCENARIO</button>
+  </div>
+  <!--Filter End-->
+  <!--table start-->
+  <div class="row ">
+ 
+    <div class="table-start table-responsive col-md-12">
+      <table class="table table-bordered tables-view mb-2 ">
+        <thead class="tables-head">
+          <tr>
+            <th scope="col" class="scer-name">Scenario Name</th>
+            <th scope="col">Status</th>
+            <th scope="col">Last Modified</th>
+            <th scope="col" class="tdb-r">Description</th>
+            <th scope="col" class="tdb-r"></th>
+            <th scope="col" class="tdb-r" ></th>
+          </tr>
+        </thead>
+        <tbody class="tables-boby">
+          <tr *ngIf="!records || records.length == 0" class="no_data_found" >
+              <td [colSpan]="6">No Data Found</td>
+          </tr>
+          <ng-container *ngFor="let record of recordsSub; let i=index;">
+            <tr [ngClass]="{'colspan-cri':record['COLLAPSED']}">
+              <td class="tdbreak">{{record['NAME']}}
+                  <ul class="progras">
+                      <li [ngClass]="{'done':record['STATUS_ID'] > 1,'active':record['STATUS_ID'] == 1}"></li>
+                      <li [ngClass]="{'done':record['STATUS_ID'] > 2,'active':record['STATUS_ID'] == 2}"></li>
+                      <li [ngClass]="{'done':record['STATUS_ID'] > 3,'active':record['STATUS_ID'] == 3}"></li>
+                      <li [ngClass]="{'done':record['STATUS_ID'] > 4,'active':record['STATUS_ID'] == 4}"></li>
+                  </ul>
+              </td>
+              <td><span class="badge cri-badge" [ngClass]="{'badge-primary':record['STATUS'] === scenarioInProgressStatus,'under-review':record['STATUS'] === scenarioUnderReviewStatus,'in-approval':record['STATUS'] === scenarioInApprovalStatus,'danger-pro':record['STATUS'] === scenarioRejectedStatus,'complete':record['STATUS'] === scenarioCompletedStatus}">{{record['STATUS']}}</span></td>
+              <td>{{record['LAST_MODIFIED_DATE'] | date:'MM/dd/yyyy HH:mm'}}</td>
+              <td class="tdbreak tdb-r text-overlap">{{record['DESCRIPTION']}}</td>
+              <td class="tdb-r">
+                <span class="del-edit ">
+                    <i (click)="navigateToScenario(record);" id="scenario_edit_{{i}}">
+                        <img  src="../../../content/images/svg/edit.png" alt="Sem-icons">
+                    </i>
+                    <i *ngIf="record['ISDELETE'] !=null" id="scenario_delete_{{i}}" (click)="openDeleteDataModal(record);">
+                        <img  src="../../../content/images/svg/delete.png" alt="Sem-icons">
+                      </i>
+                      <!-- <i class="fa fa-pencil mr-3" aria-hidden="true" (click)="navigateToScenario(record);"></i> -->
+                  <!-- <i class="fa fa-trash-o mr-3" aria-hidden="true" *ngIf="record['ISDELETE'] !=null" (click)="openDeleteDataModal(record);"></i> -->
+                 </span>
+              </td>
+              <td class="tdboder-none-l" id="see-details">
+                <strong  (click)="expandDetails(record);" class="collap">See Details 
+                  <i  class="fa ml-3" [ngClass]="{'fa-angle-down':!record['COLLAPSED'],'fa-angle-up':record['COLLAPSED']}" aria-hidden="true"></i>
+                </strong>
+              </td>
+            </tr>
+            <tr *ngIf="record['COLLAPSED']">
+              <td colspan="6" class="tdopen">
+                <ul class="dropdown-tr-menu row p-3" id="scrool-3" >
+                  <li class="col-sm-2 tr-row-li">
+                    <ul class="drop-lag-min">
+                      <li class="dropdown-header">RISK FACTORS SETS</li>
+                      <li>
+                        <h4 class="st-num">{{record['SET_COUNT']}}</h4>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="col-sm-2 tr-row-li-urm p-1">
+                    <ul class="drop-lag-min">
+                      <li class="dropdown-header">DESIGNER(S)</li>
+                      <li class="d-flex flex-row" *ngFor="let user of record['DESIGNERS']">
+                        <div class="p-2 user-tr-icon"> <i class="fa-user-icon fx-2" aria-hidden="true"></i> </div>
+                       <strong class="p-1 tr-ur-name d-flex align-items-center ">{{user.label}}</strong>
+                      </li>
+                      <li class="d-flex flex-row" >
+                        <div class="p-2 user-tr-icon"> <i class="fa-user-icon fx-2" aria-hidden="true"></i> </div>
+                       <strong class="p-1 tr-ur-name d-flex align-items-center ">{{record["CREATED_BY"]}}</strong>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="col-sm-2  tr-row-li-urm p-1">
+                    <ul class="drop-lag-min">
+                      <li class="dropdown-header">BUSINESS OWNER (S)</li>
+                      <li class="d-flex flex-row" *ngFor="let user of record['BUSINESS_USERS']">
+                        <div class="p-2 user-tr-icon"> <i class="fa-user-icon fx-2" aria-hidden="true"></i> </div>
+                        <strong class="p-1 tr-ur-name d-flex align-items-center">{{user.label}}</strong>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="col-sm-2 tr-row-li">
+                    <ul class="drop-lag-min">
+                      <li class="dropdown-header">CLASSIFICATION</li>
+                      <li  class="tr-ur-name">
+                      <b>{{record['CLASSIFICATION']}}</b>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="col-sm-2 tr-row-li">
+                    <ul class="drop-lag-min">
+                      <li class="dropdown-header">SEVERITY</li>
+                      <li class="tr-ur-name">
+                      <b>{{record['SEVERITY']}}</b>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="col-sm-2 tr-row-li">
+                    <ul class="drop-lag-min">
+                      <li class="dropdown-header">SCENARIO TYPE</li>
+                      <li class="tr-ur-name">
+                      <b>{{record['SCENARIO_TYPE']}}</b>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </td>    
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <div class="fotter-btn ">
+        <div class="col-md-12 row ">
+          <div class="col-md-12">
+            <nav class="c-pagination">
+                <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                  <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}">
+                    <a id="set-page" (click)="setPage(pager.currentPage - 1)"><i aria-hidden="true" class="fa-long-arrow-left-icon"></i></a>
+                  </li>
+                  <li *ngFor="let page of pager.pages" class="c-pagination__item">
+                    <a id="active-page" (click)="setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                  </li>
+                  <li class="c-pagination__next" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                    <a id="next-page" (click)="setPage(pager.currentPage + 1)"><i aria-hidden="true" class="fa-long-arrow-right-icon"></i></a>
+                  </li>
+                  <li class="c-pagination__next" id="page-index">
+                    <a><small class="dis-page">Displaying {{pager.startIndex + 1}} to {{pager.endIndex + 1}} Of {{pager.totalItems}} Scenarios</small></a>
+                  </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div><!--responsive-table end-->
+  </div><!--row end-->
+  <!--table end-->
+</div><!--step container-->
+<ng-template #deleteDataModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Delete Scenario</h4>
+    <button id="delete-scenario" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button id="delete-sce-yes" class="btn btn-success btn-sm" (click)="deleteScenario();">Yes</button>
+    <button id="delete-sce-no" class="btn btn-light btn-sm" (click)="cancel();">No</button>
+  </div>
+</ng-template>

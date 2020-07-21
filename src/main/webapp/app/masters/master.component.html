@@ -1,0 +1,418 @@
+<div class="cri-inner-container">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="header-title">
+                <div class="col-md-12 mb-3 p-0">
+                    <h1 class="cri-main-heading ml-1 mt-2">
+                        <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                        <strong class="title-s ml-1 color9" routerLink="/dataUtility"> Data Utility </strong>
+                        <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                        <strong class="title-s ml-1 bolder  "> Master Data Management </strong>
+                    </h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12  text-left">
+            <div class="row">
+                <div class="col-md-3" id="serach_block" *ngIf="!isarrow">
+                    <!-- <label class="customlabel">SELECT MASTER</label> 
+                    <div class="select-wrapper"> 
+                     <select [(ngModel)]="selectedItem" (ngModelChange)="getList($event)" data-live-search="true"
+                            class="form-control m-bootstrap-select m_selectpicker  form-control-sm">
+                            <option value=null>Select Custom Master</option>
+                            <option *ngFor="let child of allMastersList  | orderBy:'label'" [ngValue]="child">
+                                {{child.label}}</option>
+                        </select> 
+                    </div> -->
+                    <label class="customlabel mb-0">Master List</label>
+                    <span class="cri-item-search"> <i _ngcontent-c4="" aria-hidden="true" class="fa-search-icon"></i>
+                        <input type="text" class="form-control" placeholder="Search Master List" autocomplete="off"
+                            [(ngModel)]="label">
+                    </span>
+                    <ul class="mt-2 list-group cri-list list-view" [(ngModel)]="selectedItem" id="scrool-3">
+                        <li class="list-group-item  cri-item " (click)="getList(child)"
+                            *ngFor="let child of allMastersList | orderBy:'label' | searchfilter:label"
+                            [ngClass]="{'active': selectedItem == child}" placement="top"
+                            ngbTooltip="{{child.label}}">{{child.label}}</li>
+                        <!-- <li class="list-group-item  cri-item text-right">See More</li> -->
+                    </ul>
+                </div>
+                <div class="col-md-9" id="table_block">
+                    <span class="float-left expand">
+                        <img src="../../content/images/svg/arrowleft.png" *ngIf="isarrow" placement="top"
+                            ngbTooltip="View list" (click)="expand()" alt="semicons">
+                        <img src="../../content/images/svg/arrowright.png" *ngIf="!isarrow" placement="top"
+                            ngbTooltip="Expand Table View" (click)="expand2()" alt="semicons">
+                    </span>
+                    <div class="m-portlet__body newTabs" *ngIf="selectedItem && records">
+                        <div class="row">
+                            <div class="col-md-12 mb-2 text-right pr-0">
+                                <button class="btn btn-outline-custom btn-sm plus-circle-icon"
+                                    [disabled]="disableButtons" (click)="openCreateOrUpdateModal(createOrUpdateModal)">
+                                    <span class="ml-1 font-weight-bold">ADD DATA</span></button>
+                            </div>
+                        </div>
+                        <!-- <div class="m-widget27 m-portlet-fit--sides">
+                                            <div class="m-widget27__container">
+                                                <ul class="m-widget27__nav-items nav nav-pills" role="tablist">
+                                                <li class="m-widget27__nav-item nav-item">
+                                                    <a class="nav-link" [ngClass]="{'active': selectedTab == 'LIST'}" [class.disabled]="disableButtons" (click)="navigateToTab('LIST')" #listingTabDiv>
+                                                    {{selectedItem.label}}
+                                                    </a>
+                                                </li>
+                                                <li class="m-widget27__nav-item nav-item">
+                                                    <a class="nav-link" [ngClass]="{'active': selectedTab == 'WF'}" [class.disabled]="disableButtons" (click)="navigateToTab('WF')">Pending Approval</a>
+                                                </li>
+                                                <li class="m-widget27__nav-item nav-item">
+                                                    <a class="nav-link" [ngClass]="{'active': selectedTab == 'SEQ'}" [class.disabled]="disableButtons" (click)="navigateToTab('SEQ')">Sequence List</a>
+                                                </li>
+                                                </ul>
+                                            </div>
+                                     </div> -->
+                                     <div class="row mb-3 pl-3" >
+                                        <a *ngIf="selectMstTable" [ngClass]="{disabled:!checkedMTList || checkedMTList.length == 0}" class="mr-3 ie-disable" (click)="openMultipleDeleteDataModal(checkedMTList)">
+                                            <img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img"> DELETE SELECTED</a>
+                                    </div>
+                        <div class="tab-content table-responsive">
+                            <table *ngIf="columns && columns.length != 0 "
+                                class="table table-bordered tables-view mb-2">
+                                <thead>
+                                    <tr class="thead-light">
+                                        <th>Select</th>
+                                        <th class="position-relative master-th"
+                                            *ngFor="let header of headerList;let i=index;" [hidden]="header == 'Id'">
+                                            {{header}}
+                                            <span *ngIf="sortList[i] == 'Y'" class="sorting">
+                                                <a *ngIf="filter.sortMap[columns[i]] == '' || filter.sortMap[columns[i]] == 'ASC'"
+                                                    (click)="updateSortDataMap(columns[i],filter.sortMap[columns[i]],'ASC');"
+                                                    class="sort-down">▾</a>
+                                                <a *ngIf="filter.sortMap[columns[i]] == '' || filter.sortMap[columns[i]] == 'DESC'"
+                                                    (click)="updateSortDataMap(columns[i],filter.sortMap[columns[i]],'DESC');"
+                                                    class="sort-up">▴</a>
+                                            </span>
+                                        </th>
+                                        <th *ngIf="filter.currentTab != 'SEQ'" class="master-th">Action</th>
+                                    </tr>
+                                    <tr class="search_tr" >
+                                        <th class="text-left">
+                                            <span class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" [checked]="selectAllMT" (change)="selectAllChange($event);" id="customCheck_id">
+                                                <label class="custom-control-label" for="customCheck_id">All</label>
+                                               
+                                             </span> 
+                                        </th>
+                                        <th *ngFor="let header of headerList;let i=index;" [hidden]="header == 'Id'">
+                                            <input type="text" name="filterInput" [disabled]="disableButtons"
+                                                *ngIf="filterList[i] == 'Y'"
+                                                (keyup)="updateFilterDataMap(columns[i],$event);" />
+                                        </th>
+                                        <th *ngIf="filter.currentTab != 'SEQ'"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngIf="!records || records.length == 0" class="no_data_found">
+                                        <td [colSpan]="headerList.length + 1">No Data Found</td>
+                                    </tr>
+                                    <tr *ngFor="let record of records">
+                                        <td>
+                                            <span class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" [checked]="checkedMTList.indexOf(record['ID']) != -1" id="customCheck_{{record['ID']}}" (change)="selectMT($event, record['ID']);">
+                                                <label class="custom-control-label" for="customCheck_{{record['ID']}}"></label>
+                                            </span> 
+                                        </td>
+                                        <td *ngFor="let column of columns" [hidden]="column == 'ID'">
+                                            <!-- <select class="seq_td_select"
+                                                *ngIf="filter.currentTab == 'SEQ' && column == 'SEQ_ORDER'"
+                                                [ngModel]="record[column]"
+                                                (ngModelChange)="onCellValueChanged(record,$event)">
+                                                <option *ngFor="let child of dropdownVal" [ngValue]="child">{{child}}
+                                                </option>
+                                            </select> -->
+                                            <div class="seq_td_select" *ngIf="filter.currentTab == 'SEQ' && column == 'SEQ_ORDER'" >
+                                                <ng-select [items]="dropdownVal" 
+                                                    bindLabel="masterTableColumnList"
+                                                    bindValue="masterTableColumnList" 
+                                                    appendTo="body"
+                                                    (ngModelChange)="onCellValueChanged(record,$event)"
+                                                    [(ngModel)]="record[column]">
+                                                </ng-select>
+                                            </div>
+                                            <span *ngIf="column != 'SEQ_ORDER'">
+                                                {{record[column]}}
+                                            </span>
+                                        </td>
+                                        <td width="15%" *ngIf="filter.currentTab == 'LIST'">
+                                            <button class="btn btn-sm" [disabled]="disableButtons"
+                                                (click)="getUpdateData(record['ID']);" title="Update">
+                                                <img src="../../content/images/svg/edit.png" alt="semicons">
+                                            </button>
+                                            <button class="btn btn-sm" [disabled]="disableButtons"
+                                                (click)="openDeleteDataModal(record['ID']);" data-placement="top"
+                                                data-toggle="tooltip" title="Delete">
+                                                <img src="../../content/images/svg/delete.png" alt="semicons">
+                                            </button>
+                                            <!-- <button class="btn btn-sm" disabled data-placement="top" data-toggle="tooltip" title="Reject"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 1C5.032 1 1 5.032 1 10C1 14.968 5.032 19 10 19C14.968 19 19 14.968 19 10C19 5.032 14.968 1 10 1ZM10 17.2C6.022 17.2 2.8 13.978 2.8 10C2.8 8.335 3.367 6.805 4.321 5.59L14.41 15.679C13.195 16.633 11.665 17.2 10 17.2ZM15.679 14.41L5.59 4.321C6.805 3.367 8.335 2.8 10 2.8C13.978 2.8 17.2 6.022 17.2 10C17.2 11.665 16.633 13.195 15.679 14.41Z" fill="#375889"/>
+                                        </svg></button>
+                                    <button class="btn btn-sm" disabled data-placement="top" data-toggle="tooltip" title="Approve">
+                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M7.09091 13.6364L3.27273 9.81818L2 11.0909L7.09091 16.1818L18 5.27273L16.7273 4L7.09091 13.6364Z" fill="#375889"/>
+                                                    </svg>
+                                        </button> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="no_data_div" *ngIf="!columns || columns.length == 0">
+                                Not Applicable
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fotter-btn ">
+                        <div class="col-md-12 row ">
+                            <div class="col-md-12">
+                                <nav class="c-pagination">
+                                    <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                                        <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}">
+                                            <a href="javascript:void(0)"
+                                                (click)="getMasterDataByPage(pager.currentPage - 1)">
+
+                                                <i aria-hidden="true" class="fa-long-arrow-left-icon"></i>
+                                            </a>
+                                        </li>
+                                        <li *ngFor="let page of pager.pages" class="c-pagination__item">
+                                            <a (click)="getMasterDataByPage(page)"
+                                                [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                                        </li>
+
+                                        <li class="c-pagination__next"
+                                            [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                            <a href="javascript:void(0)"
+                                                (click)="getMasterDataByPage(pager.currentPage + 1)">
+                                                <i aria-hidden="true" class="fa-long-arrow-right-icon"></i>
+                                            </a>
+                                        </li>
+                                        <li class="c-pagination__next">
+                                            <a href="javascript:void(0)">
+                                                <small class="dis-page">Displaying {{pager.startIndex + 1}} to
+                                                    {{pager.endIndex + 1}} Of
+                                                    {{pager.totalItems}} Records</small>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<ng-template #deleteDataModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-sm" (click)="deleteMasterData()">Yes</button>
+        <button class="btn btn-light btn-sm" (click)="cancel()">No</button>
+    </div>
+</ng-template>
+<ng-template #deleteMultipleDataModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-sm" (click)="deleteMultipleMasterData()">Yes</button>
+        <button class="btn btn-light btn-sm" (click)="cancel()">No</button>
+    </div>
+</ng-template>
+<ng-template #approveOrRejectDataModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeApproveOrRejectModalBtn>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <h5 *ngIf="approveFlag">
+            Are you sure, Do you want to approve?</h5>
+        <h5 *ngIf="!approveFlag">
+            Are you sure, Do you want to reject?</h5>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" (click)="approveRecord()">Yes</button>
+        <button class="btn btn-primary" (click)="cancel()">No</button>
+    </div>
+</ng-template>
+
+<ng-template #seqOrderChangeModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <h5>Are you sure, do you want to save sequence?</h5>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" (click)="saveSequence()">Yes</button>
+        <button class="btn btn-primary" (click)="cancel()">No</button>
+    </div>
+</ng-template>
+
+<ng-template #addDataModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" *ngIf="operation" id="modal-basic-title">Add Data : {{selectedItem.label}}</h5>
+        <h5 class="modal-title" *ngIf="!operation" id="modal-basic-title">Update Data : {{selectedItem.label}}</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body popup-select">
+        <div *ngIf="masterList && masterList.length != 0 && filter.currentTab == 'LIST'">
+            <form class="row" name="genericmaster" role="form" novalidate #genericmaster="ngForm">
+                <ng-container *ngFor="let master of masterList;let i=index;">
+                    <div *ngIf="master.columnType =='text'" class="col-md-4">
+                        <label class="customlabel">{{master.displayColumnName}}</label>
+                        <input type="text" #inputText="ngModel" data-placeholder="{{master.displayColumnName}}"
+                            class="form-control form-control-sm" name="{{master.columnName}}"
+                            [(ngModel)]="master.columnValue" [required]="master.required == 'Y'" minlength="1"
+                            maxlength="100" pattern="^[ _'.A-Za-z0-9-]{1,4000}$" />
+                        <div *ngIf="(this.formSubmitAttempt || inputText.dirty) && inputText.invalid">
+                            <small class="form-text text-danger" *ngIf="inputText.errors.required">This field is
+                                required.</small>
+                            <small class="form-text text-danger" *ngIf="inputText.errors.maxlength">This field cannot be
+                                longer than 100 characters.</small>
+                        </div>
+                    </div>
+                    <div *ngIf="master.columnType =='number'" class="col-md-4">
+                        <label class="customlabel">{{master.displayColumnName}}</label>
+                        <input type="number" #inputText="ngModel" data-placeholder="{{master.displayColumnName}}"
+                            class="form-control form-control-sm" name="{{master.columnName}}"
+                            [(ngModel)]="master.columnValue" [required]="master.required == 'Y'" minlength="1"
+                            pattern="^[0-9]*$" />
+                        <div *ngIf="(this.formSubmitAttempt || inputText.dirty) && inputText.invalid">
+                            <small class="form-text text-danger" *ngIf="inputText.errors.required">This field is
+                                required.</small>
+                            <small class="form-text text-danger" *ngIf="inputText.errors.pattern">This field allows only
+                                valid number.</small>
+                        </div>
+                    </div>
+                    <div *ngIf="master.columnType == 'date'" class="col-md-4">
+                        <label class="customlabel">{{master.displayColumnName}}</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control form-control-sm" #selectdate="ngModel"
+                                placeholder="yyyy-mm-dd" name="{{master.columnName}}" [(ngModel)]="master.columnValue"
+                                [required]="master.required == 'Y'">
+                        </div>
+                        <div *ngIf="(this.formSubmitAttempt || selectdate.dirty) && selectdate.invalid">
+                            <small class="form-text text-danger" *ngIf="selectdate.errors.required">This field is
+                                required.</small>
+                        </div>
+                    </div>
+                    <div *ngIf="master.columnType == 'radiostatic'" class="col-md-4">
+                        <label class="customlabel">{{master.displayColumnName}}</label>
+                        <div class="m-radio-inline">
+                            <label class="m-radio">
+                                <input type="radio" name="{{master.columnName}}" #selectRadio="ngModel"
+                                    [(ngModel)]="master.columnValue" [value]="'1'" [required]="master.required == 'Y'">
+                                Yes
+                                <span></span>
+                            </label>
+                            <label class="m-radio">
+                                <input type="radio" name="{{master.columnName}}" #selectRadio="ngModel"
+                                    [(ngModel)]="master.columnValue" [value]="'0'" [required]="master.required == 'Y'">
+                                No
+                                <span></span>
+                            </label>
+                        </div>
+                        <div *ngIf="(this.formSubmitAttempt || selectRadio.dirty) && selectRadio.invalid">
+                            <small class="form-text text-danger" *ngIf="selectRadio.errors.required">This field is
+                                required.</small>
+                        </div>
+                    </div>
+                    <div *ngIf="master.columnType == 'select'" class="col-md-4">
+                        <label class="customlabel">{{master.displayColumnName}}</label>
+                        <div class="select-wrapper"  id="m_select2_{{i}}">
+                           <!--  <select [(ngModel)]="master.columnValue" #selectText="ngModel" data-live-search="true"
+                                class="form-control form-control-sm m-bootstrap-select m_selectpicker"
+                                id="m_select2_{{i}}" name="param_{{master.columnName}}" data-placeholder="State Master"
+                                [required]="master.required == 'Y'">
+                                <option value="" disabled>Select {{master.displayColumnName}}</option>
+                                <option *ngFor="let child of master.dropdownList | orderBy:'itemName'"
+                                    value={{child.id}}>{{child.itemName}}</option>
+                            </select> -->
+                          
+                            <ng-select [items]="master.dropdownList | orderBy:'itemName'"
+                                    #selectText="ngModel" data-live-search="true"
+                                        name="param_{{master.columnName}}" data-placeholder="State Master"
+                                        [required]="master.required == 'Y'"
+                                        bindLabel="itemName"
+                                        bindValue="id"
+                                        placeholder="Select"
+                                        [clearable]="false"
+                                        [(ngModel)]="master.columnValue">
+                            </ng-select>
+
+                        </div>
+                        <div *ngIf="(this.formSubmitAttempt || selectText.dirty) && selectText.invalid">
+                            <small class="form-text text-danger" *ngIf="selectText.errors.required">This field is
+                                required.</small>
+                        </div>
+                    </div>
+
+                </ng-container>
+            </form>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <div class="modal-footer modal-cri-foot mb-3">
+            <button type="button" class=" btn btn-outline-danger" (click)="cancel()"><img
+                    src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+            <button type="button" class=" btn btn-danger mr-2" (click)="updateMasterData()" *ngIf="!operation"><i
+                    class="fa-save-icon" aria-hidden="true"></i> &nbsp;&nbsp;UPDATE</button>
+            <button type="button" class=" btn btn-danger mr-2" (click)="saveMasterData()" *ngIf="operation"><img
+                    src="../../content/images/svg/save.png" alt="semicons">SAVE</button>
+        </div>
+    </div>
+</ng-template>

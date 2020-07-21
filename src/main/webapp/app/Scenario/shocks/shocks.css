@@ -1,0 +1,84 @@
+.current {
+    border: 0px !important;
+}
+.colexp {
+    background: #f9f9f9;
+}
+.red {
+    color: #d90a36 !important;
+}
+
+.bdred {
+    border-color: red;
+}
+
+.btn-secondary {
+    color: #fff !important;
+}
+.labels tr td {
+    padding: 0;
+    overflow: hidden;
+}
+
+.label tr td label {
+    display: block;
+}
+
+[data-toggle='toggle'] {
+    display: none;
+}
+.minusNode,
+.plusNode,
+.fa-edit,
+.fa-times {
+    display: inline;
+    color: #afadad;
+    margin-right: 0.5rem;
+}
+.fa-edit:hover,
+.fa-times:hover {
+    color: #d90a36;
+}
+
+#demo-table tbody label {
+    padding: 0.5rem;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding-left: 0;
+}
+#demo-table th {
+    width: 100%;
+}
+#demo-table label {
+    margin-bottom: 0;
+}
+#demo-table label:hover {
+    cursor: pointer;
+    color: #d90a36;
+}
+#demo-table input,
+#demo-table select {
+    width: 9rem !important;
+}
+.table tbody + tbody {
+    border: none !important;
+}
+#demo-table.table-bordered {
+    border: none;
+}
+#demo-table .badge-secondary {
+    color: #989797;
+    border: 1px solid #cecece;
+    font-size: 0.7rem;
+    font-weight: normal;
+    background: transparent;
+}
+#demo-table td {
+    background: #fff;
+}
+.bg-shockConfig {
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e6e5e5;
+    background-color: rgba(191, 194, 243, 0.15);
+}

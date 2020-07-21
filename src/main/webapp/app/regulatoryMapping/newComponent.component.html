@@ -1,0 +1,11 @@
+<div>
+        <ng-select
+        [items]="params.data.Regulatory_Name"
+        [(ngModel)]="params.data.selectedItems"
+        bindValue="item_id"
+        bindLabel="item_text"
+        appendTo="body"
+        placeholder=""
+        [clearOnBackspace]="false"
+        ></ng-select>
+</div>

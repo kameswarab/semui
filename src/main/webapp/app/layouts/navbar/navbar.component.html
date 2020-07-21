@@ -1,0 +1,261 @@
+<header class="cri-header">
+    <nav class="navbar navbar-expand mb-1 mt-0">
+        <div class="container-fluid">
+            <a class="navbar-brand ml-5 " routerLink="/" (click)="collapseNavbar()">
+                <span *ngIf="themeswitch == 'blacktheme'">
+                 <!--   <img src="../../../content/images/black-logo-main.png" class="img-fluid black-logo-img"
+                        alt="CRISIL"></span>
+                <span *ngIf="themeswitch == 'whitetheme'"> <img src="../../../content/images/Whitem-logo-main.png"
+                        class="img-fluid logo-img" alt="CRISIL"></span> -->
+                <!--  <img src="../../../content/images/White-logo-main.png" class="img-fluid logo-img" alt="CRISIL"> -->
+            </a>
+            <a class="navbar-toggler d-lg-none" href="javascript:void(0);" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation" (click)="toggleNavbar()">
+                <fa-icon icon="bars"></fa-icon>
+            </a>
+            <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed"
+                [ngSwitch]="isAuthenticated()">
+                <ul class="navbar-nav ml-auto mr-2">
+                    <li *jhiHasAnyAuthority="['ROLE_MODEL']"  ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="masters-menu">
+                                        Models
+                                </a>
+                                <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="masters-menu">
+                                    <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                                        <a class="nav-link" [routerLink]="['/Models']">
+                                            Model Workflow
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                                        <a class="nav-link" [routerLink]="['/ModelsList']">
+                                            Model Execution
+                                        </a>
+                                    </li>
+                                </ul>
+                    </li>
+                   <!-- 
+                    <li class="nav-item" routerLinkActive="active">
+                        <div class="themeselector select-wrapper m-nav__link m-dropdown__toggle">
+                            <select name="themeselector" (change)="changetheme($event)">
+                                <option value="whitetheme">White Theme</option>
+                                <option value="blacktheme">Black Theme</option>
+                               
+
+                            </select>
+                        </div>
+                    </li> -->
+
+
+                    <li *jhiHasAnyAuthority="['ROLE_DESIGNER','ROLE_APPROVER','ROLE_REVIEWER']" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                        <a class="nav-link" routerLink="/scenario" (click)="collapseNavbar()">
+                            Scenario Library
+                        </a>
+                    </li>
+
+                    <li *jhiHasAnyAuthority="['ROLE_DESIGNER','ROLE_APPROVER','ROLE_REVIEWER']" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                        <a class="nav-link" routerLink="/model">
+                            Model Library
+                        </a>
+                    </li>
+
+                    <li *jhiHasAnyAuthority="['ROLE_DESIGNER','ROLE_APPROVER','ROLE_REVIEWER']" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                        <a class="nav-link" routerLink="/analysisList">
+                            <span>Analysis</span>
+                        </a>
+                    </li>
+
+                    <li *jhiHasAnyAuthority="['ROLE_DESIGNER','ROLE_APPROVER','ROLE_REVIEWER','ROLE_MASTER','ROLE_DATA_MANAGER']"
+                        class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                        <a class="nav-link" routerLink="/dataUtility">
+                            <span> Data Utility</span>
+                        </a>
+                    </li>
+                    <!-- <li *jhiHasAnyAuthority="'ROLE_ADMIN'" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+                <a class="nav-link" routerLink="/user-management">
+                    <span>User Management</span>
+                </a>
+             </li> -->
+                    <li *jhiHasAnyAuthority="['ROLE_SEM_ADMIN','ROLE_ADMIN']" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: false}">
+                        <a class="nav-link" routerLink="/administrationHome">
+                            <span> Administration</span>
+                        </a>
+                    </li>
+
+                    <li ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">
+
+                        <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);"
+                            id="account-menu">
+                            <i class="fa-user-icon mr-2" aria-hidden="true"></i> <span *ngIf="!getImageUrl()"> </span>
+                            {{user['firstName']}} {{user['lastName']}}
+                        </a>
+                        <ul class="dropdown-menu sign-off" ngbDropdownMenu aria-labelledby="account-menu">
+                            <li>
+                                <a class="dropdown-item" (click)="logout()" id="logout">
+
+                                    Sign out
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" (click)="reloadContext()">
+                                    Reload
+                                </a>
+                            </li>
+                            <li *ngIf="user['typeOfUser'] != 'INTERNAL'">
+                                <a class="dropdown-item" (click)="changePasswordModal(passwordChangeModal);"
+                                    (click)="collapseNavbar()">
+                                    <span>Update Password</span>
+                                </a>
+                            </li>
+                            <!--  <li *ngSwitchCase="false">
+                     <a class="dropdown-item" (click)="login()" id="login">
+                         <fa-icon icon="sign-in-alt" fixedWidth="true"></fa-icon>
+                     Sign in
+                     </a>
+                 </li>  -->
+                        </ul>
+                    </li>
+
+
+                </ul>
+
+
+
+            </div>
+        </div>
+        <!--container-fluid-->
+    </nav>
+
+
+
+    <ng-template #deleteEntityModal let-modal>
+        <div class="modal-header">
+            <h5>Multiple Sessions</h5>
+            <button type="button" class="close" aria-label="Close" (click)="cancel()" #closeDeleteModalBtn>
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body col-md-12">
+            <p>Do you want to continue or terminate the previous sessions?</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-sm btn-primary" (click)="killSessions()" title="Update">Continue</a><a
+                data-action-type="delete" class="btn btn-primary btn-sm" title="Delete" (click)="cancel()">Logout</a>
+        </div>
+    </ng-template>
+
+    <ng-template #iprange let-modal class="alertmodal">
+        <div class="main-view">
+            <h5 class="mb-2 mt-3"><i class="material-icons messageicons">error</i>Your ip address not in accessible
+                range</h5>
+            <div class=" mt-3 ml-4 pl-2"><small class="text-muted">Please contact product support for your ip
+                    configuration.</small></div>
+        </div>
+    </ng-template>
+    <ng-template #passwordChangeModal let-modal class="alertmodal">
+        <div class="cri-modal-h modal-header">
+            <h4 class="cri-modal-titles modal-titles ml-4">Update Password<br>
+                <label class="title-name">For changing the password, please provide the following information</label>
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isError">
+                <i class="fa-exclamation-triangle-icon"></i>{{errorMsg}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isError=false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form name="stage1" role="form" novalidate (ngSubmit)="stage1.valid && changePassword(stage1)"
+                #stage1="ngForm" autocomplete="off">
+                <div class="row col-md-12 pr-0">
+                    <div class="col-md-7">
+                        <div>
+                            <div class="col-12 mt-2">
+                                <label [className]="oldPass.valid ? 'floating-labela' : 'floating-label'">CURRENT
+                                    PASSWORD</label>
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <input [(ngModel)]="oldPassword" id="oldPassword" #oldPass="ngModel"
+                                        name="oldPassword" type="password" class="form-control custominput" required />
+                                </div>
+                                <label *ngIf="(stage1.submitted || oldPass.dirty) && oldPass.invalid" class="errortext">
+                                    <small class="text-danger" *ngIf="oldPass.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class="text-danger" *ngIf="oldPass.errors.pattern">
+                                        This field allows valid text.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <label
+                                    [ngClass]="{'floating-label2': !newPass.dirty ,'floating-label2a': (newPass.dirty && newPass.valid) || (newPass.dirty && newPass.invalid) }">NEW
+                                    PASSWORD</label>
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <input [(ngModel)]="newPassword" id="newPassword" #newPass="ngModel"
+                                        name="newPassword" type="password"
+                                        pattern="((?=.*\d)(?=.*[a-z])(?=.*[\W_]).{8,20})"
+                                        class="form-control custominput" required />
+                                </div>
+                                <label *ngIf="(stage1.submitted || newPass.dirty) && newPass.invalid" class="errortext">
+                                    <small class="text-danger" *ngIf="newPass.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class=" text-danger" *ngIf="newPass.errors.pattern">
+                                        Invalid password format.
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <label
+                                    [ngClass]="{'floating-label3': !confirmPass.dirty ,'floating-label3a': confirmPass.dirty && confirmPass.valid || (confirmPass.dirty && confirmPass.invalid) }">CONFIRM
+                                    PASSWORD</label>
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <input [(ngModel)]="confirmPassword" id="confirmPassword" #confirmPass="ngModel"
+                                        name="confirmPassword" type="password"
+                                        pattern="((?=.*\d)(?=.*[a-z])(?=.*[\W_]).{8,20})"
+                                        class="form-control custominput" required />
+                                </div>
+                                <label *ngIf="(stage1.submitted || confirmPass.dirty) && confirmPass.invalid"
+                                    class="errortext">
+                                    <small class=" text-danger" *ngIf="confirmPass.errors.required">
+                                        This field is required.
+                                    </small>
+                                    <small class="text-danger" *ngIf="confirmPass.errors.pattern">
+                                        Invalid password format.
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 pr-0">
+                        <div class="password-note-text">
+                            <label class="font-weight-bold text-dark">NOTE: Password must comply with the
+                                following</label>
+                            <ul>
+                                <li>Password requires at least 1 lower case character, 1 number, 1 special character and
+                                    must be at least 8 characters and at most 20</li>
+                                <li>Last 5 passwords cannot be reused</li>
+                                <li>Valid characters are A to Z, a to z, 0-9 and characters(!, $, #, %,@,?,%,&,*,-)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right col-md-12 mt-0">
+                    <button tabindex="4" class="btn btn-success" type="submit"><span
+                            class="loginbuttontext">SUBMIT</span>
+                        <span class="rightarrow">&#8594;<span></button>
+                    <a href="javascript:void(0)" class="btn btn-danger"
+                        (click)="modal.dismiss('Cross click');">CANCEL</a>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</header>

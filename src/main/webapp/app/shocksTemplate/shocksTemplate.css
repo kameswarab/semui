@@ -1,0 +1,83 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+
+a:not([href]):not([tabindex]) {
+    color: inherit;
+    text-decoration: none;
+}
+a:not([href]):not([tabindex]):hover,
+a:not([href]):not([tabindex]):focus {
+    color: inherit;
+    text-decoration: none;
+}
+a:not([href]):not([tabindex]):focus {
+    outline: 0;
+}
+.la-edit:before {
+    content: '\f1c1';
+    color: #5281e8;
+}
+
+td a {
+    color: #f00;
+}
+
+tr.search_tr th,
+tr.page_details_tr th {
+    background: transparent;
+    text-align: right;
+}
+tr.search_tr th,
+tr.page_details_tr th {
+    padding: 5px;
+}
+tr.page_details_tr th select,
+tr.page_details_tr th input {
+    height: 20px;
+    width: 50px;
+    font-size: 12px;
+}
+tr.page_details_tr th span {
+    font-size: 12px;
+}
+tr.search_tr th input {
+    height: 20px;
+    width: 100%;
+}
+.no_data_div {
+    padding: 5px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+.no_data_found {
+    text-align: center;
+}
+
+.seq_td_select {
+    width: 100%;
+    border: none;
+}
+.btn-addData {
+    position: absolute;
+    right: 0;
+}
+.tem-addData {
+    position: relative;
+    left: 60px;
+}
+
+.master-config {
+    background-color: #f8f6f6fb;
+    font-weight: 600;
+    padding: 5px 10px;
+    overflow: hidden;
+    border: 1px solid #eaeaea;
+    margin-bottom: 1rem;
+}
+.bg-shockTemplate {
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e6e5e5;
+    background-color: rgba(191, 194, 243, 0.15);
+}

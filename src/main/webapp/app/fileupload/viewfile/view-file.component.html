@@ -1,0 +1,332 @@
+<div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+                <i class="fa-check"></i> {{displaySuccessMessage}}
+                <button id="suc-close-id" type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                        <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+</div>
+<div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                <button id="failure-close-id" type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                        <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+</div>
+
+
+<div class="cri-inner-container">
+        <div class="row mb-3">
+                <div *ngIf = "uploadType == 'marketData'"class="col-md-12 pl-0">
+                        <h1 class="cri-main-heading ml-1 mt-2" id="cri-main-heading-id">
+                            <img src="../../../content/images/svg/datautility-heading.png" alt="sem-icons">
+
+                                <strong class="title-s ml-1 color9" routerLink="/dataUtility" id="data-utility-id"> Data Utility </strong>
+                                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                                <strong class="title-s ml-1 color9" (click)="backToFileUpload()" id="market-data-id"> Market Data Management
+                                </strong>
+                                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                                <strong class="title-s ml-1 bolder"> {{fileName}} </strong>
+
+
+                        </h1>
+
+                </div>
+                <div *ngIf = "uploadType != 'marketData'"class="col-md-12 pl-0">
+                        <h1 class="cri-main-heading ml-1 mt-2">
+                            <img src="../../../content/images/svg/datautility-heading.png" alt="sem-icons">
+
+                                <strong class="title-s ml-1 color9" routerLink="/dataUtility"> Data Utility </strong>
+                                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                                <strong class="title-s ml-1 color9" (click)="backToFileUpload()">  Upload Regulatory Risk Factor
+                                </strong>
+                                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                                <strong class="title-s ml-1 bolder"> {{fileName}} </strong>
+
+
+                        </h1>
+
+                </div>
+
+
+        </div>
+
+
+        <div class="row mt-4 mb-5">
+                <div class="col-md-12 ">
+                        <div class="row">
+                                <div class="col-md-4 shadowbox">
+                                        <div class="side-row4">
+                                                <div class="col-md-12 mt-4">
+                                                        <strong class="customtitle2">MAP DATA TO COLUMN OR ROW</strong>
+                                                        <label class="customlabel">Select parameter to be
+                                                                configured</label>
+                                                </div>
+                                                <div class="m-data" id="scrool-3">
+                                                        <ng-container *ngFor="let columns of columnsData">
+                                                                <div class="col-md-12 mt-3  ">
+                                                                        <div class="custom-control custom-radio">
+                                                                                <input type="radio" id="dataPosition"
+                                                                                        name="dataPosition"
+                                                                                        class="custom-control-input">
+                                                                                <label class="custom-control-label customtitle3 pt-1"
+                                                                                        for="dataPosition">{{columns.discription}}
+                                                                                        <i class="fa-check-ci-icon text-success ml-1"
+                                                                                                aria-hidden="true"></i>
+                                                                                </label>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-md-12 mt-2">
+                                                                        <div class="row">
+                                                                                <div class="col-md-4 pr-0">
+                                                                                        <label
+                                                                                                class="customlabel">ROW/COLUMN</label>
+                                                                                        <div class="select-wrapper col-d-arrow">
+
+                                                                                                <!-- <select id="dataPosition"
+                                                                                                        class="form-control form-control-sm "
+                                                                                                        [(ngModel)]="columns.dataPosition">
+                                                                                                        <option
+                                                                                                                value="column">
+                                                                                                                Column
+                                                                                                        </option>
+                                                                                                        <option
+                                                                                                                value="row">
+                                                                                                                Row
+                                                                                                        </option>
+                                                                                                </select> -->
+                                                                                                <ng-select
+                                                                                                        [items]="rowOrColumnList"
+                                                                                                        id="dataPosition"
+                                                                                                        bindLabel="label"
+                                                                                                        bindValue="label"
+                                                                                                        appendTo="body"
+                                                                                                        [clearable]="true"
+                                                                                                        [(ngModel)]="columns.dataPosition">
+                                                                                            </ng-select> 
+                                                                                        </div>
+                                                                                </div>
+
+                                                                                <div class="col-md-4 pr-0">
+                                                                                        <label class="customlabel">DATA
+                                                                                                IN</label>
+                                                                                        <input id="dataId"
+                                                                                                class="form-control form-control-sm "
+                                                                                                name="dataIn"
+                                                                                                [(ngModel)]="columns.dataIn" />
+                                                                                </div>
+                                                                                <div class="col-md-4">
+                                                                                        <label class="customlabel">DATA
+                                                                                                FROM</label>
+                                                                                        <input id="dataFrom"
+                                                                                                name="dataPosition"
+                                                                                                class="form-control form-control-sm "
+                                                                                                name="dataFrom"
+                                                                                                [(ngModel)]="columns.dataFrom" />
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+
+                                                        </ng-container>
+                                                </div>
+
+                                                <div class="col-md-12 mt-3">
+                                                        <button class="btn btn-danger fullbutton"
+                                                                *ngIf="validateData == true" id="validateData"
+                                                                (click)="validateFile()"
+                                                                name="validateFileData">VALIDATE AND SAVE</button>
+                                                </div>
+                                                <div class="col-md-12 mt-3 text-center mb-3">
+                                                        <span class="color89 cs-pointer" (click)="backToFileUpload()" id="discard-id">
+                                                             <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">
+                                                                DISCARD
+                                                        </span>
+                                                </div>
+                                        </div>
+
+                                </div>
+                                <div class="col-md-8 pl-4 m-0">
+                                        <div class="spreadsheet" id="spreadsheet-id">
+                                                <div *ngFor="let message of validationMessages | keyvalue" class="mb-2">
+                                                        <span class="text-danger small"><em> {{message.value}}
+                                                                </em></span>
+                                                </div>
+
+                                                <div *ngFor="let message of insertColumnValidationMessages | keyvalue"
+                                                        class="mb-2">
+                                                        <span class="text-warning small"><em> {{message.value}}
+                                                                </em></span>
+                                                </div>
+                                                <div class="opbox" id="viewFileData" style="height:460px;"></div>
+
+                                        </div>
+                                </div>
+                                <!--row End-->
+                        </div>
+                        <div class="clearfix"></div>
+                </div>
+
+        </div>
+
+</div>
+
+<ng-template #ValidationDataModal let-modal>
+        <div class="modal-header">
+                <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+                <button id="delete-model-id" type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+                        <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+        <div class="modal-body">
+                <p>{{validationWaringMsg}}</p>
+        </div>
+        <div class="modal-footer">
+                <button id="yes-saveData" class="btn btn-success btn-sm" (click)="saveDataAfterValidationConfirmation()">Yes</button>
+                <button id="no-saveData" class="btn btn-light btn-sm" (click)="cancel()">No</button>
+        </div>
+</ng-template>
+
+
+
+<!-- <div class="cri-inner-container">
+<div class="row mb-3">
+                <div class="col-md-8 pl-0">
+              <h1 class="cri-main-heading mt-2">
+                    <svg width="34" height="35" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.3984 25.9946V10.4053H26.4429V17.0864" stroke="#375889" stroke-width="1.5"
+                            stroke-miterlimit="10" stroke-linejoin="round" />
+                        <path d="M11.3359 31.9334V1.49707H17.3804V31.9334" stroke="#375889" stroke-width="1.5"
+                            stroke-miterlimit="10" stroke-linejoin="round" />
+                        <path d="M2.26562 31.9336V16.3442H8.31007V31.9336" stroke="#375889" stroke-width="1.5"
+                            stroke-miterlimit="10" stroke-linejoin="round" />
+                        <path d="M0 33.418H34" stroke="#375889" stroke-width="1.5" stroke-miterlimit="10"
+                            stroke-linejoin="round" />
+                        <path
+                            d="M26.4441 26.737C28.1819 26.737 29.4663 25.3265 29.4663 23.5449V22.5056C29.4663 20.7239 28.1819 19.3135 26.4441 19.3135C24.7063 19.3135 23.4219 20.7239 23.4219 22.5056V23.5449C23.4219 25.3265 24.7063 26.737 26.4441 26.737Z"
+                            stroke="#FD7070" stroke-width="1.5" stroke-miterlimit="10" />
+                        <path
+                            d="M32.4873 31.9333V29.7062C32.4873 27.6276 28.4829 26.7368 26.4429 26.7368C24.4029 26.7368 20.3984 27.6276 20.3984 29.7062V31.9333"
+                            stroke="#FD7070" stroke-width="1.5" stroke-miterlimit="10" />
+                    </svg>
+        
+                    <strong class="title-s ml-1 color9"> Data Utility </strong>
+                    <i class="fa fa-angle-right ml-1  rightangleicon" aria-hidden="true"></i>
+                    <strong class="title-s ml-1 "> Market Data Management </strong>
+                    <i class="fa fa-angle-right ml-1  rightangleicon" aria-hidden="true"></i>
+                    <strong class="title-s ml-1 bolder"> Market_data_file_names_can_be_long_2019 </strong>
+        </h1>
+                </div>
+                <div class="col-md-4 pr-0 text-right"> -->
+<!-- <button class="btn btn-outline-primary btn-sm sm-icons mt-3" (click)="upload()"> Upload</button> -->
+<!-- </div>
+        
+            </div>
+
+<div class="contentBox"> -->
+<!-- <div class="">
+                <div class="alert alert-success" *ngIf="isSuccess==true">
+                {{displaySuccessMessage}}
+                </div>
+                <div class="alert alert-danger" *ngIf="isFailure==true">
+                {{displayFailureMessage}}
+                </div> 
+        </div>  -->
+<!-- <div class="col-md-12">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+                          <i class="fa fa-check"></i> {{displaySuccessMessage}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                      </div>
+                      <div class="col-md-12"> 
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                          <i class="fa fa-exclamation-triangle"></i> {{displayFailureMessage}}
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                      </div>
+        <div class="row">
+                <div class="col-md-8">
+                       <h5>View Uploaded File Data</h5>  -->
+<!-- </div>
+                <div class="col-md-4 text-right">
+                        <a class="btn btn-danger btn-sm btnBlock" (click)="backToFileUpload()">Back</a> 
+                </div>
+        </div>
+        <div class="mb-3"> </div>
+        <div class="row">
+                <div class="col-md-4"> -->
+
+<!-- <label><strong>Column Mapping For Data </strong></label>
+                                <button *ngIf="validateData == true" id="validateData" (click)="validateFile()" name="validateFileData" class="btn btn-sm btn-outline-success float-right">Validate And Save Data</button> -->
+<!-- <button *ngIf="insertData == true" id="saveData" (click)="saveData()" name="saveData" class="btn btn-sm btn-success">Save Data</button>     -->
+<!--         
+                                <table class="table table-sm table-borderless mt-2">
+                                        <thead class="thead-light">
+                                                <tr>
+                                                <th style="width:130px;">Column Name</th>
+                                                <th style="width:150px;">Data Position</th>
+                                                <th>Data In</th>
+                                                <th>Data From</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody >
+                                                <tr *ngFor="let columns of columnsData">
+                                                <td >{{columns.discription}}</td>       
+                                                <td>
+                                                <select id="dataPosition" class="form-control form-control-sm "
+                                                    [(ngModel)]="columns.dataPosition">
+                                                        <option value="column">Column</option>
+                                                        <option value="row">Row</option>
+                                                </select>
+                                                </td>
+                                                <td><input id="dataId" class="form-control form-control-sm " name="dataIn" [(ngModel)]="columns.dataIn"/></td>
+                                                <td><input id="dataFrom" class="form-control form-control-sm " name="dataFrom" [(ngModel)]="columns.dataFrom"/></td>
+                                                </tr>
+                                        </tbody>
+                                </table> -->
+
+
+<!-- 
+                          <div *ngFor="let message of validationMessages | keyvalue" class="mb-2">
+                              <span class="text-danger small"><em> {{message.value}} </em></span>
+                          </div>
+
+                          <div *ngFor="let message of insertColumnValidationMessages | keyvalue" class="mb-2">
+                              <span class="text-warning small"><em> {{message.value}} </em></span>
+                          </div>
+                        <div  class="opbox" id="viewFileData" style="height:600px;"></div> -->
+<!-- </div>
+                <div class="col-md-8">
+                                <div *ngFor="let message of validationMessages | keyvalue" class="mb-2">
+                                                <span class="text-danger small"><em> {{message.value}} </em></span>
+                                            </div>
+                  
+                                            <div *ngFor="let message of insertColumnValidationMessages | keyvalue" class="mb-2">
+                                                <span class="text-warning small"><em> {{message.value}} </em></span>
+                                            </div>
+                                          <div  class="opbox" id="viewFileData" style="height:600px;"></div>
+
+                      
+                </div>
+        </div>
+</div>
+</div>
+<ng-template #ValidationDataModal let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>{{validationWaringMsg}}</p>
+        </div>
+        <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="saveDataAfterValidationConfirmation()">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="cancel()">No</button>
+        </div>
+</ng-template> -->

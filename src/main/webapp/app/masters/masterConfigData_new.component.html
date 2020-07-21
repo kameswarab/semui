@@ -1,0 +1,172 @@
+<div class="cri-inner-container">
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="header-title">
+                <div class="col-md-12 mb-3 p-0">
+                        <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                    <strong class="title-s ml-1 color9" routerLink="/dataUtility">  Data Utility </strong>
+                    <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                    <strong class="title-s ml-1 color9" (click)="discard()"> Master Data Configuration </strong>
+                    <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                    <strong class="title-s ml-1 bolder"> New </strong>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="form-row">
+        <div class=" form-group col-md-3">
+            <span class="customlabel bolder">SELECT TABLE</span>
+            <div class="select-wrapper  mt-1">
+                <ng-select [items]="" bindLabel="" bindValue="" name="" class="form-control" id="" placeholder="Select" appendTo="body">
+                </ng-select>
+            </div>
+
+        </div>
+
+        <div class=" form-group col-md-3">
+            <span class="customlabel bolder">DISPLAY NAME</span>
+            <div class="select-wrapper  mt-1">
+                <ng-select [items]="" bindLabel="" bindValue="" name="" class="form-control" id="" placeholder="Select" appendTo="body">
+                </ng-select>
+            </div>
+
+        </div>
+        <div class=" form-group col-md-3">
+            <label class="customlabel mb-2">WORK FLOW REQUIRED?</label>
+            <div class="dotted-divider-bottom"></div>
+            <div class="custom-control custom-switch mt-3">
+                <input type="checkbox" class="custom-control-input" id="customSwitch7">
+                <label class="custom-control-label customlabel pt-1" for="customSwitch7">Yes</label>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="content-table accordiantable accordiantable2 mb-4" id="style-3">
+        <ngb-accordion [closeOthers]="true" activeIds="static-1">
+
+            <ngb-panel id="static-1">
+                <ng-template ngbPanelTitle>
+                    <div class="panel-head-title customheader">
+                        <span class="customlabel bolder">COLUMN NAME</span>
+                        <div class="select-wrapper  col-md-3 mt-1">
+                            <ng-select [items]="" bindLabel="" bindValue="" name="" class="form-control" id="" placeholder="Select" appendTo="body">
+                            </ng-select>
+                        </div>
+
+                    </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                    <div class="row p-3 m-0 form-group">
+                        <div class="col-md-3">
+                            <label class="customlabel">COLUMN DISPLAY NAME</label>
+                            <input type="text" class="form-control mb-3" id="columnname">
+                            <span class="customlabel">COLUMN TYPE</span>
+                            <div class="select-wrapper mt-1">
+                                <ng-select [items]="" bindLabel="" bindValue="" name="" class="form-control" id="" placeholder="Select" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="customlabel mb-2">COLUMN SETTINGS</label>
+                            <div class="dotted-divider-bottom"></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch8">
+                                        <label class="custom-control-label customlabel pt-1" for="customSwitch8">Duplicate Can Exist?</label>
+                                    </div>
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch9">
+                                        <label class="custom-control-label customlabel pt-1" for="customSwitch9">Enable Filter?</label>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch10">
+                                        <label class="custom-control-label customlabel pt-1" for="customSwitch10">Enable Sort?</label>
+                                    </div>
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch11">
+                                        <label class="custom-control-label customlabel pt-1" for="customSwitch11">Date Required?</label>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-custom float-right btn-sm ml-2">
+                               <img src="../../content/images/svg/delete-white.png" alt="semicons" class="discard-img"><span class="ml-1 font-weight-bold">DELETE COLUMN</span></button>
+                        </div>
+                    </div>
+
+
+
+                </ng-template>
+            </ngb-panel>
+
+        </ngb-accordion>
+    </div>
+
+
+    <div class="content-table accordiantable accordiantable2 mb-4" id="style-3">
+        <ngb-accordion [closeOthers]="true" activeIds="static-1">
+
+            <ngb-panel id="static-1">
+                <ng-template ngbPanelTitle>
+                    <div class="panel-head-title customheader">
+                        <span class="customlabel bolder col-md-3">COLUMN NAME</span>
+                        <div class="select-wrapper col-md-3 mt-1">
+                            <ng-select [items]="" bindLabel="" bindValue="" name="" class="form-control" id="" placeholder="Select" appendTo="body">
+                            </ng-select>
+                        </div>
+
+                    </div>
+                </ng-template>
+
+            </ngb-panel>
+
+        </ngb-accordion>
+
+    </div>
+
+
+    <!-- table start content-table end-->
+
+    <div class="row col-md-12 pr-0  mb-4 mt-3">
+
+
+
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-row">
+
+                        <div class="form-group col-md-6">
+
+                        </div>
+
+                        <div class="form-group col-md-6 pr-0">
+                            <div class="next-pre mb-3 mt-4 text-right">
+                                <button type="button" class="cri-btn btn btn-outline-danger mr-3"><img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+                                <button type="button" class="cri-btn btn btn-outline-danger btn-danger"><img src="../../content/images/svg/save-white.png" alt="semicons">SAVE DATA </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--first row-end-->
+                </div>
+            </div>
+        </div>
+
+    </div>

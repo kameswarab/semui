@@ -1,0 +1,68 @@
+/* span.ag-group-checkbox {
+    display: none;
+}
+.fa-folder {
+    color: darkorange !important;
+}
+.fa-file-pdf-o {
+    color: red;
+}
+.fa-file-excel-o {
+    color: green;
+}
+.fa-file-audio-o {
+    color: blue;
+}
+.filename {
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+}
+.fa-folder {
+    color: darkorange !important;
+}
+.fa-file-pdf-o {
+    color: red;
+}
+.fa-file-excel-o {
+    color: green;
+}
+.fa-file-audio-o {
+    color: blue;
+}
+.filename {
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+}
+.ag-paging-panel {
+    display:none;
+}
+.ag-group-checkbox {
+    display:none;
+} */
+h5.textcolor {
+    color: red;
+}
+
+span.ag-group-checkbox {
+    display: none;
+}
+
+.filename {
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+}
+span.ag-group-checkbox {
+    display: none;
+}
+.models-ag span.ag-group-value span i {
+    margin-right: 9px;
+    color: orange;
+}
+.filename {
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+}

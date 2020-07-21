@@ -1,0 +1,239 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+
+.hipster {
+    display: inline-block;
+    width: 347px;
+    height: 497px;
+    background: url('../../content/images/jhipster_family_member_2.svg') no-repeat center top;
+    background-size: contain;
+}
+
+/* wait autoprefixer update to allow simple generation of high pixel density media query */
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (-moz-min-device-pixel-ratio: 2),
+    only screen and (-o-min-device-pixel-ratio: 2/1),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+    .hipster {
+        background: url('../../content/images/jhipster_family_member_2.svg') no-repeat center top;
+        background-size: contain;
+    }
+}
+
+/* table{
+    width: 100%;
+}
+
+thead{
+    background: #d6ebff;
+}
+
+td,th{
+    border: 1px solid #369;
+    padding: 5px;
+} */
+.box_upload {
+    border: 1px solid #369;
+    margin: 15px 0px;
+}
+.upload_btn {
+    margin-bottom: 0px;
+    line-height: 5;
+}
+
+/* ==========================================================================
+Main page styles
+========================================================================== */
+
+a:not([href]):not([tabindex]) {
+    color: inherit;
+    text-decoration: none;
+}
+a:not([href]):not([tabindex]):hover,
+a:not([href]):not([tabindex]):focus {
+    color: inherit;
+    text-decoration: none;
+}
+a:not([href]):not([tabindex]):focus {
+    outline: 0;
+}
+.la-edit:before {
+    content: '\f1c1';
+    color: #5281e8;
+}
+
+td a {
+    color: #f00;
+}
+
+tr.search_tr th,
+tr.page_details_tr th {
+    background: transparent;
+    text-align: right;
+}
+tr.search_tr th,
+tr.page_details_tr th {
+    padding: 5px;
+}
+tr.page_details_tr th select,
+tr.page_details_tr th input {
+    height: 20px;
+    width: 50px;
+    font-size: 12px;
+}
+tr.page_details_tr th span {
+    font-size: 12px;
+}
+tr.search_tr th input {
+    height: 20px;
+    width: 100%;
+}
+.no_data_div {
+    padding: 5px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+.no_data_found {
+    text-align: center;
+}
+
+.seq_td_select {
+    width: 100%;
+    border: none;
+}
+.btn-addData {
+    position: absolute;
+    right: 0;
+}
+
+.register-switch-input {
+    display: none;
+}
+
+.register-switch-label {
+    float: left;
+    width: 50%;
+    line-height: 28px;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: normal;
+    -webkit-text-shadow: 0 1px 1px #696969;
+    -moz-text-shadow: 0 1px 1px #696969;
+    text-shadow: 0 1px 1px #696969;
+    font-size: 0.9rem;
+}
+
+.register-switch {
+    height: 2.3rem;
+    padding: 4px;
+    width: 100%;
+    border-radius: 2px;
+    background: #a2a4b1;
+}
+
+.register-switch-input:checked + .register-switch-label {
+    text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+    background: #fff;
+    color: #5d5d5d;
+    box-shadow: 1px 1px 1px #9a9a9a;
+}
+.register-switch .register-switch-label.active {
+    text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+    background: #fff;
+    color: #5d5d5d;
+    box-shadow: 1px 1px 1px #9a9a9a;
+}
+/* Upload btn */
+.file-upload-wrapper {
+    position: relative;
+    margin: 0 auto;
+}
+
+.file-upload-wrapper:after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px 15px;
+    display: block;
+    width: calc(100% - 40px);
+    pointer-events: none;
+    z-index: 20;
+    height: 2rem;
+    line-height: 0.5rem;
+    color: #999;
+    border: 1px solid #ccc;
+}
+
+.file-upload-wrapper:before {
+    content: 'Upload';
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    height: 2rem;
+    background: #6c757d;
+    color: #fff;
+    z-index: 25;
+    font-size: 0.875rem;
+    line-height: 2rem;
+    padding: 0 35px;
+    pointer-events: none;
+    border-radius: 0 5px 5px 0;
+}
+
+.file-upload-wrapper:hover:before {
+    background: #d7002a;
+}
+
+.file-upload-wrapper input {
+    z-index: 99;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+    display: block;
+    cursor: pointer;
+    width: 100%;
+}
+.btn-border i:hover {
+    color: #dc3545;
+}
+.cri-inner-container .btn-group.btn-group-toggle {
+    width: 100%;
+}
+
+.toggle-switch .register-switch .btn-outline-secondary:not(:disabled):not(.disabled).active {
+    text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+    background: #fff;
+    color: #5d5d5d;
+    box-shadow: 1px 1px 1px #9a9a9a;
+    border: 1px solid transparent;
+}
+.toggle-switch .register-switch .btn-outline-secondary:hover {
+    background: transparent;
+    box-shadow: 1px 1px 1px #9a9a9a;
+    border: 1px solid transparent;
+    color: #fff;
+}
+.toggle-switch .register-switch .btn-outline-secondary {
+    text-shadow: 0 1px 1px #696969;
+    color: #fff;
+    border: 1px solid transparent;
+    float: left;
+    width: 50%;
+}
+
+.toggle-switch .register-switch input {
+    display: none;
+}
+.toggle-switch .register-switch {
+    height: 2.45rem;
+}

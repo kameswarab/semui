@@ -1,0 +1,131 @@
+<div class="cri-inner-container">
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="cri-main-heading mt-2">
+                <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                <strong> Data Utility Dashboard </strong></h1>
+            <label class="title text-dark">Select a task below</label>
+        </div>
+
+        <!--use this for right side button-->
+        <div class="col-md-12">
+            <div class="content-divider"></div>
+        </div>
+
+        <!--hearder-title end-->
+        <!--Scenario Analysis start-->
+
+        <div class="row col-md-12 mt-3 pr-0 p-0 m-0" *jhiHasAnyAuthority="['ROLE_DESIGNER','ROLE_APPROVER','ROLE_REVIEWER']">
+            <h4 class="col-md-12 analysis-heading">Risk Factor Management</h4>
+            <div class="col-sm-3 mb-3">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/dataUtility/riskfactorinfo"
+                        id="risk_factor">
+                        <div class="p-2">
+                            <img src="../../content/images/svg/rishfactor-management.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Risk Factor <br>Management</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/dataUtility/regulatorinfo"
+                        id="regulatory_riskfactor">
+                        <div class="p-2">
+                            <img src="../../content/images/svg/ragulato-rfm.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Regulatory Risk Factor
+                                Management</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" routerLink="/dataUtility/shocksTemplate"
+                        id="shock_template">
+                        <div class="p-2">
+                            <img src="../../content/images/svg/shoch-template.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Shock Template
+                                <br>Management</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 mb-3 pr-0">
+                <div class="card cri-cards">
+                    <div class=" d-flex flex-row admindashboardcard" (click)="navigateTo('regulatory')"
+                        id="_upload-reg-rs">
+                        <div class="p-2">
+                            <img src="../../content/images/svg/marketdata.png" alt="sem-icons">
+                        </div>
+                        <div class="p-2" class="nav-link admindashboardtext"><strong>Upload Regulatory Risk
+                                Factor</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row col-md-12 mt-3 pr-0 p-0 m-0" >
+            <div class="row col-md-6 mt-3 pr-0 p-0 m-0" *jhiHasAnyAuthority="['ROLE_MASTER']">
+                <h4 class="col-md-12 analysis-heading">Master Data Management</h4>
+                <div class="col-sm-6 mb-3">
+                    <div class="card cri-cards">
+                        <div class=" d-flex flex-row admindashboardcard" routerLink="/dataUtility/masters"
+                            id="_master_data">
+                            <div class="p-2">
+                                <img src="../../content/images/svg/masterdata.png" alt="sem-icons">
+                            </div>
+                            <div class="p-2" class="nav-link admindashboardtext"><strong>Master Data
+                                    <br>Management</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <div class="card cri-cards">
+                        <div class=" d-flex flex-row admindashboardcard" routerLink="/dataUtility/masterConfig"
+                            id="master_config">
+                            <div class="p-2">
+                                <img src="../../content/images/svg/masterdataconfig.png" alt="sem-icons">
+                            </div>
+                            <div class="p-2" class="nav-link admindashboardtext"><strong>Master Data <br>Configuration
+                                </strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-md-6 pr-0 p-0 m-0 mt-3" *jhiHasAnyAuthority="['ROLE_DATA_MANAGER']">
+                <h4 class="col-md-12 analysis-heading">Market Data Management</h4>
+                <div class="col-sm-6 mb-3 pr-0">
+                    <div class="card cri-cards">
+                        <div class=" d-flex flex-row admindashboardcard" (click)="navigateTo('marketData')"
+                            id="market-data-id">
+                            <div class="p-2">
+                                <img src="../../content/images/svg/marketdata.png" alt="sem-icons">
+                            </div>
+                            <div class="p-2" class="nav-link admindashboardtext"><strong>Market Data
+                                    <br>Management</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 mb-3 pr-0" *jhiHasAnyAuthority="['ROLE_DATA_MANAGER']">
+                    <div class="card cri-cards">
+                        <div class=" d-flex flex-row admindashboardcard" routerLink="/dataIngestionConfig">
+                            <div class="p-2">
+                                <img src="../../content/images/svg/change-client.png" alt="sem-icons">
+                            </div>
+                            <div class="p-2" class="nav-link admindashboardtext"><strong>Column
+                                    <br>Configuration</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Time Series Analysis row End-->
+        </div>
+        <!--mainrow end-->
+    </div>
+</div>
+<!--stepcontainer end-->

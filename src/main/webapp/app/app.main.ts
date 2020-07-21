@@ -1,0 +1,21 @@
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ProdConfig } from './blocks/config/prod.config';
+import { SemAppModule } from './app.module';
+import { LicenseManager } from 'ag-grid-enterprise/main';
+LicenseManager.setLicenseKey('Crisil_Ltd.__MultiApp_5Devs18_January_2020__MTU3OTMwNTYwMDAwMA==19dc2a08fde765709fa5823bb8849a7a');
+import * as GC from '@grapecity/spread-sheets';
+import * as GCExcel from '@grapecity/spread-excelio';
+GC.Spread.Sheets.LicenseKey =
+    'CRISIL Limited,beta.rise-sem.com,458569491898653#B0MteWDdEcYdjWLFzM7F7QXhzTEhkUyRWNoV4SXZEc95Ua8x4L9ZXONJmRoVETrFjMWlkThFVV6UzTIp7N6dzaX3GV5skaxR5a9gje8tSQxplSwpUUSR4VjVUNytWNwt6cKRFOtVjZjNHckZjdq3WUrRzbvFTawM5VEhWVPRjY8p6dEVjUMNUMwRzQnNXSzUDR7BHeTtWYJFDTpVWeoVkVQFFbGFmSDl6NodUQQdFSxVHe0tUSpJjRVZFU6kEbwkEd7FXNIBzdtNTe5gzLRtyRSV6bv4kcFtWQKhmUDRUeBhjRHpkY0JmQ9hEZHp6RiojITJCLigDNEJzNzQkMiojIIJCL8IDNwATOzIDN0IicfJye35XX3JSSGljQiojIDJCLiITMuYHITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIwADMzMDMgAjM4ADMyAjMiojI4J7QiwiIt36Yu4WZz5SZzlmcuEGdlJmI0IyctRkIsICZlRXatlGTgwUSTlkUDJiOiEmTDJCLiMTN6gTO8ETO4kjN5gTN4IiOiQWSiwSflNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TPRl4NplmVwBDZBFVVXZHZu96c7Q4MxwUQllEVVdXQW5EOChjcSxER7QFRZBDVwQUNE9WZGRWN8xGTKhUYstiZrNGRhNUVJlWeZdXVOxEbvYnY58USXhDa7V6US5EVxUkM8ElYrV6R3tvM';
+(GCExcel as any).LicenseKey =
+    'CRISIL Limited,beta.rise-sem.com,458569491898653#B0MteWDdEcYdjWLFzM7F7QXhzTEhkUyRWNoV4SXZEc95Ua8x4L9ZXONJmRoVETrFjMWlkThFVV6UzTIp7N6dzaX3GV5skaxR5a9gje8tSQxplSwpUUSR4VjVUNytWNwt6cKRFOtVjZjNHckZjdq3WUrRzbvFTawM5VEhWVPRjY8p6dEVjUMNUMwRzQnNXSzUDR7BHeTtWYJFDTpVWeoVkVQFFbGFmSDl6NodUQQdFSxVHe0tUSpJjRVZFU6kEbwkEd7FXNIBzdtNTe5gzLRtyRSV6bv4kcFtWQKhmUDRUeBhjRHpkY0JmQ9hEZHp6RiojITJCLigDNEJzNzQkMiojIIJCL8IDNwATOzIDN0IicfJye35XX3JSSGljQiojIDJCLiITMuYHITpEIkFWZyB7UiojIOJyebpjIkJHUiwiIwADMzMDMgAjM4ADMyAjMiojI4J7QiwiIt36Yu4WZz5SZzlmcuEGdlJmI0IyctRkIsICZlRXatlGTgwUSTlkUDJiOiEmTDJCLiMTN6gTO8ETO4kjN5gTN4IiOiQWSiwSflNHbhZmOiI7ckJye0ICbuFkI1pjIEJCLi4TPRl4NplmVwBDZBFVVXZHZu96c7Q4MxwUQllEVVdXQW5EOChjcSxER7QFRZBDVwQUNE9WZGRWN8xGTKhUYstiZrNGRhNUVJlWeZdXVOxEbvYnY58USXhDa7V6US5EVxUkM8ElYrV6R3tvM';
+ProdConfig();
+
+if (module['hot']) {
+    module['hot'].accept();
+}
+
+platformBrowserDynamic()
+    .bootstrapModule(SemAppModule, { preserveWhitespaces: true })
+    .then(success => console.log(`Application started`))
+    .catch(err => console.error(err));

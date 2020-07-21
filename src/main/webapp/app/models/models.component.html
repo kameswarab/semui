@@ -1,0 +1,159 @@
+<div class="cri-inner-container">
+    <div class="row mb-1">
+      <div class="col-md-6 mb-2">
+          <h1 class="cri-main-heading">
+             <img  src="../../content/images/svg/ModelLibrary-heading.png" alt="Sem-icons">
+              Models Library </h1>    
+        
+      </div><!--hearder-title end-->
+      <div class="col-md-6 text-right"> 
+          <button id="newModel" (click)="addNewModel();" type="button" class="cri-btn btn btn-outline-secondary btn-danger">Create New Model &nbsp; </button>
+      </div> <!--for button on right-->
+    </div>
+    <div class="col-md-12">
+            <div class="form-row form-start">
+                <div class="col-md-12">
+                  <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+                    <i class="fa-check"></i> {{displaySuccessMessage}}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                </div>
+                <div class="col-md-12"> 
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                    <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+    </div>
+    <!--table start-->
+    <div class="row ">
+        <!-- <highcharts-chart
+        [Highcharts] = "highcharts" 
+        [options] = "chartOptions" 
+        style = "width: 100%; height: 100%; display: block;">
+      </highcharts-chart> -->
+      <div class="table-start table-responsive col-md-12">
+        <table class="table table-bordered tables-view mb-2 ">
+          <thead class="tables-head">
+            <tr>
+             <!--  <th scope="col">FOLDER NAME</th>
+              <th scope="col">BASE PATH</th> -->
+              <th scope="col">MODEL NAME</th>
+              <th scope="col">MODEL TYPE</th>
+              <th scope="col" class="tdb-r"></th>
+            </tr>
+          </thead>
+          <tbody class="tables-boby">
+            <tr *ngIf="!records || records.length == 0" class="no_data_found" >
+                <td [colSpan]="6">No Data Found</td>
+            </tr>
+            <ng-container *ngFor="let record of recordsSub; let i=index;">
+              <tr [ngClass]="{'colspan-cri':record['COLLAPSED']}">
+                <!-- <td>{{record['FOLDER_NAME']}}</td>
+                <td>{{record['BASE_PATH']}}</td> -->
+                <td>{{record['MODEL_NAME']}}</td>
+                <td>{{record['MODEL_TYPE']}}</td>
+                <td class="tdb-r">
+                  <span class="del-edit ">
+                      <i (click)="openModelFlow(record);" id="modelflow_edit_{{i}}">
+                          <img  src="../../content/images/svg/edit.png" alt="Sem-icons">
+                      </i>
+                      <i id="modelflow_delete_{{i}}" (click)="openDeleteModelFlow(record);">
+                          <img  src="../../content/images/delete.png" alt="Sem-icons">
+                        </i>
+                   </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <div class="fotter-btn ">
+          <div class="col-md-12 row ">
+            <div class="col-md-12">
+              <nav class="c-pagination">
+                  <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                    <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}">
+                      <a (click)="setPage(pager.currentPage - 1)"><i aria-hidden="true" class="fa-long-arrow-left-icon"></i></a>
+                    </li>
+                    <li *ngFor="let page of pager.pages" class="c-pagination__item">
+                      <a (click)="setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                    </li>
+                    <li class="c-pagination__next" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                      <a (click)="setPage(pager.currentPage + 1)"><i aria-hidden="true" class="fa-long-arrow-right-icon"></i></a>
+                    </li>
+                    <li class="c-pagination__next">
+                      <a><small class="dis-page">Displaying {{pager.startIndex + 1}} to {{pager.endIndex + 1}} Of {{pager.totalItems}} Models</small></a>
+                    </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div><!--responsive-table end-->
+    </div><!--row end-->
+    <!--table end-->
+  </div><!--step container-->
+  <ng-template #createModel let-modal>
+      <div class="modal-header">
+          <h5 class="modal-title" id="modal-basic-title">Create New Model</h5>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+              <span aria-hidden="true">&times;</span>
+            </button>
+      </div>
+      <div class="modal-body">
+          <div class="col-md-12">
+              <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+                <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+                    <div class="col-md-12 row">
+                        <div class="col-md-6">Model Name :</div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control " [(ngModel)]="newModel.modelName" minlength="1" pattern="^[_'.A-Za-z-]$"  placeholder="Enter Model Name"/>
+                     
+                        </div>
+                         </div>
+                      
+                <div class="col-md-12 row">
+                    <div class="col-md-6">Model Type :</div>
+                    <div class="col-md-6">
+                        <ng-select [items]="languagesList"
+                        bindLabel="label"
+                        bindValue="value"
+                        appendTo="body"
+                        [multiple]="false"
+                        [clearable]="true"
+                        placeholder="Select"
+                        [(ngModel)]="newModel.modelType">  
+                    </div>
+                </div>
+              </div>
+      </div>
+      <div class="modal-footer col-md-12 text-right">
+          <button class="btn btn-success btn-sm" (click)="createNewModel()">Add Model</button>
+      </div>
+    </ng-template>
+    <ng-template #deleteModal let-modal>
+        <div class="cri-modal-h modal-header">
+          <h4 class="cri-modal-titles modal-titles ml-4">Delete File Record</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success btn-sm" (click)="deleteModel();">Yes</button>
+          <button class="btn btn-light btn-sm" (click)="modal.dismiss('Cross click')">No</button>
+        </div>
+      </ng-template>

@@ -1,0 +1,18 @@
+table {
+    color: #369;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+    /*  table-layout:fixed; */ /* width: 1280px; */
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid black;
+    /* padding: 5px; */
+    /* word-break: break-all; */
+    /* width:100px; */ /* word-wrap:break-word;  */
+}
+th {
+    border: 1px solid #369;
+    padding: 1px;
+}

@@ -1,0 +1,239 @@
+<div class="cri-inner-container">
+  <div class="row mb-1">
+    <div class="col-md-6">
+      <h1 class="cri-main-heading ml-1 mt-2" >
+          <img src="../../content/images/svg/administrtion-heading.png" alt="sem-icons">       
+        <strong class="title-s ml-1 color9" routerLink="/administrationHome"> Administration </strong>
+        <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+        <strong class="title-s ml-1 bolder">Create User</strong>
+      </h1>
+    </div>
+    <div class="col-md-6 text-right mt-3">
+      <button class="btn btn-outline-primary btn-sm sm-icons" *jhiHasAnyAuthority="['ROLE_ADMIN']" (click)="createNewUser(null,'CREATE')">
+        <i class="plus-circle-icon" aria-hidden="true"></i> 
+        <span class="ml-1 buttontext2"  >ADD NEW USER</span>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">  
+      <jhi-alert></jhi-alert>
+      <div class="test-header"> </div>     
+      <div class="overflow-auto">
+        <ag-grid-angular #listingGrid
+          style="width: 100%; height: 500px;"
+          class="ag-theme-balham"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+          [rowData]= "userList"
+          rowSelection="multiple"
+          [pagination]="true"
+          [rowHeight]="rowHeight"
+          (cellClicked)="onRowClicked($event)"
+          (gridReady)="onGridReady($event)">
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #createOrEditModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Create or Edit User</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="col-md-12"> 
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="errorMsg != null">
+        <i class="fa-exclamation-triangle-icon"></i> {{errorMsg}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMsg=null">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <form name="createUserForm" role="form" novalidate (ngSubmit)="saveUser(createUserForm)" #createUserForm="ngForm" autocomplete="off">
+        <div class="create-client mt-4">
+          <div class="main-view">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="firstname" class="cri-label">First Name : <span class="field-mandatory">*</span></label>
+                  <input type="text" class="form-control" id="firstname" name="firstname" #firstName="ngModel"
+                  maxlength="50" pattern="^[a-zA-Z0-9'_-]+" [(ngModel)]="user.firstName" placeholder="First Name" [required]="true" />
+                  <div *ngIf="(createUserForm.submitted || firstName.dirty) && firstName.invalid">
+                    <small class="form-text text-danger" *ngIf="firstName.errors.required">
+                      This field is required.
+                    </small>
+                    <small class="form-text text-danger" *ngIf="firstName.errors.pattern">
+                      This field allows valid text.
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="lastname" class="cri-label">Last Name : <span class="field-mandatory">*</span></label>
+                  <input type="text" class="form-control" id="lastname" name="lastName" #lastName="ngModel"
+                    maxlength="50" pattern="^[a-zA-Z0-9'_-]+" [(ngModel)]="user.lastName" placeholder="Last Name" ng-pattern="/^[a-zA-Z]*$/" [required]="true" />
+                  <div *ngIf="(createUserForm.submitted || lastName.dirty) && lastName.invalid">
+                    <small class="form-text text-danger" *ngIf="lastName.errors.required">
+                      This field is required.
+                    </small>
+                    <small class="form-text text-danger" *ngIf="lastName.errors.pattern">
+                      This field allows valid text.
+                    </small>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="Designation" class="cri-label">Designation:</label>
+                <input type="text" class="form-control" id="Designation" name="Designation" #designation="ngModel"
+                  maxlength="50" [(ngModel)]="user.designation" ng-pattern="/^[a-zA-Z]*$/" placeholder="Designation" [required]="false" />
+                <div *ngIf="(createUserForm.submitted || designation.dirty) && designation.invalid">
+                  <small class="form-text text-danger" *ngIf="designation.errors.required">
+                    This field is required.
+                  </small>
+                  <small class="form-text text-danger" *ngIf="designation.errors.pattern">
+                    This field allows valid text.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="email" class="cri-label">Email : <span class="field-mandatory">*</span></label>
+                <input type="text" class="form-control" id="email" #email="ngModel" name="email"
+                  maxlength="250" [(ngModel)]="user.emailAddress" [required]="true"
+                  pattern="^[a-zA-Z0-9.!#$%&’'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" placeholder="Email Address" [readonly]="user.id"/>
+                <div *ngIf="(createUserForm.submitted || email.dirty) && email.invalid">
+                  <small class="form-text text-danger" *ngIf="email.errors.required">
+                    This field is required.
+                  </small>
+                  <small class="form-text text-danger" *ngIf="email.errors.pattern">
+                    This field allows only valid email.
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="location" class="cri-label">Location : <span class="field-mandatory">*</span></label>
+                <input type="text" class="form-control" id="location" name="location" #location="ngModel"
+                  maxlength="50" [(ngModel)]="user.location" ng-pattern="/^[a-zA-Z]*$/" placeholder="Location" [required]="true" />
+                <div *ngIf="(createUserForm.submitted || location.dirty) && location.invalid">
+                  <small class="form-text text-danger" *ngIf="location.errors.required">
+                    This field is required.
+                  </small>
+                  <small class="form-text text-danger" *ngIf="location.errors.pattern">
+                    This field allows valid text.
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="subUserRoles" class="cri-label">Sub User Roles <span class="field-mandatory ">*</span></label>
+                <div class="select-wrapper" tabindex="0">  
+                  <ng-select [items]="subUserRoles" name="subUserRoles" id="subUserRoles"
+                    [multiple]="true"
+                    bindLabel="description"
+                    bindValue="id"
+                    [closeOnSelect]="false"
+                    class="ngselectdropdown"
+                    placeholder="Select Role"
+                    appendTo="body"
+                    #realm="ngModel"
+                    [(ngModel)]="user.subUserRoles" 
+                    required>
+                    <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                      <div class="custom-control custom-checkbox">
+                        <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{ standalone : true }" id="userrolescheckbox" class="custom-control-input"/> 
+                        <label class="form-check-label ml-2 custom-control-label">{{item.description}}</label>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                </div>    
+                <div *ngIf="(createUserForm.submitted || realm.dirty) && !realm.valid" class="message">
+                  <small class="form-text text-danger" *ngIf="realm.errors?.required">
+                  This field is required.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="email" class="cri-label">Comments : <span class="field-mandatory">*</span></label>
+                  <textarea class="form-control" id="comment" #comment="ngModel" name="comment"
+                    maxlength="250" [(ngModel)]="user.approvalComment" [required]="true" placeholder="Comment"></textarea>
+                  <div *ngIf="(createUserForm.submitted || comment.dirty)">
+                      <small class="form-text text-danger" *ngIf="comment.errors?.required">
+                      This field is required.
+                      </small>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <div class="mt-2 mb-2">
+                <ng-container *jhiHasAnyAuthority="['ROLE_ADMIN']">
+                    <button *ngIf = "!user.id" type="submit" class="btn btn-outline-danger" >SAVE</button>
+                    <button *ngIf = 'user.id' type="submit" class="btn btn-outline-danger" >UPDATE</button>
+                </ng-container>
+                <button type="button" class="btn btn-outline-danger" (click)="cancel();">DISCARD</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #commentsModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles">Comments<br>
+      <label class="title-name">{{currentUser.firstName}} {{currentUser.lastName}}</label></h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="bottom-message" id="scrool-3">
+      <ul class="list-unstyled">
+        <li class="media my-2" *ngFor="let comment of userComments;">
+          <div class="media-body">
+            <h6 class="mt-0 mb-1">{{comment.createdBy}}</h6>
+            <small class="date-time">{{comment.createdDate | date :'medium'}}</small>
+            <p>{{comment.comment}}</p>
+          </div>
+        </li>
+      </ul>
+      <i></i>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles">Delete User</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="delete();">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="cancel();">No</button>
+  </div>
+</ng-template>

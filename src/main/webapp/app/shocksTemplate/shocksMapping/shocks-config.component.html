@@ -1,0 +1,206 @@
+<div class="cri-inner-container">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-10 mb-3">
+
+            <h1 class="cri-main-heading mt-2">
+                    <img src="../../../content/images/svg/datautility-heading.png" alt="sem-icons">
+
+                <strong class="ml-2 color9" routerLink="/dataUtility">  Data Utility </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-2 color9" (click)="backToShockTemplate()"> Shock Template Management </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class=" ml-1" *ngIf="!shockTemplateObj.id"><span class="font-weight-bold">Create </span> </strong>
+                <strong class=" ml-1" *ngIf="shockTemplateObj.id"><span class="font-weight-bold">Edit </span> </strong>
+            </h1>
+
+        </div>
+        <div class="col-md-12">
+            <div class="header-title"></div>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div *ngIf="!shockTemplateObj.id" class="customtitle font-weight-bold mt-4 mb-3">CREATE NEW SHOCK TEMPLATE</div>
+            <div *ngIf="shockTemplateObj.id" class="customtitle font-weight-bold mt-4 mb-3">EDIT SHOCK TEMPLATE</div>
+        </div>
+
+    </div>
+        <div class="form-row">
+            <div class="col-md-12">
+                <div class="row ">
+                     <div class="form-group col-md-4">
+                        <label class="cri-label"> CLASSIFICATION <span class="text-danger">*</span></label>
+                            <div class="btn-group btn-group-toggle" id="classification" data-toggle="buttons" tabindex="0">
+                                  <label class="btn btn-secondary" (change) = "change('CLASSIFICATION');" id="classification_{{master.label}}" [ngClass]="{'active': master.value == shockTemplateObj.classification}" *ngFor="let master of classificationList">
+                                    <input type="radio" name="options_classification" [value]="master.value" autocomplete="off" checked  [(ngModel)]="shockTemplateObj.classification" [disabled]="shockTemplateObj.id != null">
+                                    {{master.label}}
+                                  </label>
+                            </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="customlabel">SUB CLASSIFICATION <span class="text-danger">*</span></label>
+                            <div class="select-wrapper2">
+                                <ng-select [items]="allRegulationList"
+                                bindLabel="label"
+                                bindValue="value"
+                                appendTo="body"
+                                [clearable]="false"
+                                name="subClassification"
+                                [disabled]="shockTemplateObj.id"
+                                (change) = "change('subclassification')"
+                                data-live-search="true"
+                                placeholder="Select"
+                                [(ngModel)]="shockTemplateObj.subClassification">
+                                </ng-select>
+                            </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                            <label class="customlabel">SEVERITY <span class="text-danger">*</span></label>
+                            <div class="select-wrapper2">
+                                    <ng-select [items]="severityList"
+                                    bindLabel="label"
+                                    bindValue="value"
+                                    appendTo="body"
+                                    [clearable]="false"
+                                    name="severity"
+                                    data-live-search="true"
+                                    placeholder="Select Severity"
+                                    [disabled]="shockTemplateObj.id"
+                                    (change) = "change('severity')"
+                                    [(ngModel)]="shockTemplateObj.severity"
+                                  >
+                                 </ng-select>
+                            </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="customlabel">SCENARIO TYPE <span class="text-danger">*</span></label>
+                        <div class="select-wrapper2">
+                                <ng-select [items]="scenarioList" 
+                                bindLabel="label"
+                                bindValue="value" 
+                                appendTo="body"
+                                [clearable]="false"
+                                name="scenarioType"
+                                placeholder="Select"
+                                [disabled]="shockTemplateObj.id"
+                                (change) = "change('scenarioType')"
+                                [(ngModel)]="shockTemplateObj.scenarioType">
+                                </ng-select>
+                        </div>
+                    </div>
+                 
+                    <div *ngIf="shockTemplateObj.scenarioType=='2'" class="form-group col-md-4">
+                            <label class="customlabel">PERIOD TYPE <span class="text-danger">*</span></label>
+                            <div class="select-wrapper2">
+                                    <ng-select 
+                                    bindLabel="label"
+                                    bindValue="value"
+                                    appendTo="body"
+                                    [clearable]="false"
+                                    name="periodType"
+                                    placeholder="Select Period Type"
+                                    data-live-search="true"
+                                    [disabled]="shockTemplateObj.id"
+                                    (change) = "change('periodType')"
+                                    [(ngModel)]="shockTemplateObj.periodType">
+                                   <ng-container *ngFor="let fre of frequencyList"> 
+                                        <ng-option  [value]="fre.value" *ngIf="fre.value!=1 && fre.value!=2">{{fre.label}}</ng-option>
+                                    </ng-container>
+                                 </ng-select>
+                            </div>
+                    </div>
+                    <div *ngIf="shockTemplateObj.scenarioType=='2'" class="form-group col-md-4 year-date">
+                        <label class="customlabel">YEAR <span class="text-danger">*</span></label>
+                        <year-picker [data]="shockTemplateObj.year" (valueChange)="yearValueChange($event)" [disabled]="shockTemplateObj.id"></year-picker>
+                        <!-- <i class="fa fa-calendar color89 iconposition" aria-hidden="true"></i> -->
+                </div>
+                    <div *ngIf="shockTemplateObj.scenarioType=='2'" class="form-group col-md-4">
+                            <label class="customlabel">PROJECTION PERIOD <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control " name="projectionPeriod" (change)="change('projectionPeriod')" min="2" max="20" placeholder="Enter 2 to 20" [(ngModel)]="shockTemplateObj.projectionPeriod" [disabled]="shockTemplateObj.id" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="customlabel">TEMPLATE NAME <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control " autocomplete="off" name="name"  [(ngModel)]="shockTemplateObj.name" minlength="1" pattern="^[_'.A-Za-z0-9- ]{1,4000}$" [disabled]="shockTemplateObj.id" placeholder="Enter Template Name"
+                        />
+                    </div>
+                    <div class="col-md-4 mt-4" *ngIf="isClicked || shockTemplateObj.id" >
+                           <!--  <button class="btn btn-outline-primary btn-sm sm-icons btnheight pl-3 pr-3" (click)="getList()">VIEW</button> -->
+                            <button class="btn btn-outline-primary sm-icons btnheight pl-3 pr-3" ngbTooltip="Download" (click)="download()"><i class="fa-download-icon md-k" aria-hidden="true" titile="Download Template"></i></button>
+        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+            <div class="col-md-12 mb-4" *ngIf="shockTemplateObj.id == null">
+                <metadata-filter [myData] = "myData" [filtersData]="createFilter" [regSubclassificatnId]="shockTemplateObj.classification == 1 ? shockTemplateObj.subClassification : null"
+                    [masterDataObjForFilters]="masterDataObjForFilters"
+                    (loadMetaData)="loadMetaDataByAppliedFilter($event)" (clearMetaData)="clearMetaData()"
+                    (errorMessage)="showFilterComponentMessage($event)" > </metadata-filter>
+            </div>
+    <div class="row" *ngIf="isClicked">
+        <div class="col-md-12">
+            <div class="opbox" id="viewFileData" style="height:500px;"></div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="!isClicked">
+        <div class="col-md-12">
+            <div class="disabled">
+                <img src="../../../content/images/excelsheet.jpg" style="width: 100%;">
+            </div>
+
+
+        </div>
+        <div class="customtitle2 positioncenter bolder col-md-4" *ngIf="!isClicked">
+            <i class="info-icon error-icon" aria-hidden="true"></i> Edit Configuration To View Table
+        </div>
+    </div>
+
+    <div class="dotted-divider2 mt-4" *ngIf="isClicked"></div>
+    <!--footer buttons end-->
+    <div class="container-fluid" *ngIf="isClicked">
+        <div class="row form-group mb-0">
+
+
+
+            <div class="col-md-6 mb-0">
+              
+            </div>
+
+            <div class="col-md-6 pr-0 mb-0">
+                <div class="next-pre  mt-2 mb-2 text-right pr-0">
+                    <button type="button" class="cri-btn btn btn-outline-danger mr-3" (click)="backToShockTemplate()">
+                   <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">
+                   DISCARD</button>
+                    <button type="button" class="cri-btn btn btn-outline-danger btn-danger" (click)="saveshockTemplateData()">
+                        <img src="../../../content/images/svg/save.png" alt="semicons" class="discard-img">
+                   SAVE </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,63 @@
+<div class="clearfix"></div>
+<div class="form-group calc">
+	<div class="formula_builder_div">
+		<ul id="formulaBuilderDiv">
+			<li #toggleButton (click)="toggleMenu($event)" id="customTaxonomyTextIdLi"
+				style="background: #d2d2d2 !important;box-shadow: none;">
+				<input type="text" autocomplete="off" id="customMnemonicTaxonomyText"
+					(ngModelChange)="taxonomySelectionChange($event);" [(ngModel)]="customMnemonicTaxonomyText"
+					autocomplete="off"  list="dynmicUserIds"
+					placeholder="Type Formula" style="background: #d2d2d2 !important;min-width: 10px;">
+				<datalist id="dynmicUserIds" *ngIf="isExitFormula">
+					<select id="ddlselected">
+						<option *ngFor="let item of shockRuleKeys">{{item}}</option>
+					</select>
+					<!--	<option *ngFor="let item of userList1" [value]="item" >{{item}} </option>-->
+				</datalist>
+			</li>
+		</ul>
+		<div class="clearfix"></div>
+	</div>
+	<ul class="calcfr">
+		<li (click)="addOperator('SUB','OPER');"><button type="button" class="btn btn-warning btn-xs">-</button></li>
+		<li (click)="addOperator('MULT','OPER');"><button type="button" class="btn btn-warning btn-xs">*</button></li>
+		<li (click)="addOperator('OPENL','OPER');"><button type="button" class="btn btn-warning btn-xs">(</button></li>
+		<li (click)="addOperator('MIN','OPER');"><button type="button" class="btn btn-warning btn-xs">MIN</button></li>
+	</ul>
+	<ul class="calcsr">
+		<li (click)="addOperator('ADD','OPER');"><button type="button" class="btn btn-warning btn-xs">+</button></li>
+		<li (click)="addOperator('DIVIDE','OPER');"><button type="button" class="btn btn-warning btn-xs">/</button></li>
+		<li (click)="addOperator('OPENR','OPER');"><button type="button" class="btn btn-warning btn-xs">)</button></li>
+		<li (click)="addOperator('MAX','OPER');"><button type="button" class="btn btn-warning btn-xs">MAX</button></li>
+	</ul>
+	<ul class="calctr">
+		<li (click)="addOperator('SIMPLEEQUAL','OPER');"><button type="button" class="btn btn-warning btn-xs">=</button>
+		</li>
+		<li (click)="addOperator('LESSTHAN','OPER');"><button type="button" class="btn btn-warning btn-xs">&lt;</button>
+		</li>
+		<li (click)="addOperator('GREATERTHAN','OPER');"><button type="button"
+				class="btn btn-warning btn-xs">&gt;</button></li>
+		<li (click)="addOperator('NOTEQUAL','OPER');"><button type="button" class="btn btn-warning btn-xs">!=</button>
+		</li>
+	</ul>
+	<ul class="calctr">
+		<li (click)="addOperator('ONE','NUM');"><button type="button" class="btn btn-warning btn-xs">1</button></li>
+		<li (click)="addOperator('FOUR','NUM');"><button type="button" class="btn btn-warning btn-xs">4</button></li>
+		<li (click)="addOperator('SEVEN','NUM');"><button type="button" class="btn btn-warning btn-xs">7</button></li>
+		<li (click)="addOperator('COMMA','OPER');"><button type="button" class="btn btn-warning btn-xs">,</button></li>
+	</ul>
+	<ul class="calctr">
+		<li (click)="addOperator('TWO','NUM');"><button type="button" class="btn btn-warning btn-xs">2</button></li>
+		<li (click)="addOperator('FIVE','NUM');"><button type="button" class="btn btn-warning btn-xs">5</button></li>
+		<li (click)="addOperator('EIGHT','NUM');"><button type="button" class="btn btn-warning btn-xs">8</button></li>
+		<li (click)="addOperator('ZERO','NUM');"><button type="button" class="btn btn-warning btn-xs">0</button></li>
+	</ul>
+	<ul class="calctr">
+		<li (click)="addOperator('THREE','NUM');"><button type="button" class="btn btn-warning btn-xs">3</button></li>
+		<li (click)="addOperator('SIX','NUM');"><button type="button" class="btn btn-warning btn-xs">6</button></li>
+		<li (click)="addOperator('NINE','NUM');"><button type="button" class="btn btn-warning btn-xs">9</button></li>
+		<li style="color:#fff;" (click)="clearFormulaDiv();"><button type="button"
+				class="btn btn-warning btn-xs">C</button></li>
+	</ul>
+	<div class="clearfix"></div>
+</div>

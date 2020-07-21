@@ -1,0 +1,737 @@
+<div class="form-row form-start">
+  <div class="col-12 no-padding form-start">
+    <div class="cri-inner-container">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess">
+                <i class="fa-check"></i> {{displaySuccessMessage}}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+            </div>
+            <div class="col-md-12"> 
+              <div class="alert alert-danger alert-dismissible fade show" id="scrool-3" [ngClass]="transformationerror ? 'alert_newline' : ''" role="alert" *ngIf="isFailure && !popupOpened">
+                <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+      </div>
+      <jhi-scenario-tabs selectedTab="2" [onChangeScreen] = "onChangeScreen" [status]="scenarioObj.status"></jhi-scenario-tabs>
+      <div class="row">
+        <div class="scenario-info col-lg-6">
+          <label class="list-name mr-3">{{scenarioObj.scenarioName}}</label>
+          <p *ngIf="scenarioObj.id"> Last Modified On <span>{{scenarioObj.lastModifiedDate | date:'dd MMM yyyy'}}</span> by <span>{{scenarioObj.lastModifiedBy}}</span></p>
+        </div> 
+        <span class="rf-stats col text-right">
+          <button type="button" id="riskfactor_metrics" class="btn btn-outline-primary sm-icons btn-sm mt-4" (click)="getRiskFactorMetrics();"
+            [attr.aria-expanded]="!isCollapsed" aria-controls="rs-stats">
+           <img src="../../../content/images/svg/matrics.png" alt="semicons">  Metrics
+          </button>
+          <button class="btn btn-outline-primary sm-icons btn-sm mt-4 opacity-point-5" *ngIf="downloadType=='Downloading'" ngbTooltip="Downloading MarketData"><i class="fa-download-icon md-k" aria-hidden="true" titile="Download Template"></i></button>
+          <button class="btn btn-outline-primary sm-icons btn-sm mt-4" *ngIf="downloadType!='Downloading'" ngbTooltip="Download MarketData" (click)="downloadTimeSeriesData()"><i class="fa-download-icon md-k" aria-hidden="true" titile="Download Template"></i></button>
+          <div id="rs-stats" [ngbCollapse]="isCollapsed" class="col-md-12 p-0">
+            <div class="card cri-card">
+              <div class="card-body rs-sts-col p-3">
+                <div class="row col-md-12" id="metricsDiv"></div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+      <!--content-boby-title  main-->
+      <div class="content-boby border-dots mb-4">
+        <div class="row ">
+          <div class="col-sm-6 text-right">
+            <label class="title-name  mb-0 mt-1" *ngIf="!riskFactorSetList || riskFactorSetList.length == 0">You haven't created any set </label>    
+            <label class="title-name  mb-0 mt-1" *ngIf="riskFactorSetList && riskFactorSetList.length > 0">Add or Clone additional risk factor sets </label> 
+          </div>
+          <div class="col-sm-6  row">
+            <button type="button" id="riskfactor_createset" class=" btn btn-outline-primary btn-sm mr-3 plus-circle-icon" (click)="openPopup(createSetPopup,'SELECTION')" [disabled]='!userCanAccess'><span class="btn-text-rs" *ngIf="!riskFactorSetList || riskFactorSetList.length == 0">CREATE SET</span><span class="btn-text-rs" *ngIf="riskFactorSetList && riskFactorSetList.length > 0">CREATE SET</span></button>
+            <button type="button" id="riskfactor_cloneset" class=" btn btn-outline-primary btn-sm" (click)="openPopup(cloneSetPopup,'CLONE')" [disabled]='!userCanAccess'>
+               <img src="../../../content/images/svg/cloneset.png" alt="semicons">
+                <span class="btn-text-rs">CLONE SET</span></button>
+          </div>
+        </div>
+      </div><!--content-boby-title end main-->
+      <div class="content-table mb-4">
+        <ngb-accordion [closeOthers]="false" #acc="ngbAccordion" [activeIds]="activeIds" (panelChange)="toggleSetAccordian($event)"> <!--  -->
+          <ngb-panel *ngFor="let set of riskFactorSetList;let i=index;" id="set_id_{{set.id}}">
+            <ng-template ngbPanelTitle>
+              <div class="panel-head-title">
+                <span class="card-title">{{set.riskFactorSetName}}</span>&nbsp;
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="content-table-body">
+                  <small  *ngIf= "userCanAccess" class="col-md-6 pencil mr-3" >
+                      <i *ngIf="!pagerSetObjectList[set.id]['isEditSetName']" class="fa-pencil-icon" aria-hidden="true" (click)="editSetName(set)"></i>
+                      <input *ngIf="pagerSetObjectList[set.id]['isEditSetName']" class="card-title" [(ngModel)]="pagerSetObjectList[set.id]['riskFactorSetNameForEdit']">
+                      <i *ngIf="pagerSetObjectList[set.id]['isEditSetName']" class="fa-save-icon" aria-hidden="true" (click)="saveRiskFactorSetName(set);"></i> &nbsp; &nbsp;
+                      <i *ngIf="pagerSetObjectList[set.id]['isEditSetName']" class="fa-times-icon-white" aria-hidden="true" (click)="pagerSetObjectList[set.id]['isEditSetName'] = false"></i>
+                  </small>
+                  <small  *ngIf= "!userCanAccess" class="col-md-6 pencil mr-3" >
+                      <input *ngIf="pagerSetObjectList[set.id]['isEditSetName']" class="card-title" [(ngModel)]="pagerSetObjectList[set.id]['riskFactorSetNameForEdit']">
+                  </small>
+                  <span  *ngIf= "userCanAccess" class="del-riskf">
+                    <a id="riskfactor_deleteset" (click)="openDeleteDataModal(set);" class="mr-4 del-right">
+                     <img src="../../../content/images/svg/delete-white.png" alt="semicons" class="discard-img"> DELETE SET</a>
+                  </span>
+              
+                <div class="row rish-f-ad-del pr-0 ml-0 mr-0 ">
+                  <div class="col-md-6 mb-2 mt-2 add-del-btn add-del-btn align-self-center" *ngIf="userCanAccess">
+                    <a id="riskfactor_deleteselected" (click)="openDeleteFactorsModal(set)" class="mr-5 ie-disable" [ngClass]="{disabled:!pagerSetObjectList[set.id]['checkedRFList'] || pagerSetObjectList[set.id]['checkedRFList'].length == 0}">    
+                        <img src="../../../content/images/svg/delete-sm-1.png" alt="semicons" class="discard-img"> DELETE SELECTED</a>
+                    <a class="plus-circle-icon" (click)="addMoreRiskFactorsToSet(set)"> ADD RISK FACTOR </a>
+                  </div>  
+                  <div class="col-md-6  mb-2 mt-2 pr-3 text-right" *ngIf="userCanAccess">
+                    <button id="riskfactor_evaluate" type="button" class="btn btn-outline-primary sm-icons btn-sm" (click)="calculateQualityCheck(set);">
+                        <img src="../../../content/images/svg/evaluate.png" alt="semicons" class="mr-1"> EVALUATE</button>
+                  </div>
+                </div>
+                <div class="riskfactor-scenario">
+                <div class="table-start table-responsive">
+                  <table class="table table-bordered tables-view table-resizable rfs" id="riskFactorSelectionTable" [ngClass]="pagerSetObjectList[set.id]['metadataShow'] ? 'resize-table-witdhrf' : ''">
+                    <thead class="tables-head">
+                      <tr>
+                        <th scope="col" class="riskfactorsName">
+                          <span class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" [checked]="pagerSetObjectList[set.id]['selectAllRF']" (change)="selectAllChange($event, set);"  id="customCheck_{{i}}">
+                            <label class="custom-control-label" for="customCheck_{{i}}">Risk Factor (S)</label>
+  
+                          </span> 
+                          <span (click)="pagerSetObjectList[set.id].criFilter = !pagerSetObjectList[set.id].criFilter" class="fr shockFilter filter-icon"></span>  
+                               
+                         
+                        </th>
+                        <th class="arrow-view expandbtn">
+                          <div class="arrow-btn-r">
+                            <div (click)="pagerSetObjectList[set.id]['metadataShow']=!pagerSetObjectList[set.id]['metadataShow']" *ngIf="!pagerSetObjectList[set.id]['metadataShow']" >
+                              <img src="../../../content/images/svg/arrowleft.png" alt="semicons">                                 
+                             </div>
+                            <div (click)="pagerSetObjectList[set.id]['metadataShow']=!pagerSetObjectList[set.id]['metadataShow']" *ngIf="pagerSetObjectList[set.id]['metadataShow']" >
+                                <img src="../../../content/images/svg/arrowright.png" alt="semicons">                                     
+                            </div>
+                        </div>
+                        </th>
+                        <th scope="col" class=" assetClass" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Asset Class  </th>
+                        <th scope="col" class=" riskFactorType" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Sub Risk Factor   </th>
+                        <th scope="col" class=" country" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Country </th>
+                        <th scope="col" class=" currency" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Currency </th>
+                        <th scope="col" class=" frequency" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Frequency  </th>
+                        <th scope="col" class=" maturity" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Maturity  </th>
+                        <th scope="col" class=" sector" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Sector  </th>
+                        <th scope="col" class=" rating" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Rating   </th>
+                        <th scope="col" class=" unit" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Unit </th>
+                        <th class=" curveFamily" *ngIf="pagerSetObjectList[set.id]['metadataShow']">Curve Family  </th>
+                        <th class=" expandCat">Expansion Categorization </th>
+                        <th scope="col" class=" transType">Transformation Type  </th>
+                        <th scope="col" class=" dataQuality">Data Quality Score <br>(Missing|Outliers|Static)
+                          <span class="fr tooltipbottom-tablebtm-small info-icon-2">
+                              <div class="bottom-btm error-message-small">
+                                <small class="pop-text ">Raw Data</small>
+                              </div>
+                          </span>
+                         
+                        </th>
+                        <th scope="col" class=" stationaryTest">Stationarity Test<br> (ADF|KPSS|PP|COMMENT)
+                          <span class="fr tooltipbottom-tablebtm-small info-icon-2">
+
+                            <div class="bottom-btm error-message-small">
+                              <small class="pop-text ">Transformed Data</small>
+                            </div>
+                        </span>
+                        
+                        </th>
+                        <th scope="col" class="graph spark-line">Graph
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="tables-boby" id="riskfactor_set_tbody">
+                        <tr  *ngIf="pagerSetObjectList[set.id].criFilter">
+                          <td>
+                              <section  id="search-2">
+                                  <label for="search-input"><i class="fa-search-icon" aria-hidden="true"></i><span class="sr-only">Search icons</span></label>
+                                  <input id="search-input" class="form-control input-lg" [(ngModel)]="pagerSetObjectList[set.id].filterObj.rfName" (keyup)="filterData(set)" placeholder="Search Risk Factors" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+                                </section>
+
+                          </td>
+                          <td></td>
+                          <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                              <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="assetList = filterMasterData(masterDataObj['DIM_AST_CLS_MST'], 'astClsId', i);">
+                                      <ng-select [items]="assetList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData(set)"
+                                      [(ngModel)]="pagerSetObjectList[set.id].filterObj.astClsId">  
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                              <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="subrskList = filterMasterData(masterDataObj['DIM_RSKFCT_TYP_MST'], 'subRskFctrId', i);">
+                                      <ng-select [items]="subrskList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData(set)"
+                                      [(ngModel)]="pagerSetObjectList[set.id].filterObj.subRskFctrId">
+                                    </div>
+                                </div>
+                          </td>
+                          <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                            <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                              <div class="select-wrapper-table-2" (ngInit)="cntyList = filterMasterData(masterDataObj['DIM_CNTRY_MST'], 'cntryId', i);">
+                                  <ng-select [items]="cntyList"
+                                  bindLabel="label"
+                                  bindValue="value"
+                                  appendTo="body"
+                                  [multiple]="true"
+                                  [clearable]="true"
+                                  placeholder="Select"
+                                  (change)="filterData(set)"
+                                  [(ngModel)]="pagerSetObjectList[set.id].filterObj.cntryId">
+                                </div>
+                            </div></td>
+                            <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                                <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                    <div class="select-wrapper-table-2" (ngInit)="crcyList = filterMasterData(masterDataObj['DIM_CURNCY_MST'], 'crncyId', i);">
+                                        <ng-select [items]="crcyList"
+                                        bindLabel="label"
+                                        bindValue="value"
+                                        appendTo="body"
+                                        [multiple]="true"
+                                        [clearable]="true"
+                                        placeholder="Select "
+                                        (change)="filterData(set)"
+                                        [(ngModel)]="pagerSetObjectList[set.id].filterObj.crncyId">
+                                      </div>
+                                  </div>
+                            </td>
+                            <td *ngIf="pagerSetObjectList[set.id]['metadataShow']"> 
+                                <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                    <div class="select-wrapper-table-2" (ngInit)="fqncyList = filterMasterData(masterDataObj['DIM_FREQUENCY_MST'], 'frqncyId', i);">
+                                        <ng-select [items]="fqncyList"
+                                        bindLabel="label"
+                                        bindValue="value"
+                                        appendTo="body"
+                                        [multiple]="true"
+                                        [clearable]="true"
+                                        placeholder="Select"
+                                        (change)="filterData(set)"
+                                        [(ngModel)]="pagerSetObjectList[set.id].filterObj.frqncyId">
+                                      </div>
+                                  </div>
+
+                            </td>
+                            <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                              <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                <div class="select-wrapper-table-2" (ngInit)="mtrtyList = filterMasterData(masterDataObj['DIM_MTURTY_MST'], 'mtrtyId', i);">
+                                    <ng-select [items]="mtrtyList"
+                                    bindLabel="label"
+                                    bindValue="value"
+                                    appendTo="body"
+                                    [multiple]="true"
+                                    [clearable]="true"
+                                    placeholder="Select"
+                                    (change)="filterData(set)"
+                                    [(ngModel)]="pagerSetObjectList[set.id].filterObj.mtrtyId">
+                                  </div>
+                              </div></td>
+                              <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                                  <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                      <div class="select-wrapper-table-2" (ngInit)="strList = filterMasterData(masterDataObj['DIM_SETR_MST'], 'sctrId', i);">
+                                          <ng-select [items]="strList"
+                                          bindLabel="label"
+                                          bindValue="value"
+                                          appendTo="body"
+                                          [multiple]="true"
+                                          [clearable]="true"
+                                          placeholder="Select"
+                                          (change)="filterData(set)"
+                                          [(ngModel)]="pagerSetObjectList[set.id].filterObj.sctrId">
+                                        </div>
+                                    </div>
+                              </td>
+                              <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                                <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                  <div class="select-wrapper-table-2" (ngInit)="ratngList = filterMasterData(masterDataObj['DIM_RTNG_MST'], 'rtngId', i);">
+                                      <ng-select [items]="ratngList"
+                                      bindLabel="label"
+                                      bindValue="value"
+                                      appendTo="body"
+                                      [multiple]="true"
+                                      [clearable]="true"
+                                      placeholder="Select"
+                                      (change)="filterData(set)"
+                                      [(ngModel)]="pagerSetObjectList[set.id].filterObj.rtngId">
+                                    </div>
+                                </div></td>
+                                <td *ngIf="pagerSetObjectList[set.id]['metadataShow']"> 
+                                  <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                    <div class="select-wrapper-table-2" (ngInit)="unitsList = filterMasterData(masterDataObj['DIM_UNIT_MST'], 'units', i);">
+                                        <ng-select [items]="unitsList"
+                                          bindLabel="label"
+                                          bindValue="value"
+                                          appendTo="body"
+                                          [multiple]="true"
+                                          [clearable]="true"
+                                          placeholder="Select"
+                                          (change)="filterData(set)"
+                                          [(ngModel)]="pagerSetObjectList[set.id].filterObj.units">
+                                      </div>
+                                  </div></td>
+                                  <td *ngIf="pagerSetObjectList[set.id]['metadataShow']">
+                                    <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                      <div class="select-wrapper-table-2" (ngInit)="crvfmlyList = filterMasterData(masterDataObj['MST_CURVE_FAMILY'], 'crvfmlyId', i);">
+                                          <ng-select [items]="crvfmlyList"
+                                            bindLabel="label"
+                                            bindValue="value"
+                                            appendTo="body"
+                                            [multiple]="true"
+                                            [clearable]="true"
+                                            placeholder="Select"
+                                            (change)="filterData(set)"
+                                            [(ngModel)]="pagerSetObjectList[set.id].filterObj.crvfmlyId">
+                                        </div>
+                                    </div></td>
+                                    <td><div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                        <div class="select-wrapper-table-2" (ngInit)="catList = filterMasterData(categoryList, 'expCat', i);">
+                                            <ng-select [items]="catList"
+                                              bindLabel="label"
+                                              bindValue="value"
+                                              appendTo="body"
+                                              [multiple]="true"
+                                              [clearable]="true"
+                                              placeholder="Select"
+                                              (change)="filterData(set)"
+                                              [(ngModel)]="pagerSetObjectList[set.id].filterObj.expCat">
+                                          </div>
+                                      </div></td>
+                                      <td> <div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                          <div class="select-wrapper-table-2" (ngInit)="transList = filterMasterData(transformationList, 'transType', i);">
+                                              <ng-select [items]="transList"
+                                                bindLabel="label"
+                                                bindValue="value"
+                                                appendTo="body"
+                                                [multiple]="true"
+                                                [clearable]="true"
+                                                placeholder="Select"
+                                                (change)="filterData(set)"
+                                                [(ngModel)]="pagerSetObjectList[set.id].filterObj.transType">
+                                            </div>
+                                        </div></td>
+                                        <td><div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                          <div class="select-wrapper-table-2">
+                                              <ng-select [items]="redHighLightList"
+                                                bindLabel="label"
+                                                bindValue="value"
+                                                appendTo="body"
+                                                [multiple]="true"
+                                                [clearable]="true"
+                                                placeholder="Select"
+                                                (change)="filterData(set)"
+                                                [(ngModel)]="pagerSetObjectList[set.id].filterObj.qltyScore">
+                                            </div>
+                                        </div></td>
+                                        <td><div class="cri-form-group" *ngIf="pagerSetObjectList[set.id].criFilter">
+                                          <div class="select-wrapper-table-2">
+                                              <ng-select [items]="redHighLightList"
+                                                bindLabel="label"
+                                                bindValue="value"
+                                                appendTo="body"
+                                                [multiple]="true"
+                                                [clearable]="true"
+                                                placeholder="Select"
+                                                (change)="filterData(set)"
+                                                [(ngModel)]="pagerSetObjectList[set.id].filterObj.stnryTst">
+                                            </div>
+                                        </div></td>
+                                        <td></td>
+                        </tr>
+
+
+                      <tr *ngFor="let riskFactor of pagerSetObjectList[set.id]['riskFactorListSub'];let j=index;">
+                        <td class="riskfactorsName ">
+                          <span class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" [checked]="pagerSetObjectList[set.id]['checkedRFList'].indexOf(riskFactor.id) != -1" (change)="selectRF($event,riskFactor.id, set);" id="riskfactorCheck_{{riskFactor.id}}">
+                            <label style="width:100%;" class="custom-control-label" for="riskfactorCheck_{{riskFactor.id}}">
+                              <div class="gridTextOF">
+                              {{riskFactor.name}}
+                            </div>
+                            </label>
+                          </span> 
+                        </td>
+                        <td *ngIf="j==0" class="text-rotation expandbtn" rowspan="100%" (click)="pagerSetObjectList[set.id]['metadataShow']=!pagerSetObjectList[set.id]['metadataShow']">
+                            <span *ngIf="pagerSetObjectList[set.id]['riskFactorListSub'].length >= 4" class="text-rotation">Risk Factor Attributes</span>
+                            <span class="double-arrow-td double-right-icon" *ngIf="!pagerSetObjectList[set.id]['metadataShow'] && pagerSetObjectList[set.id]['riskFactorListSub'].length < 4"></span>
+                            <span class="double-arrow-td double-left-icon" *ngIf="pagerSetObjectList[set.id]['metadataShow'] && pagerSetObjectList[set.id]['riskFactorListSub'].length < 4"></span>
+                        </td>
+                        <td class="assetClass" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.astClsId,"DIM_AST_CLS_MST")}}</td>
+                        <td class="riskFactorType" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.subRskFctrId,"DIM_RSKFCT_TYP_MST")}}</td>
+                        <td class="country" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.cntryId,"DIM_CNTRY_MST")}}</td>
+                        <td class="currency" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.crncyId,"DIM_CURNCY_MST")}}</td>
+                        <td class="frequency" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.frqncyId,"DIM_FREQUENCY_MST")}}</td>
+                        <td class="maturity" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.mtrtyId,"DIM_MTURTY_MST")}}</td>
+                        <td class="sector" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.sctrId,"DIM_SETR_MST")}}</td>
+                        <td class="rating" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.rtngId,"DIM_RTNG_MST")}} </td>
+                        <td class="unit" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.units,"DIM_UNIT_MST")}} </td>
+                        <td class="curveFamily" *ngIf="pagerSetObjectList[set.id]['metadataShow']">{{getValue(riskFactor.crvfmlyId,"MST_CURVE_FAMILY")}} </td>
+                        <td class="expandCat">
+                          <div class="select-wrapper-table-2">
+                            <ng-select [items]="categoryList"
+                              bindLabel="label"
+                              bindValue="value"
+                              appendTo="body"
+                              [clearable]="false"
+                              (change)="expCatChange(riskFactor)"
+                              [(ngModel)]="riskFactor.expCat">
+                            </ng-select>
+                          </div>
+                        </td>
+                        <td class="transType"> <div class="select-wrapper-table-2">
+                            <ng-select [items]="transformationList"
+                            bindLabel="label"
+                            bindValue="value"
+                            appendTo="body"
+                            [clearable]="false"
+                            (change)="vChange()"
+                            [(ngModel)]="riskFactor.transType">
+                          </ng-select>
+                        </div>
+                        </td>
+                        <td [ngClass]="{'redclrtxt': validatedataQuality(riskFactor.qltyScore)}" class="dataQuality">{{riskFactor.qltyScore}}</td>
+                        <td [ngClass]="{'redclrtxt': validateStationary(riskFactor.stnryTst)}" class="stationaryTest">{{riskFactor.stnryTst}}</td>
+                        <td class="spark-line graph" id="td_spark_{{riskFactor.id}}" (click)="getSparkLineForRiskfactor(riskFactor.id,riskFactor.name)">
+                            <div id="td_spark_div_{{riskFactor.id}}" (ngInit)="renderSparkLine('td_spark_div_'+riskFactor.id, riskFactor.id);"></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                   
+                  </table>
+                  <div class="fotter-btn ">
+                    <div class="col-md-12 row ">
+                      <div class="col-md-12">
+                        <nav class="c-pagination">
+                            <ul class="c-pagination__list pl-3" *ngIf="pagerSetObjectList[set.id]['pager'].pages && pagerSetObjectList[set.id]['pager'].pages.length">
+                              <li class="c-pagination__prev" [ngClass]="{disabled:pagerSetObjectList[set.id]['pager'].currentPage === 1}">
+                                <a (click)="setPage(set, pagerSetObjectList[set.id]['pager'].currentPage - 1)"><i aria-hidden="true" class="fa-long-arrow-left-icon"></i></a>
+                              </li>
+                              <li *ngFor="let page of pagerSetObjectList[set.id]['pager'].pages" class="c-pagination__item">
+                                <a (click)="setPage(set,page)" [ngClass]="{active:pagerSetObjectList[set.id]['pager'].currentPage === page}">{{page}}</a>
+                              </li>
+                              <li class="c-pagination__next" [ngClass]="{disabled:pagerSetObjectList[set.id]['pager'].currentPage === pagerSetObjectList[set.id]['pager'].totalPages}">
+                                <a (click)="setPage(set, pagerSetObjectList[set.id]['pager'].currentPage + 1)">
+                                  <i aria-hidden="true" class="fa-long-arrow-right-icon"></i>
+                                 </a>
+                              </li>
+                              <li class="c-pagination__next">
+                                <a><small class="dis-page">Displaying {{pagerSetObjectList[set.id]['pager'].startIndex + 1}} to {{pagerSetObjectList[set.id]['pager'].endIndex + 1}} Of {{pagerSetObjectList[set.id]['pager'].totalItems}} Risk Factors</small></a>
+                              </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+      <div class="dotted-divider"> </div>
+      <!--footer buttons end-->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12 p-0">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <div class="next-pre mb-3 mt-4 ">
+                    <button type="button" class="btn btn-outline cri-btn-outline bolder" (click) = "navigateTo('/scenario')">
+                      <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+                    <button  *ngIf="userCanAccess" type="button" class="btn btn-outline cri-btn-outline bolder" (click) = "saveRiskFactorSets('/scenario')">
+                      <img src="../../../content/images/svg/save.png" alt="semicons">SAVE & EXIT</button>
+                      <button  *ngIf="userCanAccess" type="button" class="btn btn-outline cri-btn-outline bolder" (click) = "saveRiskFactorSets('/scenario/selectRiskFactor')">
+                        <img src="../../../content/images/svg/savedraft.png" alt="semicons">SAVE AS DRAFT</button>
+                </div>
+              </div>
+              <div class="form-group col-md-6 ">
+                <div class="next-pre mb-3 mt-4 text-right">
+                  <button type="button" class="cri-btn btn btn-outline-danger mr-3" (click)="navigateTo('scenario/createScenario');">
+                    <img src="../../../content/images/svg/previous.png" alt="semicons">
+                     PREVIOUS</button>
+                  <button *ngIf="userCanAccess" type="button" class="cri-btn btn btn-outline-secondary btn-danger" (click)="saveRiskFactorSets('scenario/scenarioShocks');" >NEXT &nbsp;<img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+                  <button *ngIf="!userCanAccess" type="button" class="cri-btn btn btn-outline-secondary btn-danger" (click)="navigateTo('scenario/scenarioShocks');" >NEXT &nbsp; <img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+                </div>
+              </div>
+            </div><!--first row-end-->
+          </div>
+      </div>
+    </div>
+    <!-- footer buttons end-->
+    </div>
+  </div>
+</div>
+<ng-template #createSetPopup let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Create Risk Factors Set
+      <br>
+      <small class="title fil-title">Filter And Add Risk Factors</small>
+    </h4>
+    
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="cri-modal-body modal-body ">
+    <div class="alert alert-danger" *ngIf="isFailure">
+      {{displayFailureMessage}}
+    </div>
+    <div class="card-main col-lg-12 p-0">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-row">
+            <div class="cri-sin-li-input-pop form-group col-md-5">
+              <label  class="cri-label" for="inputEmail4">NAME</label>
+              <input type="text" class="form-control"  placeholder="set name" [(ngModel)]="riskFactorSetObj.riskFactorSetName">
+            </div>
+          </div>
+          <metadata-filter (loadMetaData)="loadMetaDataByAppliedFilter($event)" (clearMetaData)="clearMetaData()" (errorMessage)="showFilterComponentMessage($event)"> </metadata-filter>
+        </div>
+      </div>
+      <div class="row ml-0">
+        <div class="col-md-12 p-1 alert alert-danger" *ngIf="noRiskfactorsMsg && noRiskfactorsMsg.length > 0">
+          <i class="fa-exclamation-triangle-icon"></i> {{noRiskfactorsMsg}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="noRiskfactorsMsg=null">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-5">
+            <div class="select-wrappers" id="scrool-3">
+          <select multiple="multiple" (scroll)="changeScroll($event)" style="height: 250px !important;" id="my-select-left" class="risk-factor-mul-sel " [(ngModel)]="dataLeft">
+            <option style="padding: 10px!important;" *ngFor="let data of dataListTemp;let i=index;" [ngValue]="data" (dblclick)="moveRiskFactorToRight(data,i);">{{data[1]}}</option>
+          </select>
+          </div>
+        </div>
+        <div class="col text-center mb-2">
+          <button id="moveallrfs_right" class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToRight('ALL');" [disabled] = "dataListTemp.length == 0"> <span  class="fa-chevron-right"></span> <span class="fa-chevron-right"></span></button> 
+          <button id="movesinglerf_right" class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToRight('');" [disabled] = "dataLeft.length == 0"> <span class="fa-chevron-right"></span> </button>
+          <!-- <div _ngcontent-c2="" class="dotted-divider"></div> -->
+          <button id="moveallrfs_left" class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToLeft('');" [disabled] = "dataRight.length == 0"> <span class="fa-chevron-left"></span> </button>
+          <button id="movesinglerf_left" class="btn btn-sm btn-outline-secondary col-md-8 m-2" (click)="moveRiskFactorsToLeft('ALL');" [disabled] = "dataListTempNext.length == 0"> <span class="fa-chevron-left"></span> <span class="fa-chevron-left"></span></button>
+        </div>
+        <div class="col-lg-5 p-0">
+            <div class="select-wrappers">
+             <select multiple="multiple" style="height: 250px !important;" id="my-select-right" class="risk-factor-mul-sel"[(ngModel)]="dataRight">
+            <option *ngFor="let data of dataListTempNext;let i=index;" [ngValue]="data" (dblclick)="moveRiskFactorToLeft(data,i);">{{data[1]}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div><!--mainbody end-->
+
+
+  </div>
+  <div class="modal-footer modal-cri-foot mb-3">
+      <button type="button" id="rf_discard" class=" btn btn-outline-danger" (click)="modal.close('Close click')">
+        <img src="../../../content/images/svg/delete-red.png" alt="semicons" class="discard-img">DISCARD</button>
+      <button type="button" id="rf_save" class="btn btn-danger cri-btn mr-2" (click)="addRiskFactorsToSet();">
+          <img src="../../../content/images/svg/save-white.png" alt="semicons" >SAVE</button>
+  </div>
+</ng-template>
+<!-- Modal Create Set end-->      <!-- Modal Create Set end-->      <!-- Modal Create Set end-->
+
+  <!-- Modal Clone Set--> <!-- Modal Clone Set--><!-- Modal Clone Set--><!-- Modal Clone Set-->
+<ng-template #cloneSetPopup let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Clone Risk Factor  Set</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="p-5 modal-body">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+      <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="card-main col-lg-12 p-0">
+      <div class="form-row">
+        <div class="cri-sin-li-input-pop form-group col-md-5">
+          <label  class="title ml-2" for="inputEmail4">NAME</label>
+          <input type="text" id="clone_setName" class="form-control" placeholder="set name" [(ngModel)]="riskFactorSetObj.riskFactorSetName">
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-lg-12">
+          <label  class="cri-label">FILTER  SCENARIOS</label>
+          <div class="row">
+            <div class="col-sm-3 pr-0">
+                <div class="select-wrapper" id="clone_classfication">
+              <ng-select [items]="classificationMaster"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  placeholder="Classfication"
+                  [clearable]="false"
+                  (change)="getScenarioList('CLASSIFICATION');"
+                  [(ngModel)]="classification">
+              </ng-select>
+
+              </div>
+            </div>
+            <div class="col-sm-3 pr-0">
+                <div class="select-wrapper" id="clone_subclassfication">
+              <ng-select [items]="subClassificationMasterTemp"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  placeholder="Sub Classfication"
+                  [clearable]="true"
+                  (change)="getScenarioList('SUB_CLASSIFICATION');"
+                  [(ngModel)]="subClassification">
+              </ng-select>
+              </div>
+            </div>
+            <div class="col-sm-3 pr-0">
+                <div class="select-wrapper" id="clone_scenariotype">
+              <ng-select [items]="scenarioTypeMaster"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  placeholder="Scenario Type"
+                  [clearable]="true"
+                  (change)="getScenarioList('SCEANRIO_TYPE');"
+                  [(ngModel)]="scenarioType">
+              </ng-select>
+            </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="select-wrapper" id="clone_severity">
+              <ng-select [items]="severityMaster"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  placeholder="Severity"
+                  [clearable]="true"
+                  (change)="getScenarioList('SEVERITY');"
+                  [(ngModel)]="severity">
+              </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label  class="cri-label" for="exampleFormControlSelect1">SCENARIO NAME</label>
+            <div class="select-wrapper" id="clone_scenarioname">
+            <ng-select [items]="scenarioList"
+                  bindLabel="label"
+                  bindValue="value"
+                  placeholder="Select"
+                  [clearable]="true"
+                  (change)="getRiskFactorSetListOnChange(clone.scenarioId);"
+                  [(ngModel)]="clone.scenarioId">
+              </ng-select>
+            </div>
+          </div>
+        </div>     
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="cri-label" for="exampleFormControlSelect1">RISK FACTOR SET</label>
+            <div class="select-wrapper" id="clone_riskfactorset">
+            <ng-select [items]="riskFactorSetListForClone"
+                  bindLabel="label"
+                  bindValue="value"
+                  appendTo="body"
+                  placeholder="Select"
+                  [clearable]="true"
+                  (change)="getRiskFactorSetCloneName();"
+                  [(ngModel)]="clone.riskFactorSetId">
+              </ng-select>
+            </div>
+          </div>
+        </div>            
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer modal-cri-foot mb-3">
+    <button id="clone_discard" type="button" class=" btn btn-outline-danger" (click)="modal.close('Close click')">
+        <img src="../../../content/images/svg/delete-red.png" alt="semicons" class="discard-img">DISCARD</button>
+    <button id="clone_save" type="button" class=" btn btn-danger cri-btn mr-2" (click) = "getRiskFactorsOnRiskFactorSetId();">
+        <img src="../../../content/images/svg/save-white.png" alt="semicons" class="mr-1">
+          &nbsp;SAVE</button>
+  </div>
+</ng-template>
+<ng-template #deleteDataModal let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">{{modalHeader}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="deleteRiskFactorSet();">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="modal.dismiss()">No</button>
+  </div>
+</ng-template>
+<ng-template #deleteRFModal let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">{{modalHeader}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="deleteRiskFactors();">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="modal.dismiss()">No</button>
+  </div>
+</ng-template>
+<ng-template #sparkLineRFModal let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Time Series For Risk Factor</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div id="sparkLineChartId"></div>
+  </div>
+</ng-template>
+<ng-template #updateShockValues let-modal>
+  <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+      <p>Shock Template values are updated would you like to update?</p>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success btn-sm" (click)="updateShockTemplate('scenario/selectRiskFactor')">Yes</button>
+      <button class="btn btn-light btn-sm" (click)="closeShockTemplate('N')">No</button>
+  </div>
+</ng-template>

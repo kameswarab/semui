@@ -1,0 +1,72 @@
+<div class="cri-inner-container">
+    <div class="row col-md-12">
+        <div class="alert alert-success" *ngIf="isSuccess==true">
+            {{displaySuccessMessage}}
+        </div>
+        <div class="alert alert-danger" *ngIf="isFailure==true">
+            {{displayFailureMessage}}
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-8 mb-3">
+
+            <h1 class="cri-main-heading mt-2">
+                    <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                <strong class="ml-1 color9" routerLink="/dataUtility">  Data Utility </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1 color9 " (click)="navigateToRiskinfo()"> Risk Factor Management </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1 "> Bulk Edit </strong>
+
+            </h1>
+        </div>
+        <div class="col-md-12">
+            <div class="header-title"></div>
+        </div>
+
+    </div>
+        <div class="col-md-12">
+                <metadata-filter  [filtersData]="createFilter" [masterDataObjForFilters]="masterDataObjForFilters" (loadMetaData)="loadMetaDataByAppliedFilter($event)" (clearMetaData)="clearMetaData()" (errorMessage)="showFilterComponentMessage($event)"> </metadata-filter>
+        </div>
+    <div class="row">
+        <div class="col-md-12" *ngIf="filtersApplied">
+            <div id="ss" class="sample-spreadsheets" style="min-height: 400px;"></div>
+        </div>
+        <div class="col-md-12" *ngIf="!filtersApplied">
+            <div class="blur">
+                <img src="../../content/images/spreadsheet.jpg">
+            </div>
+
+        </div>
+        <div class="customtitle2 positioncenter2 bolder" *ngIf="!filtersApplied">
+            <i class="info-icon-2 error-icon" aria-hidden="true"></i>Use Filter To View Table
+        </div>
+    </div>
+
+    <div class="dotted-divider mt-4 mb-2" *ngIf="filtersApplied"></div>
+
+    <div class="container-fluid" *ngIf="filtersApplied">
+        <div class="row form-group mb-0">
+
+
+
+            <div class="col-md-6 mb-0">
+
+            </div>
+
+            <div class="col-md-6 pr-0 mb-0">
+                <div class="next-pre mb-3 mt-4 pr-0 text-right">
+                    <button type="button" class="cri-btn btn btn-outline-danger mr-3" (click)="navigateToRiskinfo()">
+                     <img src="../../content/images/svg/delete.png" alt="semicond" class="discard-img">
+                      DISCARD</button>
+                    <button type="button" class="cri-btn btn btn-outline-danger btn-danger" (click)="saveBulkRiskFactorConfigData()" routerLink="/dataUtility/riskfactorinfo/bulkRiskfactor">
+                        <img src="../../content/images/svg/save.png" alt="semicond" class="discard-img">
+                      SAVE </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

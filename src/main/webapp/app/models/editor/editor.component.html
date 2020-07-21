@@ -1,0 +1,156 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"/>
+
+<div class="cri-inner-container">
+    <div class="col-md-12">
+      <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess">
+        <i class="fa-check"></i> {{displaySuccessMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+        <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <model-tabs [selectedTab]="2" [status]=status></model-tabs>
+    <div class="row">
+        <div class="col-md-4"> <h5 class="mb-3 mt-3">Code Editor</h5>
+          <button class="btn btn-sm btn-primary" (click)="addNewFilePopUP()">Add New File</button>
+        </div>
+        <div class="col-md-6 row">
+          <div class="mt-5 col-12 row">
+              <div class="col-md-3 pt-2">
+                  Theme
+              </div>
+              <div class="col-md-6">
+                  <div class="select-wrapper2">
+                      <ng-select [items]="themes"
+                      bindLabel="label"
+                      bindValue="value"
+                      appendTo="body"
+                      [multiple]="false"
+                      [clearable]="false"
+                      placeholder="Select"
+                      (ngModelChange)="editorOptionThemeChange($event);"
+                      [(ngModel)]="theme">
+                      </ng-select>
+                    </div>
+              </div>
+          </div>
+      </div>
+    </div>
+   
+   
+    <div class="mt-2 row mb-5 edir-rmodel">
+        <div class="col-md-4 ag-floder-grid pr-0" >
+          <ag-grid-angular #agGrid style="width: 100%; height: 100%;"
+            class="ag-theme-balham models-ag"
+            [columnDefs]="columnDefs"
+            [rowData]="rowData"
+            [defaultColDef]="defaultColDef"
+            [components]="components"
+            [treeData]="true"
+            [animateRows]="true"
+            [groupDefaultExpanded]="groupDefaultExpanded"
+            [getDataPath]="getDataPath"
+            [getRowNodeId]="getRowNodeId"
+            [pagination]="false"
+            [autoGroupColumnDef]="autoGroupColumnDef"
+            (cellClicked)="onRowClicked($event)"
+            (gridReady)="onGridReady($event)">
+          </ag-grid-angular>
+        </div>
+        <div class="col-md-8 edit-vscode">
+               
+                    <!-- <div class="col-md-6 row">
+                          <div class="col-md-3 pt-2">
+                              Language
+                          </div>
+                          <div class="col-md-6">
+                              <div class="select-wrapper2">
+                                  <ng-select [items]="languages"
+                                bindLabel="label"
+                                bindValue="value"
+                                appendTo="body"
+                                [multiple]="false"
+                                [clearable]="false"
+                                placeholder="Select"
+                                (ngModelChange)="editorOptionLangChange($event);"
+                                [(ngModel)]="language">
+                                </ng-select>
+                            </div>
+                          </div>
+                    </div> -->
+               
+                <div *ngIf="flag">
+                  <div class="opbox" id="viewFileData" style="height:500px;"></div>
+              </div>
+              <ngx-monaco-editor *ngIf="!flag" style="height: 100%; overflow-y:auto; padding: 6px; border: 1px solid #ccc;" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3 text-left">
+              
+            </div>
+            <div class="col-md-9 text-right"> 
+                <button id="save" (click)="backtoUpload();" type="button" class="cri-btn btn btn-danger cr-btbd">
+                    <img src="../../../content/images/svg/previous2.png" alt="sem-icons"> Back  </button>
+                <button type="button" id="discard" class="cri-btn btn btn-danger cr-btbd" (click)="navigatetoModels()">
+                    <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img"> DISCARD</button>
+              <button id="saveExit" type="button" class="cri-btn btn btn-danger" (click) = "updateFileContent(flag);">
+                    <img src="../../../content/images/svg/save.png" alt="sem-icons">
+                SAVE 
+              </button>
+              <button id="next" (click)="nexttoInputs();" type="button" class="cri-btn btn btn-danger cr-btbd">Next &nbsp;
+                 <img src="../../../content/images/svg/next.png" alt="sem-icons">
+                </button>
+            </div>
+    </div>
+</div>
+<ng-template #newFile let-modal>
+  <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Add New File</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+      <div class="col-md-12">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row col-md-12 p-0">
+              <div class="col-md-8 pr-0">
+                  <input type="text" class="form-control " [(ngModel)]="newFileName" minlength="1" pattern="^[_'.A-Za-z-]$"  placeholder="Enter filename"/>
+              </div>
+                <div class="col-md-4 pl-2 pr-0">
+                    <div class="select-wrapper-table-2">
+                        <ng-select [items]="filesList"
+                         bindLabel="label"
+                         bindValue="value"
+                         appendTo="body"
+                         [multiple]="false"
+                         [clearable]="false"
+                         placeholder="Select"
+                         [(ngModel)]="newFileType">
+                         </ng-select>
+                     </div>
+                  </div>
+          </div>
+        </div>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success btn-sm" (click)="addNewFile()">Add File</button>
+      <button class="btn btn-light btn-sm" (click)="modal.dismiss()">No</button>
+  </div>
+</ng-template>

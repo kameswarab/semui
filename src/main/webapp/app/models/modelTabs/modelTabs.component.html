@@ -1,0 +1,10 @@
+<div class="wizards mt-0 pl-2">
+    <div class="steps p-2 mb-2 row">
+      <div *ngFor="let tab of tabsets; let i=index;let last = last; let first = first;" (click)="navigateTo(tab);" class="custom-control custom-radio custom-control-inline mr-0 col" [ngClass]="{'col' : !last, ' col-md-2' : last}">
+        <input type="radio" id="customRadioInline_{{i}}" class="custom-control-input"  [checked]="status >= tab.status || selectedTab == tab.id" [disabled]="status + 1 < tab.status || !status">
+        <label class="cus-active custom-control-label" for="customRadioInline_{{i}}" [ngClass]="{'check': status >= tab.status && selectedTab != tab.id}">{{tab.name}}
+            <div class="line-rmodal" *ngIf="!last" [ngClass]="{'line1-rmodal' : first,'line-rmodal' : !first }"></div>
+        </label>
+      </div>
+    </div>
+  </div>

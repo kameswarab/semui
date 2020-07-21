@@ -1,0 +1,55 @@
+<div class="cri-inner-container">
+  <div class="row mb-1">
+    <div class="col-md-6">
+      <h1 class="cri-main-heading ml-1 mt-2" >
+          <img src="../../content/images/svg/administrtion-heading.png" alt="sem-icons">          
+        <strong class="title-s ml-1 color9" routerLink="/administrationHome"> Administration </strong>
+        <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+        <strong class="title-s ml-1 bolder" routerLink="/administrationHome/clientList">Client Management </strong>
+      </h1>
+    </div>
+    <div class="col-md-6 text-right mt-3">
+      <button class="btn btn-outline-primary btn-sm sm-icons" (click)="goToCreateClientInfo()">
+        <i class="plus-circle-icon" aria-hidden="true"></i> 
+        <span class="ml-1 buttontext2" >CREATE CLIENT</span>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">  
+      <jhi-alert></jhi-alert>
+      <div class="test-header"> </div>     
+      <div class="overflow-auto">
+        <ag-grid-angular 
+          style="width: 100%; height:500px;" 
+          class="ag-theme-balham"
+          [rowData]="rowData"
+          [columnDefs]="columnDefs"
+          [cacheBlockSize]="cacheBlockSize"
+          [maxBlocksInCache]="maxBlocksInCache"
+          [pagination]="true"
+          [rowHeight]="rowHeight"
+          [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+          [defaultColDef]="defaultColDef"
+          (cellClicked)="onRowClicked($event)"
+          (gridReady)="onGridReady($event)">
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #deleteEntityModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles">Delete Client</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="delete();">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="cancel();">No</button>
+  </div>
+</ng-template>

@@ -1,0 +1,303 @@
+<div class="cri-inner-container">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-9 mb-3">
+
+            <h1 class="cri-main-heading mt-2">
+                    <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                <strong class="ml-2 color9" routerLink="/dataUtility">  Data Utility </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-2 color9" routerLink="/dataUtility/riskfactorinfo" (click)="discardRiskFactorLibConfigData()"> Risk Factor Management </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="ml-1"><span class="font-weight-bold">Edit </span> </strong>
+            </h1>
+
+        </div>
+        <div class="col-md-12">
+            <div class="header-title"></div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="customtitle font-weight-bold mt-4 mb-3">EDIT RISK FACTOR</div>
+        </div>
+        <div class="col-md-12">
+            <div class="customtitle2 font-weight-bold mt-3 mb-4">META DATA SECTION A</div>
+        </div>
+    </div>
+    <form>
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">SHOCK RULE KEY</label>
+                    <span placement="top" ngbTooltip="{{riskConfigData.shockRuleKey}}">
+                <input type="text" placement="top" ngbTooltip="riskConfigData.shockRuleKey" class="form-control" id="shockrulekey" name="shockRuleKeyName" disabled="disabled" [(ngModel)]="riskConfigData.shockRuleKey" />
+                </span>
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">ASSET CLASS<span class="text-danger">*</span></label>
+                    <div class="select-wrapper">
+                        <input type="text" autocomplete="off" class="form-control" disabled="disabled" [(ngModel)]="riskConfigData.assetClass" id="assetClass" name="assetClass" required />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">ASSET NAME<span class="text-danger">*</span></label>
+                    <input type="text" autocomplete="off" class="form-control" disabled="disabled" [(ngModel)]="riskConfigData.assetname" id="assetname" name="assetname" required />
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">RISK FACTOR TYPE<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="riskfactortype" name="riskfactortype" disabled="disabled" [(ngModel)]="riskConfigData.riskfactortype" />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">SUB RISK FACTOR TYPE</label>
+                    <input type="text" disabled="disabled" autocomplete="off" class="form-control" [(ngModel)]="riskConfigData.subRiskFactorType" name="subRiskFactorType" id="subRiskFactorType" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">CURRENCY</label>
+                    <input type="text" class="form-control" id="currency" name="currency" disabled="disabled" [(ngModel)]="riskConfigData.currency" />
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-12 p-0 mb-3">
+            <div class="customtitle2 font-weight-bold mt-3 mb-4">META DATA SECTION B</div>
+        </div>
+        <div class="col-md-12 p-0">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">COUNTRY<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="country" name="country" disabled="disabled" [(ngModel)]="riskConfigData.country" />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">FREQUENCY<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="frequency" name="frequency" disabled="disabled" [(ngModel)]="riskConfigData.frequency" />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">UNIT<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="unit" name="unit" disabled="disabled" [(ngModel)]="riskConfigData.unit" />
+                </div>
+
+
+            </div>
+        </div>
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">EXPIRY</label>
+                    <input type="text" class="form-control" id="expiryid" name="expiryid" disabled="disabled" [(ngModel)]="riskConfigData.expiryid" />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">MATURITY</label>
+                    <input type="text" class="form-control" id="maturity" name="maturity" disabled="disabled" [(ngModel)]="riskConfigData.maturity" />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">SENIORITY</label>
+                    <input type="text" autocomplete="off" class="form-control" [(ngModel)]="riskConfigData.seniority" id="seniority" name="seniority" required />
+                </div>
+
+
+            </div>
+        </div>
+        <div class="col-md-12  mt-3 mb-4 p-0">
+            <div class="customtitle2 font-weight-bold">META DATA SECTION C</div>
+        </div>
+
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">LIQUIDITY CATEGORY</label>
+                    <input type="text" class="form-control" id="liquiditycategoryid" name="liquiditycategoryid" disabled="disabled" [(ngModel)]="riskConfigData.liquiditycategoryid" />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">SECTOR</label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="sectors" bindLabel="label" bindValue="value" name="sector" id="sector" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskConfigData.sector">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">RATING</label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="ratings" bindLabel="label" bindValue="value" name="rating" id="rating" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskConfigData.rating">
+                        </ng-select>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-4">
+
+                    <label class="customlabel">SOURCE NAME</label>
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Enter Source Name" [(ngModel)]="riskConfigData.systemName" name="systemName" id="systemName" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="customlabel">EXTERNAL ID</label>
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Enter External ID" [(ngModel)]="riskConfigData.externalId" name="externalId" id="externalId" required />
+                </div>
+                <div class="col-md-4">
+                        <label class="customlabel">CURVE FAMILY</label>
+                        <div class="select-wrapper">
+                            <ng-select [items]="curveFamilys" bindLabel="label" bindValue="value" name="curveFamily" id="curveFamily" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskConfigData.curveFamily">
+                            </ng-select>
+                        </div>
+                 </div>
+            </div>
+        </div>
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-8">
+                    <label class="customlabel">DESCRIPTION</label>
+                    <textarea [(ngModel)]="riskConfigData.description" disabled="disabled" class="form-control" style="resize: none;" rows="5" maxlength="4000" id="description" name="description"></textarea>
+                </div> 
+            </div>
+        </div>
+        <div class="col-md-12  mt-3 mb-4 p-0">
+            <div class="customtitle2 font-weight-bold">TIME SERIES INFORMATION </div>
+        </div>
+
+        <div class="col-md-12 p-0">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">TRANSFORMATION<span class="text-danger">*</span></label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="transformationList" bindLabel="label" bindValue="value" name="transformationId" id="transformationId" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskFactorLibDTO.transformationId">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="customlabel">MISSING VALUE TREATMENT METHODOLOGY<span class="text-danger">*</span></label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="misValTreatMethList" bindLabel="label" bindValue="value" name="misValTreatMethId" id="misValTreatMethId" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskFactorLibDTO.misValTreatMethId">
+                        </ng-select>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+        <div class="col-md-12  mt-3 mb-4 p-0">
+            <div class="customtitle2 font-weight-bold">EXPANSION SETUP </div>
+        </div>
+
+        <div class="col-md-12 p-0 mb-3">
+            <div class="row form-group">
+                <div class="col-md-4">
+                    <label class="customlabel">RF CATEGORY<span class="text-danger">*</span></label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="rfCategoryList" bindLabel="label" bindValue="value" name="rfCategoryId" id="rfCategoryId" class="" placeholder="Select" appendTo="body" (change)="getMethodologyValue($event);getMarketDataValue()" [(ngModel)]="riskFactorLibDTO.rfCategoryId">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-4" *ngIf="riskFactorLibDTO.rfCategoryId != null">
+                    <label class="customlabel">METHODOLOGY<span class="text-danger">*</span></label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="methodologyList1" bindLabel="label" bindValue="value" name="methodologyId" id="methodologyId" class="" placeholder="Select" appendTo="body" (change)="methodologyChange($event)" [(ngModel)]="riskFactorLibDTO.methodologyId">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-4" *ngIf="riskFactorLibDTO.methodologyId =='5' && riskFactorLibDTO.rfCategoryId== '2'">
+                    <label class="customlabel">PCA GROUP</label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="pcaGroupList" bindLabel="label" bindValue="value" name="pcaGroupId" id="pcaGroupId" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskFactorLibDTO.pcaGroupId">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-md-4" *ngIf="riskFactorLibDTO.methodologyId == METHODOLOGY_INTERPOLATION && riskFactorLibDTO.rfCategoryId== EXPANSION_CATEGORY_BUSINESS_RULE">
+                    <label class="customlabel">INTERPOLATION TYPE</label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="interpolationTypeData" bindLabel="label" bindValue="value" name="interpolationTypeId" id="interpolationTypeId" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskFactorLibDTO.interpolationTypeId">
+                        </ng-select>
+                    </div>
+                </div>
+                <!-- {{rfData | json}} -->
+                <div class="col-md-4" *ngIf="riskFactorLibDTO.methodologyId == METHODOLOGY_PROXY && riskFactorLibDTO.rfCategoryId== EXPANSION_CATEGORY_BUSINESS_RULE">
+                    <label class="customlabel">ARITHMETIC FORMULA</label>
+                    <div class="select-wrapper">
+                        <input id="arithmaticFormula" name="arithmaticFormula" type="text" class="form-control" disabled="true" [(ngModel)]="riskFactorLibDTO.arithmaticFormula">
+                   
+                        <arithmatic-formula [rfData]="rfData"></arithmatic-formula>
+                    </div>
+                </div>
+
+                <div class="col-md-2" *ngIf="riskFactorLibDTO.methodologyId == METHODOLOGY_QUANTILE && riskFactorLibDTO.rfCategoryId== EXPANSION_CATEGORY_PREDETERMINED">
+                    <label class="customlabel">QUANTILEPERCENTILE</label>
+                    <input id="quantilePercentile" name="quantilePercentile" autocomplete="off" type="text" class="form-control" maxlength="2" [(ngModel)]="riskFactorLibDTO.quantilePercentile">
+
+                </div>
+                <div class="col-md-2" *ngIf="riskFactorLibDTO.methodologyId == METHODOLOGY_QUANTILE && riskFactorLibDTO.rfCategoryId== EXPANSION_CATEGORY_PREDETERMINED">
+                    <label class="customlabel">LOOKBACK PERIOD</label>
+                    <div class="select-wrapper">
+                        <ng-select [items]="frequencies" bindLabel="label" bindValue="value" name="lookbackPeriod" id="lookbackPeriod" class="" placeholder="Select" appendTo="body" [(ngModel)]="riskFactorLibDTO.lookbackPeriod">
+                        </ng-select>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+    </form>
+
+
+    <!--footer buttons end-->
+    <div class="container-fluid">
+        <div class="dotted-divider2"></div>
+        <div class="row form-group mb-0">
+
+
+            <div class="col-md-4 pr-0 mb-0">
+
+            </div>
+
+            <div class="col-md-8 pr-0 mb-0">
+                <div class="next-pre mb-3 mt-4 pr-0 text-right">
+                    <button type="button" class="cri-btn btn btn-outline-danger mr-3"
+                        (click)="deleteRiskFactorLibConfigData(); discardRiskFactorLibConfigData()">
+                    Delete Risk Factor</button>
+                    <button type="button" class="cri-btn btn btn-outline-danger mr-3"  (click)="discardRiskFactorLibConfigData()" routerLink="/dataUtility/riskfactorinfo">
+                <img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">  DISCARD</button>
+                    <button type="button" class="cri-btn btn btn-outline-danger btn-danger" (click)="saveRiskFactorLibConfigData()">
+                            <img src="../../content/images/svg/save.png" alt="semicons" class="discard-img">
+                            SAVE </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>

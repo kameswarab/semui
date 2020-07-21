@@ -1,0 +1,101 @@
+<div class="row ml-0 mb-2">
+        <div class="col-lg-12 search-box mb-1 p-0">
+            <label  class="title fil-title">FILTERS</label>
+            <div class="row">
+              
+            <div class="col-md-3 p-0">
+              <section id="search">
+                <label for="search-input"><i class="fa-search-icon" aria-hidden="true"></i><span class="sr-only">Search text</span></label>
+                <input id="search-input" [(ngModel)]="createFilter['SEARCH_STR'][0]" (keyup)="changeSearchText('SEARCH_STR')" class="form-control input-lg" placeholder="search text" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+              </section>
+            </div> 
+           <div class="col p-0">
+              <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['ASSET_CLASS_ID'] && createFilter['ASSET_CLASS_ID'].length>0}">
+                <li ngbDropdown class="nav-item dropdown pointer">
+                  <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle>
+                    <span>Asset Class</span> 
+                  </a>
+                  <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+                    <li *ngFor="let master of masterDataObjForFilters['ASSET_CLASS_ID'] | keyvalue ">
+                    <a class="dropdown-item">
+                        <span class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'ASSET_CLASS_ID',master.key)" [checked]="createFilter['ASSET_CLASS_ID'] && createFilter['ASSET_CLASS_ID'].indexOf(master.key) != -1" id="ASSET_CLASS_ID_{{master.key}}">
+                            <label class="custom-control-label" for="ASSET_CLASS_ID_{{master.key}}">{{master.value}}</label>
+                          </span>
+                        </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+          </div>
+          <div class="col p-0">
+            <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['RISK_FACTOR_TYPE_ID'] && createFilter['RISK_FACTOR_TYPE_ID'].length>0}">
+              <li ngbDropdown class="nav-item dropdown pointer">
+                <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+                <span>Risk Factor Type</span>
+                </a>
+                <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+                  <li *ngFor="let master of masterDataObjForFilters['RISK_FACTOR_TYPE_ID'] | keyvalue ">
+                    <a class="dropdown-item">
+                      <span class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'RISK_FACTOR_TYPE_ID',master.key)" [checked]="createFilter['RISK_FACTOR_TYPE_ID'] && createFilter['RISK_FACTOR_TYPE_ID'].indexOf(master.key) != -1" id="RISK_FACTOR_TYPE_ID_{{master.key}}">
+                        <label class="custom-control-label" for="RISK_FACTOR_TYPE_ID_{{master.key}}">{{master.value}}</label>
+                        </span>
+                      </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="col p-0">
+            <ul class="searchbox" [ngClass]="{'filt-icon': createFilter['CURRENCY_ID'] && createFilter['CURRENCY_ID'].length>0}">
+              <li ngbDropdown class="nav-item dropdown pointer">
+                <a class="nav-link dropdown-teoggl selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+                  <span>Currency</span>
+                </a>
+                <ul class="dropdown-menu filter-scroll" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+                  <li *ngFor="let master of masterDataObjForFilters['CURRENCY_ID'] | keyvalue ">
+                    <a class="dropdown-item">
+                      <span class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,'CURRENCY_ID',master.key)" [checked]="createFilter['CURRENCY_ID'] && createFilter['CURRENCY_ID'].indexOf(master.key) != -1" id="CURRENCY_ID_{{master.key}}">
+                        <label class="custom-control-label" for="CURRENCY_ID_{{master.key}}">{{master.value}}</label>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="col p-0">
+              <ul class="searchbox" [ngClass]="{'filt-icon': filterIcon}">
+                <li ngbDropdown class="nav-item dropdown pointer">
+                  <a class="nav-link dropdown-toggle selectbox-icon" ngbDropdownToggle href="javascript:void(0);" id="admin-select">
+                    <span>Advanced Filters</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-large reviewout-fil row" ngbDropdownMenu aria-labelledby="admin-select" id="scrool-3">
+                    
+                    <li class="filter-li" *ngFor="let filter of filterConfiguration | keyvalue">
+                      <ul class="drop-lag-min">
+                        <li class="dropdown-header">{{filter.value}}</li>
+                        <li *ngFor="let master of masterDataObjForFilters[filter.key] | keyvalue">
+                          <a class="dropdown-item">
+                            <span class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" (change)="filterCheckboxChange($event,filter.key,master.key)" [checked]="createFilter[filter.key] && createFilter[filter.key].indexOf(master.key) != -1" id="{{filter.key}}_{{master.key}}">
+                              <label class="custom-control-label" for="{{filter.key}}_{{master.key}}">{{master.value}}</label>
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-1 p-0">
+              <i *ngIf="filtersApplied" (click)='resetFilters();' class="filter-icon  filter-clear" aria-hidden="true">
+                <i class="fa-times-icon-2" aria-hidden="true"></i>
+              </i>
+          </div> 
+          <button *ngIf="filtersApplied"  id="riskfactor_filterAplay" class="btn btn-outline-primary btn-sm mr-3 " (click)="loadMetaDataByFilter()">Get Data</button>
+        </div>
+      </div>

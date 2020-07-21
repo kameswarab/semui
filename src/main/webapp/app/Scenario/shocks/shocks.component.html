@@ -1,0 +1,837 @@
+
+ <!--cri-inner-container  main-->
+ <div class="cri-inner-container">
+  <div class="col-md-12">
+    <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+      <i class="fa-check"></i> {{displaySuccessMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+  </div>
+  <div class="col-md-12"> 
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+      <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+<jhi-scenario-tabs selectedTab="3" [onChangeScreen] = "onChangeScreen" [status]="scenarioObj.status"></jhi-scenario-tabs>
+<div class="row">
+    <div class="scenario-info col-lg-7">
+      <label class="list-name mr-3">{{scenarioObj.scenarioName}}</label>
+      <p *ngIf="scenarioObj.id"> Last Modified On <span>{{scenarioObj.lastModifiedDate | date:'dd MMM yyyy'}}</span> by <span>{{scenarioObj.lastModifiedBy}}</span></p>
+    </div> 
+</div>
+
+ <div class="content-table mb-4">
+   <div class="cri-nav-tabs">
+       <ul role="tablist" class="nav nav-tabs justify-content-undefined">
+          <ng-container class="" *ngFor="let rfCategori of rfCategories; let i = index; let last = last; let first = first">
+              <li class="nav-item" id="rfCategori_{{rfCategori.label1}}" >
+              <a (click)="changeExpTypeBtn(rfCategori.value)" role="tab"  class="nav-link" [ngClass]="{active : (rfCategori.applyPrimaryClass), navlast : last, navfirst: first   }" > {{rfCategori.label1}} ({{filledCountByExpType(rfCategori.value)}}/{{countByExpType(rfCategori.value)}}) </a>
+              </li>
+          </ng-container>
+           </ul> 
+   </div>
+   <!--navtabs end-->
+<div class="tabcontent">
+   <div class="row col-md-12 cri-eva m-0">
+    <div class="col-md-5 pt-1 pl-0 pr-0">
+      <small class="dis-page ">Showing {{totalRFSets}} Risk Factor  Sets</small>
+    </div>
+    <div class="col-md-7 row p-0" *ngIf="userCanAccess">
+      <div class="col-md-5 text-right p-0 mt-1" *ngIf="expCatType == 1">
+        <span class="customlabel bolder">Set Specific?</span>
+        <div class="custom-control custom-switch set-specific-toggle ml-2">
+         <!--  <input type="checkbox" class="custom-control-input" id="calcSetSpecific" name="calcSetSpecific" [value]="calcSetSpecific == 'FALSE' ? false : true" (click) = "calcSetSpecific == 'FALSE' ? calcSetSpecific = 'TRUE' : calcSetSpecific = 'FALSE'" /> -->
+         <input type="checkbox" class="custom-control-input" id="calcSetSpecific" (change)="toggleEditable($event)">
+            <label class="custom-control-label customlabel pt-1" for="calcSetSpecific">Yes</label>
+        </div>
+      </div>
+      <div class="text-right p-0" [ngClass]="{'col-md-7':expCatType == 1, 'col-md-12':expCatType != 1}">
+        <button type="button" id="methodologysettings" class="btn btn-outline-primary btn-sm btn-cal sm-icons mr-2" (click)="openMetdlgyConfgMdl(metdlgyConfgMdl);" placement="top" ngbTooltip="Methodology Config ">
+          <img src="../../../content/images/svg/methodologysettings.png" alt="semicons">      
+        </button>
+        <button type="button" id="calculate" class="btn btn-outline-primary btn-sm btn-cal sm-icons mr-2" (click)="calculateShocks();">
+            <img src="../../../content/images/svg/calaulate.png" alt="semicons" class="mr-1">CALCULATE
+        </button>
+        <button class="btn btn-outline-primary btn-sm btn-cal sm-icons "  *ngIf="expCatType == 1 && isRCalculated" placement="bottom" ngbTooltip="Download All RiskFactor Results" (click)="downloadMethodologyExcelFile('0')">
+            <i class="fa-download-icon md-k" aria-hidden="true" titile="Download Template"></i>
+        </button>
+      </div>
+    </div>
+   </div>
+ <!-- table start shock-table-->
+ <div class="shock-table border-bottom" >
+     <ngb-accordion [activeIds]="activeIds" (panelChange)="toggleSetAccordian($event)">
+         <ng-container class="" *ngFor="let dataSet of dataSets; let i=index;">  
+         <ngb-panel id="static-{{i}}">
+              <ng-template ngbPanelTitle>
+                     <div class="panel-head-title shock-card-h row">
+                         <div class="col-sm-3 pt-2"> 
+                            <span class="card-title">{{dataSet.riskFactorSetName}}</span>  &nbsp; &nbsp; &nbsp;
+                         </div>
+                         <div class="col-md-4  col-lg-4 mb-2 mt-2 mr-0 p-0 row" *ngIf="setWiseControls[i].showPrgBar">
+                            <small class="col-sm-3 dis-page p-0  text-right ">{{totalFilledCntForSet(i)}} / {{totalCntForSet(i)}}</small>
+                            <div class="col-sm-9 pt-2 ">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width.%]="setWiseControls[i].prsBarCnt" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                            </div>
+                        </div>
+                        <div  class="col-md-3 ngbacctitlearr">
+
+                        </div>
+                      </div>
+               </ng-template>
+            
+           <ng-template ngbPanelContent>
+              
+               <div class="shock-table-body">
+
+                     <!-- Alert-->
+                   
+                   
+                    <div class="col-md-12  tooltipbottom p-0">
+                    <div class="alert alert-danger m-0 text-center error-mes" *ngIf="(setWiseControls[i].errMsgs?.length > 0)" role="alert" (click)="setWiseControls[i].errorMess=!setWiseControls[i].errorMess">
+                      {{setWiseControls[i].errMsgs?.length}} RF Errors in set
+                    </div>
+                             <!-- Alert end-->
+                            
+                             <div class="bottom error-message"  *ngIf="setWiseControls[i].errorMess">
+                              <div class="error-content">
+                                 <h6>CALCULATION ERRORS</h6>
+                                 <hr>
+                                  <div (click)="goToErrRF(errs.id, i)" class="error-text" *ngFor="let errs of setWiseControls[i].errMsgs">
+                                   <label for="" >{{errs.name}}</label><br>
+                                   <small class="dis-page ">{{errs.errMsg}}</small>
+                                  </div>
+                                  <button type="button" class="btn btn-outline-primary">VIEW IN TABLE</button>
+                                </div>
+                            </div>
+                          </div>
+                      
+                             <!-- error-message end-->
+
+             <!-- add filter-->
+              <div class="row filter-prog pr-0 ml-0 mr-0">
+                    <div class="col-md-12 col-lg-8 mb-2 mt-2 add-del-btn">
+                     <!-- <a href="javascript:void(0)" class="mr-3 filter-icon" (click)="setWiseControls[i].criFilter = !setWiseControls[i].criFilter">&nbsp;&nbsp; FILTER</a>   -->
+                     <a *ngIf = "userCanAccess" [ngClass]="{disabled:!setWiseControls[i].checkedRFList || setWiseControls[i].checkedRFList.length == 0}"  class="mr-3 ie-disable" (click)="deleteSelectedRF(i)">
+                        <img src="../../../content/images/svg/delete-sm-1.png" alt="semicons" class="discard-img"> DELETE SELECTED</a>
+                     <a class="plus-circle-icon" *ngIf = "userCanAccess" href="javascript:void(0)" (click)="editDataSet(dataSet.id);"> ADD RISK FACTOR </a>
+                   </div>  
+                   <div class="col-md-12  col-lg-4 mb-2 mt-2 mr-0 p-0 row" *ngIf="!setWiseControls[i].showPrgBar">
+                       <small class="col-sm-3 dis-page p-0  text-right">{{totalFilledCntForSet(i)}} / {{totalCntForSet(i)}}</small>
+                       <div class="col-sm-9 pt-2 ">
+                           <div class="progress">
+                               <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width.%]="setWiseControls[i].prsBarCnt" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                             </div>
+                       </div>
+                   </div>
+              </div>
+                <!-- add filter end-->
+
+
+                    <div class="table-start table-responsive" (scroll)="test()">
+                        
+                       <table class="table table-bordered tables-view  glowTableBody table-resizable shock-resize-table" [ngClass]="{'resize-table-witdhsh':setWiseControls[i].showMetaData, 'firsttable':firsttable, 'secondtable':secondtable, 'thirdtable':thirdtable}"  id="shockTable">
+                           <thead class="tables-head">
+                             <tr>
+                               <th scope="col" class="riskfactorsName">
+                                 <span class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" [checked]="setWiseControls[i].selectAllRF" (change)="selectAllChange($event, i);" id="customCheck_{{i}}">
+                                    <label class="custom-control-label" for="customCheck_{{i}}">Risk Factor(S)</label>
+                                   
+                                 </span> 
+                                 <span (click)="setWiseControls[i].criFilter = !setWiseControls[i].criFilter" class="shockFilter filter-icon"></span>  
+                                
+                             
+                             </th>
+                             <th class="arrow-view expandbtn">
+                              <div class="arrow-btn-r">
+                                <div *ngIf="!setWiseControls[i].showMetaData" (click)="setWiseControls[i].showMetaData = !setWiseControls[i].showMetaData">
+                                    <img src="../../../content/images/svg/arrowleft.png" alt="semicons"> 
+                                  </div>
+                                    <div *ngIf="setWiseControls[i].showMetaData" (click)="setWiseControls[i].showMetaData = !setWiseControls[i].showMetaData;">
+                                        <img src="../../../content/images/svg/arrowright.png" alt="semicons">
+                                    </div>
+                            </div>
+                             </th>
+                            
+                             <th *ngIf="setWiseControls[i].showMetaData" class="assetClass">ASSET CLASS  </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="riskFactorType">RISK FACTOR TYPE </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="country">COUNTRY </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="currency">CURRENCY </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="frequency">FREQUENCY </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="maturity">MATURITY </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="sector">SECTOR  </th>
+                             <th *ngIf="setWiseControls[i].showMetaData" class="rating">RATING   </th>
+
+                             <th *ngIf="setWiseControls[i].showMetaData" class="curveFamily">CURVE FAMILY  </th>
+                             
+                             <th scope="col" class="expandCat">EXPANSION CATEGORIZATION  </th>
+                              
+                               <th scope="col" class="methodology">METHODOLOGY </th>
+                               <th *ngFor="let shockHeader of shockHeaders" class="shocks" scope="col">{{shockHeader}}  </th>
+                               <th scope="col" class="unit">Unit  </th>
+                               <th scope="col" class="quantile" *ngIf="(expCatType == 0 && PROJECTION_ID != scenarioObj.type)">QUANTILE %    </th>
+                               <th scope="col" class="cadence" *ngIf="(expCatType == 0 && PROJECTION_ID != scenarioObj.type)">FREQUENCY  </th>
+                               <th scope="col" class="additionalColumn" *ngIf="(expCatType == 2)">ADDITIONAL COLUMN</th>
+
+                               <th scope="col" class="prefferedVariables" *ngIf="(expCatType == 1)">Preffered Variables </th>
+                              <th scope="col" class="nonPrefferedVariables" *ngIf="(expCatType == 1)">Non Preffered Variables </th>
+                               <th scope="col" class="onlyPreffered" *ngIf="(expCatType == 1)">Only with Preffered </th>
+                               <th scope="col" class="selectedVariables" *ngIf="(expCatType == 1)">Selected Variables </th>
+                             </tr>
+                           </thead>
+                           <tbody class="tables-boby">
+                              <ng-container *ngIf="!(dataSet.riskFactorListJsonNode.length > 0)">
+                                  <tr>
+                                          <td colspan="100%">
+                                                  No Records for the set.
+                                          </td>
+                                  </tr>
+                              </ng-container>
+                              <tr *ngIf="setWiseControls[i].criFilter" >
+                                <td>
+                                  <section  *ngIf="setWiseControls[i].criFilter" id="search-2">
+                                        <label for="search-input"><i class="fa-search-icon" aria-hidden="true"></i><span class="sr-only">Search icons</span></label>
+                                        <input id="search-input" class="form-control input-lg" [(ngModel)]="setWiseControls[i].filterObj.rfName" (keyup)="filterData($event,i)" placeholder="Search Risk Factors" autocomplete="off" spellcheck="false" autocorrect="off" tabindex="1">
+                                  </section> 
+                                </td>
+                                <td></td>
+                                <td *ngIf="setWiseControls[i].showMetaData">
+                                  <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                    <div class="select-wrapper-table-2" (ngInit)="assetList = filterMasterData(masterDataObj['DIM_AST_CLS_MST'], 'astClsId', i);">
+                                        <ng-select [items]="assetList"
+                                        bindLabel="label"
+                                        bindValue="value"
+                                        appendTo="body"
+                                        [multiple]="true"
+                                        [clearable]="true"
+                                        placeholder="Select"
+                                        (change)="filterData($event,i)"
+                                        [(ngModel)]="setWiseControls[i].filterObj.astClsId">  
+                                      </div>
+                                  </div></td>
+                                  <td *ngIf="setWiseControls[i].showMetaData">
+                                      <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                          <div class="select-wrapper-table-2" (ngInit)="subrskList = filterMasterData(masterDataObj['DIM_RSKFCT_TYP_MST'], 'subRskFctrId', i);">
+                                              <ng-select [items]="subrskList"
+                                              bindLabel="label"
+                                              bindValue="value"
+                                              appendTo="body"
+                                              [multiple]="true"
+                                              [clearable]="true"
+                                              placeholder="Select"
+                                              (change)="filterData($event, i)"
+                                              [(ngModel)]="setWiseControls[i].filterObj.subRskFctrId">
+                                            </div>
+                                        </div>
+                                     </td>
+                                     <td *ngIf="setWiseControls[i].showMetaData">
+                                        <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                          <div class="select-wrapper-table-2" (ngInit)="cntyList = filterMasterData(masterDataObj['DIM_CNTRY_MST'], 'cntryId', i);">
+                                              <ng-select [items]="cntyList"
+                                              bindLabel="label"
+                                              bindValue="value"
+                                              appendTo="body"
+                                              [multiple]="true"
+                                              [clearable]="true"
+                                              placeholder="Select"
+                                              (change)="filterData($event, i)"
+                                              [(ngModel)]="setWiseControls[i].filterObj.cntryId">
+                                            </div>
+                                        </div></td>
+                                        <td *ngIf="setWiseControls[i].showMetaData">
+                                            <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                                <div class="select-wrapper-table-2" (ngInit)="crcyList = filterMasterData(masterDataObj['DIM_CURNCY_MST'], 'crncyId', i);">
+                                                    <ng-select [items]="crcyList"
+                                                    bindLabel="label"
+                                                    bindValue="value"
+                                                    appendTo="body"
+                                                    [multiple]="true"
+                                                    [clearable]="true"
+                                                    placeholder="Select "
+                                                    (change)="filterData($event, i)"
+                                                    [(ngModel)]="setWiseControls[i].filterObj.crncyId">
+                                                  </div>
+                                              </div>
+                                        </td>
+                                        <td *ngIf="setWiseControls[i].showMetaData">
+                                            <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                                <div class="select-wrapper-table-2" (ngInit)="fqncyList = filterMasterData(masterDataObj['DIM_FREQUENCY_MST'], 'frqncyId', i);">
+                                                    <ng-select [items]="fqncyList"
+                                                    bindLabel="label"
+                                                    bindValue="value"
+                                                    appendTo="body"
+                                                    [multiple]="true"
+                                                    [clearable]="true"
+                                                    placeholder="Select"
+                                                    (change)="filterData($event, i)"
+                                                    [(ngModel)]="setWiseControls[i].filterObj.frqncyId">
+                                                  </div>
+                                              </div>
+                                        </td>
+                                        <td *ngIf="setWiseControls[i].showMetaData"> <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                            <div class="select-wrapper-table-2" (ngInit)="mtrtyList = filterMasterData(masterDataObj['DIM_MTURTY_MST'], 'mtrtyId', i);">
+                                                <ng-select [items]="mtrtyList"
+                                                bindLabel="label"
+                                                bindValue="value"
+                                                appendTo="body"
+                                                [multiple]="true"
+                                                [clearable]="true"
+                                                placeholder="Select"
+                                                (change)="filterData($event, i)"
+                                                [(ngModel)]="setWiseControls[i].filterObj.mtrtyId">
+                                              </div>
+                                          </div></td>
+                                          <td *ngIf="setWiseControls[i].showMetaData">
+                                              <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                                  <div class="select-wrapper-table-2" (ngInit)="strList = filterMasterData(masterDataObj['DIM_SETR_MST'], 'sctrId', i);">
+                                                      <ng-select [items]="strList"
+                                                      bindLabel="label"
+                                                      bindValue="value"
+                                                      appendTo="body"
+                                                      [multiple]="true"
+                                                      [clearable]="true"
+                                                      placeholder="Select"
+                                                      (change)="filterData($event, i)"
+                                                      [(ngModel)]="setWiseControls[i].filterObj.sctrId">
+                                                    </div>
+                                                </div>
+                                          </td>
+                                          <td *ngIf="setWiseControls[i].showMetaData">
+                                              <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                                  <div class="select-wrapper-table-2" (ngInit)="ratngList = filterMasterData(masterDataObj['DIM_RTNG_MST'], 'rtngId', i);">
+                                                      <ng-select [items]="ratngList"
+                                                      bindLabel="label"
+                                                      bindValue="value"
+                                                      appendTo="body"
+                                                      [multiple]="true"
+                                                      [clearable]="true"
+                                                      placeholder="Select"
+                                                      (change)="filterData($event, i)"
+                                                      [(ngModel)]="setWiseControls[i].filterObj.rtngId">
+                                                    </div>
+                                                </div>
+                                          </td>
+                                          <td *ngIf="setWiseControls[i].showMetaData"> 
+                                            <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                              <div class="select-wrapper-table-2" (ngInit)="crvfmlyList = filterMasterData(masterDataObj['MST_CURVE_FAMILY'], 'crvfmlyId', i);">
+                                                  <ng-select [items]="crvfmlyList"
+                                                  bindLabel="label"
+                                                  bindValue="value"
+                                                  appendTo="body"
+                                                  [multiple]="true"
+                                                  [clearable]="true"
+                                                  placeholder="Select"
+                                                  (change)="filterData($event, i)"
+                                                  [(ngModel)]="setWiseControls[i].filterObj.crvfmlyId">
+                                                </div>
+                                            </div></td>
+                                            <td></td>
+                                            <td>
+                                              <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">  
+                                                <div class="select-wrapper-table-2" (ngInit)="mthdlgyList = filterMasterData(methodologiesList, 'mthdlgyType', i);">  
+                                                  <ng-select [items]="mthdlgyList"
+                                                    bindLabel="label"
+                                                    bindValue="value"
+                                                    appendTo="body"
+                                                    [multiple]="true"
+                                                    [clearable]="true"
+                                                    placeholder="Select"
+                                                    (change)="filterData(shockHeader, i)"
+                                                    [(ngModel)]="setWiseControls[i].filterObj.mthdlgyType">
+                                                </div>
+                                          </div>
+                                            </td>
+                                            <td>
+                                                <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">  
+                                                    <div class="select-wrapper-table-2">  
+                                                      <ng-select [items]="errMsgList"
+                                                        bindLabel="label"
+                                                        bindValue="value"
+                                                        appendTo="body"
+                                                        [multiple]="true"
+                                                        [clearable]="true"
+                                                        placeholder="Select"
+                                                        (change)="filterData(shockHeaders, i)"
+                                                        [(ngModel)]="setWiseControls[i].filterObj.errMsg">
+                                                    </div>
+                                              </div>
+                                            </td>
+                                            <td>
+                                                <div class="cri-form-group" *ngIf="setWiseControls[i].criFilter">
+                                                    <div class="select-wrapper-table-2" (ngInit)="unitsList = filterMasterData(unitList, 'shockUnits', i);">
+                                                        <ng-select [items]="unitsList"
+                                                          bindLabel="label"
+                                                          bindValue="value"
+                                                          appendTo="body"
+                                                          [multiple]="true"
+                                                          [clearable]="true"
+                                                          placeholder="Select"
+                                                          (change)="filterData($event, i)"
+                                                          [(ngModel)]="setWiseControls[i].filterObj.shockUnits">
+                                                      </div>
+                                                  </div>
+                                            </td>
+                                            <td *ngIf="(expCatType == 0 && PROJECTION_ID != scenarioObj.type)"></td>
+                                            <td *ngIf="(expCatType == 0 && PROJECTION_ID != scenarioObj.type)"></td>
+                                            <td *ngIf="(expCatType == 2)"></td>
+                                            <td *ngIf="(expCatType == 1)"></td>
+                                            <td *ngIf="(expCatType == 1)"></td>
+                                            <td *ngIf="(expCatType == 1)"></td>
+                                            <td *ngIf="(expCatType == 1)"></td>
+                              </tr>
+                              <ng-container *ngFor="let data of dataSet.riskFactorListJsonNode; let j=index;">
+                                 <tr [ngClass]="!(data.errMsg == '' || data.errMsg == null) ? 'redclr' : ''" >
+                                    <td class="riskfactorsName" [title]="data.name" [ngClass]="(!isValid && (!isQuantile && data.preDtrmnd.isqua && (data.preDtrmnd.quap ==undefined || data.preDtrmnd.quap =='' || data.preDtrmnd.lkbkp ==undefined || data.preDtrmnd.lkbkp ==''))) ? 'red' : '' ">
+                                        <span class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" [checked]="setWiseControls[i].checkedRFList.indexOf(data.id) != -1" (change)="selectRF($event,i, data.id);" id="riskfactorCheck_{{data.id}}">
+                                            <label style="width:100%;" placement="right" ngbTooltip="{{data.name}}" class="custom-control-label" for="riskfactorCheck_{{data.id}}">
+                                              <div class="gridTextOF" [ngClass]="!(data.errMsg == '' || data.errMsg == null) ? 'redclr' : ''" >{{data.name}}</div>
+                                            </label>
+                                            </span> 
+                                    </td>  
+                                    <td *ngIf="j==0" rowspan="100%" class="expandbtn" (click)="setWiseControls[i].showMetaData = !setWiseControls[i].showMetaData">
+                                      <span *ngIf="dataSet.riskFactorListJsonNode.length >= 4" class="text-rotation">Risk Factor Attributes</span>
+                                      <span class="double-arrow-td double-right-icon" *ngIf="!setWiseControls[i].showMetaData && dataSet.riskFactorListJsonNode.length < 4"></span>
+                                      <span class="double-arrow-td double-left-icon" *ngIf="setWiseControls[i].showMetaData && dataSet.riskFactorListJsonNode.length < 4"></span>
+                                    </td>
+                                    <td class="assetClass" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.astClsId,"DIM_AST_CLS_MST" )}}</td>
+                                    <td class="riskFactorType" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.subRskFctrId,"DIM_RSKFCT_TYP_MST")}}</td>
+                                    <td class="country" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.cntryId,"DIM_CNTRY_MST")}}</td>
+                                    <td class="currency" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.crncyId,"DIM_CURNCY_MST")}}</td>
+                                    <td class="frequency" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.frqncyId,"DIM_FREQUENCY_MST")}}</td>
+                                    <td class="maturity" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.mtrtyId,"DIM_MTURTY_MST")}}</td>
+                                    <td class="sector" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.sctrId,"DIM_SETR_MST")}}</td>
+                                    <td class="rating" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.rtngId,"DIM_RTNG_MST")}} </td>
+                                    <td class="curveFamily" *ngIf="setWiseControls[i].showMetaData" >{{getValue(data.crvfmlyId,"MST_CURVE_FAMILY")}} </td>
+                                    <td class="expandCat">
+                                    <div class="select-wrapper-table-2">
+                                       <ng-select [items]="rfCategories"
+                                        bindLabel="label1"
+                                        bindValue="value"
+                                        appendTo="body"
+                                        [multiple]="false"
+                                        [clearable]="false"
+                                        placeholder="Select"
+                                        (ngModelChange)="resetModelBusRuleValues('expCat', i, j, $event, data.id);"
+                                        [(ngModel)]="data.expCat">
+                                        </ng-select>
+                                    </div>
+                                    </td>
+                                    <td class="methodology">
+                                        <div class="select-wrapper-table"> 
+                                          <ng-select
+                                            bindLabel="label"
+                                            bindValue="value"
+                                            appendTo="body"
+                                            [multiple]="false"
+                                            [clearable]="false"
+                                            (ngModelChange)="resetModelBusRuleValues('mthdlgyType', i, j, $event, data.id);"
+                                            [(ngModel)]="data.mthdlgyType">
+                                            <ng-container *ngFor="let methodology of methodologiesList;">
+                                              <ng-option *ngIf="(data.expCat == methodology.cat_id || (methodology.type == 'MODELMETHODOLOGIES' && data.id == methodology.srkid && data.expCat == EXP_CATID_MODELDRIVEN))"  [value]="methodology.value.toString()">{{methodology.label}}</ng-option>        
+                                            </ng-container> 
+                                          </ng-select>
+                                            <span *ngIf="data.expCat == 2 && isModelCalculated(data)" class="fr blueclr shockexl fa-file-icon" title="Download Full Output" (click) = "downloadExcel(data)"> </span>
+                                          </div>
+                                    </td>
+                                    <td class="shocks" *ngFor="let shock of getKeys(data.shockValues)">
+                                            <div *ngIf = "(data.errMsg == '' || data.errMsg == null)">
+                                                    <div>{{shock.key}}</div>
+                                                    <input type="number" autocomplete="off" 
+                                                    id="{{i}}_{{j}}_{{shock}}"
+                                                    (focus)="saveOldValue($event,data.id,shock)"
+                                                    (keyup)="validateShockForUnits($event)"
+                                                    (change)="resetModelBusRuleValues('shock', i, j, $event, data.id)"
+                                                    [ngClass]="(!isValid && (data.shockValues[shock] ==null || data.shockValues[shock].toString() =='')) ? 'bdred' : '' "
+                                                    [attr.disabled]="(data.preDtrmnd.isqua || data.mthdlgyType==null ? 'true' : null) || (expCatType != 0 ? 'true' : null)"
+                                                    class="form-control s-input form-control-sm"  [(ngModel)]="data.shockValues[shock]" step="0.01"/>
+                                            </div>
+                                            <div *ngIf = "(data.errMsg != '' && data.errMsg != null)">
+                                                <a href="javascript:void(0)" class="redclr" placement="left" ngbPopover="{{data.errMsg}}">#Err</a>
+                                            </div>
+                                    </td>
+                                    <td class="unit">
+                                        <div class="select-wrapper-table">
+                                          <ng-select  [items]="unitList"
+                                              id="{{i}}_{{j}}"
+                                              disabled
+                                              class="search-slt2"
+                                              bindLabel="label"
+                                              bindValue="value"
+                                              appendTo="body"
+                                              [(ngModel)]="data.shockUnits"> 
+                                        </ng-select> 
+                                        </div>
+                                    </td>
+                                    <td class="quantile" *ngIf="(expCatType == 0 && data.preDtrmnd.isqua) || checkMedType(data.mthdlgyType, i, j)"> 
+                                                    <div>
+                                                        <input
+                                                        id="{{i}}_{{j}}"
+                                                        autocomplete="off"
+                                                        (keyup)="validateShockForQuantile($event)"
+                                                        [attr.disabled]="(data.preDtrmnd.isqua ? null : 'true')"
+                                                        type="number"
+                                                        min="-100"
+                                                        max="100"
+                                                        class="form-control s-input form-control-sm"
+                                                        [ngClass]="(!isQuantile && (data.preDtrmnd.quap ==undefined || data.preDtrmnd.quap =='')) ? 'bdred' : '' "
+                                                        [(ngModel)]="data.preDtrmnd.quap"
+                                                        placeholder="" 
+                                                        step="0.01"/>
+                                                    </div>
+                                    </td>
+                                    <td class="cadence" *ngIf="(expCatType == 0 && data.preDtrmnd.isqua) || checkMedType(data.mthdlgyType, i, j)">
+                                                <div class="select-wrapper-table">
+                                                  <ng-select
+                                                    bindLabel="label"
+                                                    bindValue="value"
+                                                    appendTo="body"
+                                                    [multiple]="false"
+                                                    [clearable]="false"
+                                                    [(ngModel)]="data.preDtrmnd.lkbkp"
+                                                    [attr.disabled]="(data.preDtrmnd.isqua ? null : 'true')"
+                                                    [ngClass]="(!isQuantile && (data.preDtrmnd.lkbkp ==undefined || data.preDtrmnd.lkbkp =='')) ? 'bdred' : '' ">
+                                                    <ng-container *ngFor="let frequency of frequencyList; let i = index;">
+                                                      <ng-option  value="{{frequency.value}}">{{frequency.label}}</ng-option>        
+                                                    </ng-container>
+                                                  </ng-select>
+                                                  </div>
+                                    </td>
+                                    <td scope="col" *ngIf="(expCatType == 0 && (!data.preDtrmnd.isqua && PROJECTION_ID != scenarioObj.type))"></td>
+                                    <td scope="col" *ngIf="(expCatType == 0 && (!data.preDtrmnd.isqua && PROJECTION_ID != scenarioObj.type))"></td>
+                                    <td *ngIf="(expCatType == 2)" class="additionalColumn">
+                                            <div *ngIf="data.mthdlgyType == METHODOLOGY_PROXY">
+                                                            <input type="text" autocomplete="off" id="{{i}}_{{j}}" class="form-control s-input form-control-sm" [(ngModel)]="data.bsnsRule.proxy" (click)="openArithmaticFormulaDataModal($event);" />
+                                                            <input type="hidden" class="form-control s-input" [(ngModel)]="data.bsnsRule.proxyHiddenFormula" />
+                                                    </div>
+                                                    <div  class="select-wrapper-table" *ngIf="data.mthdlgyType == METHODOLOGY_INTERPOLATION">
+                                                        <ng-select
+                                                          bindLabel="label"
+                                                          bindValue="value"
+                                                          appendTo="body"
+                                                          [multiple]="false"
+                                                          [clearable]="false"
+                                                          [(ngModel)]="data.bsnsRule.interpolation">
+                                                          <ng-container *ngFor="let interPolation of interPolationList;">
+                                                            <ng-option  value="{{interPolation.value}}">{{interPolation.label}}</ng-option>        
+                                                          </ng-container>
+                                                        </ng-select>
+                                                     </div>
+                                    </td>
+
+                                    <td *ngIf="(expCatType == 1)" class="prefferedVariables">
+                                        <div class="multi-select-table" id="preferred_{{data.id}}">
+                                            <custom-multi-select
+                                              [items] = "rowWiseControls[data.id].preferredVariblesList"
+                                              [multiple]="true"
+                                              class="drpdn"
+                                              data-boundary="window"
+                                              data-toggle="dropdown"
+                                              [selectedItems] = "data.preferredVaribles"
+                                              bindLabel="name" 
+                                              bindValue="id"
+                                              [searchForItems] = "true"
+                                              [searchForSelectedItems] = "true"
+                                              (selectChange) = "data.preferredVaribles = $event"
+                                              (change)="changePreferredAndNonPreferred(i,data, 'PREFERRED')">
+                                            </custom-multi-select>
+                                        </div>
+                                    </td>
+                                    <td *ngIf="(expCatType == 1)" class="nonPrefferedVariables">
+                                        <div class="multi-select-table" id="nonpreferred_{{data.id}}">
+                                            <custom-multi-select
+                                              [items] = "rowWiseControls[data.id].nonPreferredVariblesList"
+                                              [multiple]="true"
+                                              class="drpdn"
+                                              data-boundary="window"
+                                              data-toggle="dropdown"
+                                              [selectedItems] = "data.nonPreferredVaribles"
+                                              bindLabel="name" 
+                                              bindValue="id"
+                                              [searchForItems] = "true"
+                                              [searchForSelectedItems] = "true"
+                                              (selectChange) = "data.nonPreferredVaribles = $event"
+                                              (change)="changePreferredAndNonPreferred(i,data, 'NON_PREFERRED')">
+                                            </custom-multi-select>
+                                        </div>
+                                    </td>
+                                    <td *ngIf="(expCatType == 1)" class="text-center onlyWithPreffered">
+                                           
+                                                <span class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" (change)="resetModelBusRuleValues('onlyWithPreffered', i, j, $event, data.id)" [(ngModel)]="data.onlyWithPreffered" 
+                                                         [checked] = "data.onlyWithPreffered" name="selected" id="methodologyCheck_{{data.id}}">
+                                                         <label class="custom-control-label" for="methodologyCheck_{{data.id}}"></label>
+                                                </span>
+                                                
+                                    </td>
+                                    <td *ngIf="(expCatType == 1)" class="selectedVariables">
+                                        <!-- <span class ="workbreak" >{{getSelectedVariables(data.dependentFactors)}}</span> -->
+                                        <span (click)="rowWiseControls[data.id].isClicked =!rowWiseControls[data.id].isClicked" [ngClass]="{'gridTextOF1':!rowWiseControls[data.id].isClicked ,'workbreak' :rowWiseControls[data.id].isClicked }"
+                                         placement="left" ngbTooltip="{{data.dependentFactorNames}}">{{data.dependentFactorNames}}</span>
+                                    </td>
+                                 </tr>
+                              </ng-container>
+                           </tbody>
+                         </table>
+                         <div class="fotter-btn ">
+                             <div class="col-md-12 row ">
+                                 <div class="col-md-12">
+                                     <nav class="c-pagination">
+                                         <ul class="c-pagination__list pl-3" *ngIf="setWiseControls[i].pager.pages && setWiseControls[i].pager.pages.length">
+                                           <li class="c-pagination__prev" [ngClass]="{disabled:setWiseControls[i].pager.currentPage === 1}">
+                                             <a href="javascript:void(0)" (click)="setPage(setWiseControls[i].pager.currentPage - 1, i)">
+                                            
+                                               <i  aria-hidden="true" class="fa-long-arrow-left-icon"></i>
+                                             </a>
+                                           </li>
+                                           <li *ngFor="let page of setWiseControls[i].pager.pages" class="c-pagination__item">
+                                              <a (click)="setPage(page, i)" [ngClass]="{active:setWiseControls[i].pager.currentPage === page}">{{page}}</a>
+                                           </li>
+                                           <li class="c-pagination__next" [ngClass]="{disabled:setWiseControls[i].pager.currentPage === setWiseControls[i].pager.totalPages}">
+                                             <a href="javascript:void(0)" (click)="setPage(setWiseControls[i].pager.currentPage + 1, i)">  
+                                               <i aria-hidden="true" class="fa-long-arrow-right-icon"></i>
+                                             </a>
+                                           </li>
+                                           <li class="c-pagination__next">
+                                               <a href="javascript:void(0)">
+                                                  <small class="dis-page">Displaying {{setWiseControls[i].pager.startIndex + 1}} to {{setWiseControls[i].pager.endIndex + 1}} Of {{setWiseControls[i].pager.totalItems}} Risk Factors</small>
+                                               </a>
+                                             </li>
+                                         </ul>
+                                       </nav>
+                                 </div>
+                                  
+                             </div>
+                           </div>
+                        </div>
+                     </div>
+               </ng-template>
+         </ngb-panel>
+         </ng-container>
+       </ngb-accordion>
+     </div> <!-- table start shock-table end-->
+   
+</div><!--tabcontent end-->
+
+</div><!--content-table end-->
+
+        <div class="dotted-divider"> </div>
+  <!--footer buttons end-->
+  <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12 p-0">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="next-pre mb-3 mt-4 ">
+              <button id="discard" type="button" class="btn btn-outline cri-btn-outline" (click)="navigateTo('/scenario');">
+                <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button><!--SE -- save and Exit , returns home page-->
+              <button id="saveExit" *ngIf="userCanAccess" (click)="saveDataSets(SCENARIO_SHOCKS,'SE');" type="button" class="btn btn-outline cri-btn-outline">
+                  <img src="../../../content/images/svg/save.png" alt="semicons" class="discard-img">SAVE & EXIT</button>
+                  <button id="saveExit" *ngIf="userCanAccess" (click)="saveDataSets(SCENARIO_SHOCKS,'SD');" type="button" class="btn btn-outline cri-btn-outline">
+                    <img src="../../../content/images/svg/save.png" alt="semicons" class="discard-img">SAVE AS DRAFT</button> <!-- SD - Save with draft , returns same page-->
+                </div>
+                              </div>
+            <div class="form-group col-md-6 ">
+                  <div class="next-pre mb-3 mt-4 text-right"> 
+                    <!-- (click)="navigateTo('scenario/selectRiskFactor');" -->  <!--SN -- save and Next , returns next page-->
+                          <button id="previous" type="button" (click)="goToPreviousPage();" class="cri-btn btn btn-outline-danger mr-3" ><img src="../../../content/images/svg/previous.png" alt="semicons">PREVIOUS</button>
+                          <button id="next" *ngIf="userCanAccess" (click)="saveDataSets(SCENARIO_OUTPUT,'SN');" type="button" class="cri-btn btn btn-outline-secondary btn-danger">NEXT &nbsp; <img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+                          <button id="next1" *ngIf="!userCanAccess" (click)="navigateTo('scenario/scenarioOutput');" type="button" class="cri-btn btn btn-outline-secondary btn-danger">NEXT &nbsp; <img src="../../../content/images/svg/next.png" alt="semicons"> </button>
+                        </div>
+            </div>
+          </div><!--first row-end-->
+        </div>
+    </div>
+  </div>
+</div>
+<!-- footer buttons end--> 
+</div><!--cri-inner-container end main-->
+
+
+<ng-template #deleteDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="deleteRiskFactorSet('setId');">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="cancel();">No</button>
+  </div>
+</ng-template>
+
+<ng-template #arithmaticFormulaDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modal-basic-title"></h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="form-group"  style="display: block;" id="divarthematitemplate"  >
+              <label ><strong>Arithmatic Formula:</strong></label>
+              <input id="arithmaticFormula" type="text" class="form-control form-control-sm"
+                  disabled="true" [(ngModel)]="arithmaticFormula" [hidden]="true">
+              <div class="formula_builder_div calc">
+                  <ul id="formulaBuilderDiv1" class="shock-formula-div">
+                  </ul>	
+                  <div class="clearfix"></div>
+                </div>
+             <arithmatic-formula [userData]="selectedRiskFactors" [usedFrom] = "shocksToProxy" ></arithmatic-formula>
+      </div>
+                              </div>
+                          </td>
+                      </tr>
+                  </table>
+              </ng-container>
+          </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="applyFormulaForShocks();modal.dismiss();">Ok</button>
+  </div>
+</ng-template>
+<ng-template #deleteRFModal let-modal class="modal fade">
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">{{modalHeader}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-sm" (click)="deleteRiskFactors();">Yes</button>
+    <button class="btn btn-light btn-sm" (click)="modal.dismiss()">No</button>
+  </div>
+</ng-template>
+
+<ng-template #metdlgyConfgMdl let-modal>
+  <div class="cri-modal-h modal-header">
+      <h4 class="cri-modal-titles modal-titles ml-4">Methodology Configuration<br>
+          <label class="title-name"> Select Methodology To Include In The Scenario</label></h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+          <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="table-responsive">
+      <table *ngIf="columns && columns.length != 0 " class="table table-striped table-bordered">
+          <thead class="tables-head-2">
+              <tr>
+                  <th class="position-relative" *ngFor="let header of headerList;let i=index;" [hidden]="header == 'Id' || header == 'Select'">
+                      {{header}}</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="records.length == 0" class="no_data_found">
+                <td [colSpan]="headerList.length + 1">No Data Found</td>
+            </tr>
+            <tr *ngFor="let record of records">
+              <td class="col-form-label form-control-sm">{{record.NAME}}</td>
+              <td><input  [ngClass]="(record.NO_OF_VAR == '' || record.NO_OF_VAR == null) ? 'bdred' : ''" class="form-control form-control-sm" type="number" [(ngModel)]="record.NO_OF_VAR" /></td>
+              <td><input  [ngClass]="(record.LEVEL_OF_SIG == '' || record.LEVEL_OF_SIG == null) ? 'bdred' : ''" class="form-control form-control-sm" type="text" [(ngModel)]="record.LEVEL_OF_SIG" /></td>
+              <td><input  [ngClass]="(record.BACKTESTING_ANALYSIS == '' || record.BACKTESTING_ANALYSIS == null) ? 'bdred' : ''" class="form-control form-control-sm" type="text" [(ngModel)]="record.BACKTESTING_ANALYSIS" /></td>
+              <td><input  [ngClass]="(record.STABILITY_ANALYSIS == '' || record.STABILITY_ANALYSIS == null) ? 'bdred' : ''"class="form-control form-control-sm" type="text" [(ngModel)]="record.STABILITY_ANALYSIS" /></td>
+              <td><input  [ngClass]="(record.BOOTSTRAP == '' || record.BOOTSTRAP == null) ? 'bdred' : ''" class="form-control form-control-sm" type="number" [(ngModel)]="record.BOOTSTRAP " /></td>
+              <td class="p-2">
+                  <div class="select-wrapper">
+                    <ng-select [items]="modelConfigEleList"
+                      bindLabel="label"
+                      bindValue="value"
+                      appendTo="body"
+                      [clearable]="false"
+                      [ngClass]="{'bdred' : record.DROP_VARIABLE == '' || record.DROP_VARIABLE == null}"
+                      [(ngModel)]="record.DROP_VARIABLE">
+                    </ng-select>
+                  </div>
+                  </td>
+                  <td class="p-2">
+                  <div class="select-wrapper">
+                    <ng-select [items]="modelConfigEleList"
+                      bindLabel="label"
+                      bindValue="value"
+                      appendTo="body"
+                      [clearable]="false"
+                      [ngClass]="{'bdred' : record.FULL_SUITE == '' || record.FULL_SUITE == null}"
+                      [(ngModel)]="record.FULL_SUITE">
+                    </ng-select>
+                  </div>
+              </td>
+              <td class="p-2">
+                  <div class="select-wrapper">
+                    <ng-select [items]="modelConfigEleList"
+                      bindLabel="label"
+                      bindValue="value"
+                      appendTo="body"
+                      [clearable]="false"
+                      [ngClass]="{'bdred' : record.INTERCEPT == '' || record.INTERCEPT == null}"
+                      [(ngModel)]="record.INTERCEPT">
+                    </ng-select>
+                  </div>
+              </td>
+              <td><input class="form-control form-control-sm" type="number" [(ngModel)]="record.MAX_ORDER " /></td>
+              <td><input class="form-control form-control-sm" type="number" [(ngModel)]="record.MAX_PC " /></td>
+              <td><input class="form-control form-control-sm" type="number" [(ngModel)]="record.MAX_LAG " /></td>
+              <td><input class="form-control form-control-sm" type="text" [(ngModel)]="record.CUT_OFF " /></td>
+            </tr>
+          </tbody>
+      </table>
+      </div>
+  </div>
+  <div *ngIf="userCanAccess" class="modal-footer modal-cri-foot mb-3">
+      <button type="button" id="shocks_discard" class=" btn btn-outline-danger" (click)="modal.dismiss();">
+          <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img"> DISCARD</button>
+      <button type="button" id="shocks_save" class="btn btn-outline-danger mr-2" (click)="saveMethodologyConfigData();">
+          <img src="../../../content/images/svg/save.png" alt="semicons" >SAVE</button>
+  </div>
+</ng-template>
+<ng-template #updateShockValues let-modal>
+  <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+      <p>Shock Template values are updated would you like to update?</p>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success btn-sm" (click)="updateShockTemplate('scenario/selectRiskFactor')">Yes</button>
+      <button class="btn btn-light btn-sm" (click)="closeShockTemplate('N')">No</button>
+  </div>
+</ng-template>
+
+<ng-template #resetShockValues let-modal>
+  <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+      <button type="button" class="close" aria-label="Close" (click)="resetToOldVal();" #closeDeleteModalBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+  </div>
+  <div class="modal-body">
+      <p>{{resetErrMsg}}</p>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success btn-sm" (click)="resetShocks()">Yes</button>
+      <button class="btn btn-light btn-sm" (click)="resetToOldVal();">No</button>
+  </div>
+</ng-template>

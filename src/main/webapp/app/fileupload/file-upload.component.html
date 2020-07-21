@@ -1,0 +1,167 @@
+<div class="cri-inner-container">
+    <div class="row mb-3">
+        <div *ngIf = "dataUpload == 'marketData'" class="col-md-8 pl-0">
+            <h1 class="cri-main-heading mt-2" id="data-utility">
+                    <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+    
+                <strong class="title-s ml-1 color9" routerLink="/dataUtility"> Data Utility </strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class="title-s ml-1 bolder"> Market Data Management </strong>
+            </h1>
+        </div>
+        <div *ngIf = "dataUpload != 'marketData'" class="col-md-8 pl-0">
+                <h1 class="cri-main-heading mt-2">
+                        <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+        
+                    <strong class="title-s ml-1 color9" routerLink="/dataUtility"> Data Utility </strong>
+                    <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                            <strong class="title-s ml-1 bolder"> Upload Regulatory Risk Factor </strong>
+                </h1>
+        </div>
+        <!--  <div class="col-md-4 pr-0 text-right">
+           <button class="btn btn-outline-primary btn-sm sm-icons mt-3" (click)="upload()"> Upload</button> 
+        </div>-->
+
+    </div>
+    <div class="alert alert-success" *ngIf="isSuccess==true">
+        {{displaySuccessMessage}}
+      </div>
+      <div class="alert alert-danger" *ngIf="isFailure==true">
+        {{displayFailureMessage}}
+      </div> 
+    <div class="row customalert">
+        <div *ngIf = "dataUpload == 'marketData'" class="col-md-4 mt-3 mb-2">
+            <label class="customtitle3 mt-2 pt-1 ml-2">
+                    Select type of data you want to upload
+                </label>
+        </div>
+        <div *ngIf = "dataUpload == 'marketData'" class="col-md-4 mt-3 mb-2 pl-0">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" id="file-selection">
+                <label class="btn btn-secondary" [ngClass]="{'active': fileConfig.id == fileConfigId}" *ngFor="let fileConfig of fileConfigList">
+                             <input type="radio" name="options_classification" [value]="fileConfig.id" autocomplete="off" checked  [(ngModel)]="fileConfigId" id="fileConfig-fileName-{{fileConfig.id}}">
+                             {{fileConfig.fileName}}
+                        </label>
+                <span class="downloadTemplate down-list" id="download-file" (click)="downloadDataTypeFile()"><i class="fa-download-icon" aria-hidden="true" titile="Download Template"></i></span>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mt-2 mb-2 pl-3 browse-line">
+
+            <div class="wrapper-mdm">
+                <div class="files">
+                    <div class="cont-mdm">
+                        <div class="tit" id="browse-file">
+                            <span class="color89"> Browse</span> Or Drag And Drop Your File(S) here
+                        </div>
+                    </div>
+                    <input #fileupload type="file" class="file-upload-field" id="file-upload-id" name="semDocument" (change)="browsFile($event)" accept=".xls,.xlsx,.xlsm">
+                </div>
+            </div>
+            <span class="upload-mdm">
+                        <button id="upload-btn-id" class="btn btn-outline-primary btn-sm sm-icons btn-sm " (click)="upload()"> Upload</button>
+                       <span class="customlabel">File Name :<small>{{uploadedFileName}}</small></span>
+                      
+                   </span>
+
+        </div>
+        <div *ngIf = "dataUpload != 'marketData'" class="col-md-4 mt-3 mb-2 pl-0">
+            <div class="btn " id="file-selection-rg" ngbTooltip="Download Regulatory Data" *ngIf="fileConfigListRG != null">
+                <span class="downloadTemplate down-list" id="download-file-id" (click)="downloadDataTypeFile()"><i class="fa-download-icon" aria-hidden="true" titile="Download Template"></i></span>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="alert alert-danger row p-1 d-flex justify-content-center" role="alert">
+            <span> <i class="fa fa-exclamation-circle error-icon" aria-hidden="true"></i>Incompatiable file type. Acceptable files are .xlsx, .csv</span>
+        </div> -->
+
+
+    <div class="row mt-4">
+        <div class="table-start table-responsive">
+            <table class="table table-bordered tables-view mb-2">
+                <thead class="tables-head">
+                    <tr>
+                       <!--  <th scope="col">ID</th> -->
+                        <th scope="col">FILE NAME</th>
+                        <th scope="col">STATUS</th>
+                        <th scope="col">CONFIG NAME</th>
+                        <th class="tdb-r" scope="col">AUTHOR (CREATION DATE)</th>
+                        <th class="tdb-l"></th>
+
+                    </tr>
+                </thead>
+                <tbody class="tables-boby">
+                    <tr *ngIf="!records || records.length == 0" class="no_data_found">
+                        <td [colSpan]="headerList.length + 1">No Data Found</td>
+                    </tr>
+                    <ng-container *ngFor="let record of recordsSub">
+                        <tr>
+                           <!--  <td>{{record['id']}}</td> -->
+                            <td>{{record['file_name']}}</td>
+                            <td>
+                                <span class="badge statusbutton p-2">{{record['status']}}</span>
+                            </td>
+                            <td>{{record['config_name']}}</td>
+                            <td class="tdbreak tdb-r text-overlap">
+                                <div class="customtabletitle">{{record['created_by']}}</div>
+                                <small class="customtablecaption">{{record['created_date'] | date:'MM/dd/yyyy HH:mm'}}</small>
+                                <!-- <span (click)="viewData(record);"><i class="fa fa-pencil color89 tabletooltip ml-4" aria-hidden="true"></i></span> -->
+                                <!-- <span (click)="openDeleteDataModal(record['id']);"><i class="fa fa-trash color89 tabletooltip ml-4" aria-hidden="true"></i></span> -->
+                            </td>
+                            <td class="tdboder-none-l">
+                                <span class="mdm mr-3" (click)="viewData(record);" id="view-data-id"> 
+                                        <img src="../../content/images/svg/edit.png" alt="semicons">
+                                     </span>
+                                <span class="mdm" (click)="openDeleteDataModal(record['id']);" id="delete-data-model-id">
+                                        <img src="../../content/images/svg/delete.png" alt="semicons">
+                                                
+                                     </span>
+
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <!--responsive-table end-->
+    </div>
+    <div class="fotter-btn ">
+        <div class="col-md-12 row ">
+            <div class="col-md-12">
+                <nav class="c-pagination" id="nav-id">
+                    <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                        <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}" id="prev-pagination-id">
+                            <a (click)="setPage(pager.currentPage - 1)"><i aria-hidden="true" class="fa-long-arrow-left-icon"></i></a>
+                        </li>
+                        <li *ngFor="let page of pager.pages" class="c-pagination__item" id="set-page-id">
+                            <a (click)="setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                        </li>
+                        <li class="c-pagination__next" [ngClass]="{disabled:pager.currentPage === pager.totalPages}" id="_next-page-id">
+                            <a (click)="setPage(pager.currentPage + 1)"><i aria-hidden="true" class="fa-long-arrow-right-icon"></i></a>
+                        </li>
+                        <li class="c-pagination__next" id="display-page-nav">
+                            <a><small class="dis-page">Displaying {{pager.startIndex + 1}} to {{pager.endIndex + 1}} Of {{pager.totalItems}} Uploaded Files</small></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<ng-template #deleteDataModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">Confirm</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()" #closeDeleteModalBtn>
+                <span aria-hidden="true">&times;</span>
+                </button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+        <button id="yes-delete-masterConfig-id" class="btn btn-success btn-sm" (click)="deleteMasterConfigData()">Yes</button>
+        <button id="no-delete-masterConfig-id" class="btn btn-light btn-sm" (click)="cancel()">No</button>
+    </div>
+</ng-template>

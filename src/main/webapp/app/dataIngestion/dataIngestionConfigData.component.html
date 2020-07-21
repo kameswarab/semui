@@ -1,0 +1,282 @@
+<div class="cri-inner-container">
+    <div class="row mb-3">
+
+        <div class="col-md-6 mb-2">
+            <h1 class="cri-main-heading ml-1 mt-2">
+                <img src="../../content/images/svg/administrtion-heading.png" alt="sem-icons">
+                <strong class=" ml-1 color9" routerLink="/dataIngestionConfig">Column Configuration Details</strong>
+                <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                <strong class=" ml-1"><span class="font-weight-bold">New </span> </strong>
+
+            </h1>
+        </div>
+        <div class="col-md-6 text-right mt-3 mb-2">
+            <button class="btn btn-outline-primary btn-sm sm-icons" routerLink="/dataIngestionConfig" id="back-btn-id">
+                <span class="ml-1 buttontext2">Back</span>
+            </button>
+        </div>
+        <div class="col-md-12">
+            <div class="header-title"></div>
+        </div>
+        <div class=" form-group">
+            <label class="customlabel" *ngIf="isSuccess" for="name">{{displaySuccessMessage}}</label>
+        </div>
+        <div class="form-group">
+            <label class="customlabel" *ngIf="isFailure" for="name">{{displayFailureMessage}}</label>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+
+        <div class="col-md-3 form-group">
+            <label class="customlabel" for="name">Configuration Name</label>
+            <input type="text" id="configName-id" class="form-control" [required]="configName" [(ngModel)]="configName"
+                [readonly]="isUpdate" placeholder="Enter a configuration name..">
+        </div>
+        <div class="col-md-3 form-group">
+            <label class="customlabel" for="name">Template FileName</label>
+            <input id="templateFileName-id" type="text" class="form-control" [required]="templateFileName"
+                [(ngModel)]="templateFileName" placeholder="give a templateFileName..">
+        </div>
+    </div>
+    <div class="row  master-config-data-dto bglightgray border"
+        *ngFor="let configtoTemp of masterConfigList;let j=index;let isFirst=first;let isLast=last;">
+        <div class="col-md-3 form-group">
+            <label class="customlabel">Table List Name</label>
+            <!--  <select id="table-name-id" class="form-control" [required]="configtoTemp.tableName"
+                [(ngModel)]="configtoTemp.tableName" (ngModelChange)='onOptionsSelected(j,configtoTemp.tableName)'>
+                <option value=null>Select</option>
+                <option *ngFor="let table of tableList" [ngValue]="table">{{table}}</option>
+            </select>  -->
+            <ng-select [items]="tableList"
+                    id="table-name-id"
+                    [required]="configtoTemp.tableName"
+                    bindLabel="tableList"
+                    bindValue="tableList" 
+                    appendTo="body"
+                    placeholder="Select" 
+                    (ngModelChange)='onOptionsSelected(j,configtoTemp.tableName)'
+                    [(ngModel)]="configtoTemp.tableName">
+            </ng-select>
+        </div>
+
+        <div class="col-md-9 d-flex align-items-center pt-1 pl-0">
+            <button id="add-col-id" class="btn  btn-outline-primary add-btn" (click)="addColumn()" *ngIf="isLast">
+                <i class="plus-circle-icon" aria-hidden="true"></i>Add</button>&nbsp;&nbsp;
+            <button id="remove-col-id" class="btn  btn-outline-danger delete-btn" (click)="deleteColumn(j)"
+                *ngIf="masterConfigList.length > 1"> <img class="img-del-icon" src="../../content/images/svg/delete-red.png"
+                    alt="sem-icons">Delete</button>
+        </div>
+
+        <div class="col-md-12 bg-white mt-2"
+            *ngFor="let config of configtoTemp.columnConfigurationInfo;let i=index;let isfirst=first;let islast=last;">
+            <div class="row column-config-class">
+                <div class="col-md-2 form-group">
+                    <label class="customlabel">Column Name </label>
+                    <input id="table-column-id" class="form-control" [required]="config.tableColumn"
+                        [(ngModel)]="config.tableColumn" />
+                </div>
+                <div class="col-md-2 form-group">
+                    <label class="customlabel" for="name">Description</label>
+                    <input id="discription-id" type="text" class="form-control" [required]="config.discription"
+                        [(ngModel)]="config.discription" placeholder="give a discription..">
+                </div>
+            </div>
+
+            <div class="row mt-2 form-group" *ngIf="config.isMappingRequired == 'Yes'">
+                <div class="col-md-3 form-group">
+                    <label class="customlabel">Master Table List</label>
+                    <!--  <select id="config-master-table-id" class="form-control" [required]="config.masterTable"
+                        [(ngModel)]="config.masterTable" (ngModelChange)='onMasterOptionSelected(j,config.masterTable)'>
+                        <option value=null>Select</option>
+                        <option *ngFor="let table of masterTableList" [ngValue]="table">{{table}}</option>
+                    </select> -->
+                    <ng-select  [items]="masterTableList | keyvalue"
+                            id="config-master-table-id"
+                            bindLabel="value"
+                            bindValue="value"
+                            appendTo="body"
+                            [clearable]="true"
+                            placeholder="Select"
+                            (ngModelChange)="onMasterOptionSelected(j,config.masterTable)"
+                            [(ngModel)]="config.masterTable"> 
+                        </ng-select>   
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="customlabel">Master Table ID Name</label>
+                   <!-- <select id="masterIdColumn-id" class="form-control" [required]="config.masterIdColumn"
+                        [(ngModel)]="config.masterIdColumn">
+                        <option *ngIf="config.masterIdColumn" value={{config.masterIdColumn}}>
+                            {{config.masterIdColumn}}</option>
+                        <option *ngFor="let column of masterTableColumnList" [ngValue]="column">{{column}}
+                        </option>
+                    </select> -->
+                     <ng-select [items]="masterTableColumnList"
+                        id="masterIdColumn-id"
+                        [required]="config.masterIdColumn"
+                        bindLabel="masterTableColumnList"
+                        bindValue="masterTableColumnList" 
+                        appendTo="body" 
+                        [(ngModel)]="config.masterIdColumn">
+                    </ng-select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="customlabel">Master Table column Name</label>
+                     <!-- <select id="masterNameColumn-id" class="form-control" [required]="config.masterNameColumn"
+                        [(ngModel)]="config.masterNameColumn">
+                        <option *ngIf="config.masterNameColumn" value={{config.masterNameColumn}}>
+                            {{config.masterNameColumn}}</option>
+                        <option *ngFor="let column of masterTableColumnList" [ngValue]="column">{{column}}
+                        </option>
+                    </select> -->
+                   <ng-select [items]="masterTableColumnList"
+                        id="masterNameColumn-id"
+                        [required]="config.masterNameColumn"
+                        bindLabel="masterTableColumnList"
+                        bindValue="masterTableColumnList" 
+                        appendTo="body" 
+                        [(ngModel)]="config.masterNameColumn">
+                    </ng-select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <div class="customlabel">isMasterInsertionRequired?</div>
+                    <div class="custom-control custom-radio custom-control-inline mt-3">
+                        <input id="yes-insertion-id_{{j}}{{i}}" type="radio" name="isMasterInsertionRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isMasterInsertionRequired" value="Yes"
+                            [required]="config.isMasterInsertionRequired" class="custom-control-input">
+                        <label class="custom-control-label" for="yes-insertion-id_{{j}}{{i}}">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="no-insertion-id_{{j}}{{i}}" type="radio" name="isMasterInsertionRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isMasterInsertionRequired" value="No"
+                            [required]="config.isMasterInsertionRequired" class="custom-control-input">
+                        <label class="custom-control-label" for="no-insertion-id_{{j}}{{i}}">No</label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-2 form-group">
+                    <div class="customlabel">isMappingRequired?</div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="mappingRequired-yes-id_{{j}}{{i}}" type="radio" name="isMappingRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isMappingRequired" value="Yes" [required]="config.isMappingRequired"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="mappingRequired-yes-id_{{j}}{{i}}">Yes</label>
+                    </div>
+
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="mappingRequired-no-id_{{j}}{{i}}" type="radio" name="isMappingRequired_{{j}}{{i}}"
+                            (change)="handleChange(i,j)" [(ngModel)]="config.isMappingRequired" value="No"
+                            [required]="config.isMappingRequired" class="custom-control-input">
+                        <label class="custom-control-label" for="mappingRequired-no-id_{{j}}{{i}}">No</label>
+                    </div>
+
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div class="customlabel">isValidationRequired?</div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="yes-validationRequired-id_{{j}}{{i}}" type="radio"
+                            name="isValidationRequired_{{j}}{{i}}" [(ngModel)]="config.isValidationRequired" value="Yes"
+                            [required]="config.isValidationRequired" class="custom-control-input">
+                        <label class="custom-control-label" for="yes-validationRequired-id_{{j}}{{i}}">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="no-validationRequired-id_{{j}}{{i}}" type="radio"
+                            name="isValidationRequired_{{j}}{{i}}" [(ngModel)]="config.isValidationRequired" value="No"
+                            [required]="config.isValidationRequired" class="custom-control-input">
+                        <label class="custom-control-label" for="no-validationRequired-id_{{j}}{{i}}">No</label>
+                    </div>
+
+                </div>
+                <div class="col-md-2 form-group">
+                    <div class="customlabel">isNotNullRequired?</div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="id_NotNullRequired_yes_{{j}}{{i}}" type="radio" name="isNotNullRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isNotNullRequired" value="Yes" [required]="config.isNotNullRequired"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="id_NotNullRequired_yes_{{j}}{{i}}">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="id_NotNullRequired_no_{{j}}{{i}}" type="radio" name="isNotNullRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isNotNullRequired" value="No" [required]="config.isNotNullRequired"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="id_NotNullRequired_no_{{j}}{{i}}">No</label>
+                    </div>
+
+                </div>
+                <div class="col-md-2 form-group">
+                    <div class="customlabel">isUniqueRequired?</div>
+
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="unique-id-required_{{j}}{{i}}" type="radio" name="isUniqueRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isUniqueRequired" value="Yes" [required]="config.isUniqueRequired"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="unique-id-required_{{j}}{{i}}">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="unique-id-not-required_{{j}}{{i}}" type="radio" name="isUniqueRequired_{{j}}{{i}}"
+                            [(ngModel)]="config.isUniqueRequired" value="No" [required]="config.isUniqueRequired"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="unique-id-not-required_{{j}}{{i}}">No</label>
+                    </div>
+
+                </div>
+                <div class="col-md-2 form-group">
+                    <div class="customlabel">isInsertionUniqueCheck?</div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="unique-check-id-required_{{j}}{{i}}" type="radio"
+                            name="isInsertionUniqueCheck_{{j}}{{i}}" [(ngModel)]="config.isInsertionUniqueCheck"
+                            value="Yes" [required]="config.isInsertionUniqueCheck" class="custom-control-input">
+                        <label class="custom-control-label" for="unique-check-id-required_{{j}}{{i}}">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="unique-check-id-notRequired_{{j}}{{i}}" type="radio"
+                            name="isInsertionUniqueCheck_{{j}}{{i}}" [(ngModel)]="config.isInsertionUniqueCheck"
+                            value="No" [required]="config.isInsertionUniqueCheck" class="custom-control-input">
+                        <label class="custom-control-label" for="unique-check-id-notRequired_{{j}}{{i}}">No</label>
+                    </div>
+
+
+                </div>
+                <div class="col-md-2 form-group">
+                    <div class="customlabel">isDataInDateFormat?</div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="date-formar-reqId_{{j}}{{i}}" type="radio" name="isDataInDateFormat_{{j}}{{i}}"
+                            [(ngModel)]="config.isDataInDateFormat" value="Yes" [required]="config.isDataInDateFormat"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="date-formar-reqId_{{j}}{{i}}">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input id="date-formar-notReqId_{{j}}{{i}}" type="radio" name="isDataInDateFormat_{{j}}{{i}}"
+                            [(ngModel)]="config.isDataInDateFormat" value="No" [required]="config.isDataInDateFormat"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="date-formar-notReqId_{{j}}{{i}}">No</label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-12 text-right mb-3">
+                <button id="add-colData-id" class="btn btn-outline-primary add-btn" (click)="addColumnData(j,i)"
+                    *ngIf="islast">+ Add
+                    more</button>
+                <button id="remove-colData-id" class="btn btn-outline-danger delete-btn" (click)="deleteColumnData(j,i)"
+                    *ngIf="configtoTemp.columnConfigurationInfo.length > 1">- Remove</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-right mt-2">
+            <button class="btn btn-outline-primary add-btn" routerLink="/dataIngestionConfig" id="back-btn-id">
+                <span class="ml-1 buttontext2">Back</span>
+            </button>
+            <button id="save-configData-id" type=button class="btn btn-outline-primary add-btn"
+                (click)="saveConfigDataMethod()">Save Data</button>
+        </div>
+    </div>
+
+</div>

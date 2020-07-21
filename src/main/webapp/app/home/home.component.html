@@ -1,0 +1,261 @@
+<div class="cri-inner-container">
+   <div class="row">
+           <div class="col-md-12">
+                   <div class="header-title-view row ">
+                           <div class=" col-md-8 p-0">
+                               <div class="title-view">
+                                  <h1 class="cri-main-heading">Dashboard</h1> 
+                                 </div>
+                              </div>  
+                      </div> 
+               </div><!--hearder-title End-->
+ 
+       </div><!--1st row End-->
+
+           <div class="content-view row " *jhiHasAnyAuthority="['ROLE_DESIGNER','ROLE_APPROVER','ROLE_REVIEWER']">
+                    <div class="col-md-9">
+
+                                   <!--Scenario Analysis start-->
+
+                                   <div class=" row  mt-3 mb-3 p-0">
+                                       <div class="form-row col-md-12 p-0">
+                                               <div class="col-sm-3 dash-view">
+                                                       <div class="card cri-cards" id="scenario-dastContent">
+                                                           <div class="card-body cri-card-dashboard d-flex flex-row">
+                                                           <div class="p-1 dash-content1"><small class="st-num"><strong>{{scenarioCreated}}</strong> <p class="title2">Scenario Created</p></small> </div>
+                                                               <div class="p-1 dash-content2"> <small class="title2 info-icon-hm" ><strong>  {{scenarioInProgress}} </strong> Incomplete </small> </div>
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                                       <div class="col-sm-3 dash-view">
+                                                               <div class="card cri-cards">
+                                                                   <div class="card-body cri-card-dashboard d-flex flex-row" id="navToscenario-screen">
+                                                                       <div class="p-1 dash-content1"><small class="st-num"><strong>{{scenarioUnderReview}}</strong> <p class="title2">Review/Approval Pending</p></small> </div>
+                                                                       <div class="p-1 dash-content2 align-self-center"> <a (click) ="navigateTo('/scenario');"> <small class="title2">See All</small> </a></div>
+                                                                   </div>
+                                                               </div>
+                                                           </div>
+                                                           <div class="col-sm-3 dash-view">
+                                                                <div class="card cri-cards " id="scenario-dastContent">
+                                                                    <div class="card-body cri-card-dashboard d-flex flex-row">
+                                                                        <div class="p-1 dash-content1"><small class="st-num"><strong>{{modelCreated}}</strong> <p class="title2">Models Created</p></small> </div>
+                                                                        <div class="p-1 dash-content2"> <small class="title2 info-icon-hm"><strong>  {{modelInProgress}} </strong> Incomplete </small> </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                           <div class="col-sm-3 dash-view">
+                                                                   <div class="card cri-cards">
+                                                                       <div class="card-body cri-card-dashboard d-flex flex-row" id="navToModel">
+                                                                           <div class="p-1 dash-content1"><small class="st-num"><strong>{{riskFactorsCount}}</strong> <p class="title2">Risk Factors Available</p></small> </div>
+                                                                           <div class="p-1 dash-content2 align-self-center"> <a (click) = "navigateTo('/dataUtility/riskfactorinfo');"><small class="title2">See All </small></a> </div>
+                                                                       </div>
+                                                                   </div>
+                                                               </div>
+                                       </div>
+                                   </div><!--Scenario Analysis row End-->
+                                       
+
+
+                          <!--Scenario table start-->
+                       <div class="row mb-2">
+                            <!--sub titles-->
+                            <div class="form-row col-md-12 mb-2 mt-2 p-0">
+                                   <div class="col d-flex align-items-center p-0 pl-2" id="scenario-lib">
+                                        
+                                            <img  src="../../content/images/svg/scenario-library-heading.png" alt="Sem-icons">
+                                           <strong class="title-dash ml-2">Scenario Library </strong>
+                                        </div>
+                                   <div class=" col-md-6 text-right" id="navToscenario-all">
+                                       <a id="all-scenario" (click) ="navigateTo('/scenario');" > <small class="dis-page">SEE ALL SCENARIOS</small> </a>
+                                   <button id="create-scenario" type="button" class="btn btn-outline-primary sm-icons btn-sm ml-3 plus-circle-icon" (click)="navigateToScenario(null)">NEW SCENARIO</button>
+                                  </div>
+                               </div>
+                               <!-- sub titles end-->
+                               <div class="table-start table-responsive">
+                                       <table class="table table-bordered tables-view mb-2">
+                                           <thead class="tables-head">
+                                           <tr>
+                                               <th scope="col">Scenario Name</th>
+                                               <th scope="col">Status</th>
+                                               <th scope="col">Last Modified</th>
+                                               <th scope="col" class="tdb-r">Description</th>
+                                               <th scope="col" class="tdboder-none-l"></th>
+                                             
+                                               </tr>
+                                           </thead>
+                                           <tbody class="tables-boby">
+
+                                                <tr *ngIf="!records || records.length == 0" class="no_data_found" >
+                                                      <td [colSpan]="6">No Data Found</td>
+                                                  </tr>
+                                                  <ng-container *ngFor="let record of recordsSub; let i = index;">
+                                                    <tr class="colspan-cri-d">
+                                                      <td class="tdbreak">{{record['NAME']}}
+                                                          <ul class="progras">
+                                                              <li [ngClass]="{'done':record['STATUS_ID'] > 1,'active':record['STATUS_ID'] == 1}"></li>
+                                                              <li [ngClass]="{'done':record['STATUS_ID'] > 2,'active':record['STATUS_ID'] == 2}"></li>
+                                                              <li [ngClass]="{'done':record['STATUS_ID'] > 3,'active':record['STATUS_ID'] == 3}"></li>
+                                                              <li [ngClass]="{'done':record['STATUS_ID'] > 4,'active':record['STATUS_ID'] == 4}"></li>
+                                                          </ul>
+                                                      </td>
+                                                      <td><span class="badge cri-badge" [ngClass]="{'badge-primary':record['STATUS'] === scenarioInProgressStatus,'under-review':record['STATUS'] === scenarioUnderReviewStatus,'in-approval':record['STATUS'] === scenarioInApprovalStatus,'danger-pro':record['STATUS'] === scenarioRejectedStatus,'complete':record['STATUS'] === scenarioCompletedStatus}">{{record['STATUS']}}</span></td>
+                                                      <td>{{record['LAST_MODIFIED_DATE'] | date:'MM/dd/yyyy HH:mm'}}</td>
+                                                      <td class="tdbreak tdb-r text-overlap">{{record['DESCRIPTION']}}</td>
+                                                      <td class="tdboder-none-l">
+                                                         <span class="del-edit ">
+                                                             <i  (click)="navigateToScenario(record);" id="scenario_edit_{{i}}">
+                                                                <img  src="../../content/images/svg/edit.png" alt="Sem-icons">
+                                                             </i>
+                                                             <i *ngIf="record['ISDELETE'] !=null" id="scenario_delete_{{i}}" (click)="openDeleteDataModal(record);">
+                                                                <img  src="../../content/images/svg/delete.png" alt="Sem-icons">
+                                                             </i>
+                                                            <!-- <i class="fa fa-pencil mr-3" aria-hidden="true" (click)="navigateToScenario(record);"></i> -->
+                                                            <!-- <i class="fa fa-trash-o mr-3" aria-hidden="true" *ngIf="record['ISDELETE'] !=null" (click)="openDeleteDataModal(record);"></i> -->
+                                                         </span>
+                                                      </td>
+                                                     </tr>
+                                                   </ng-container>
+                                               </tbody>
+                                       </table>
+                                       <div class="col-md-12 mt-4" *ngIf= "remainingScenarioCount != 0" id="scen-id">
+                                               <a (click) ="navigateTo('/scenario');" > + {{remainingScenarioCount}} More <small class="dis-page">Scenarios Need Attention</small></a>
+                                         </div>         
+                           </div><!--responsive-table end-->
+                          
+                       </div><!--table row End-->
+                            
+                              
+                       <!--Model table start-->
+                       <div class="row ">
+                               <!--sub titles-->
+                               <div class="form-row col-md-12 mb-2 mt-2 p-0">
+                                      <div class="col d-flex align-items-center p-0 pl-2" id="modelLib-heading">
+                                           <img  src="../../content/images/svg/ModelLibrary-heading.png" alt="Sem-icons" >
+                                          <strong class=" title-dash ml-2">Model  Library</strong>
+                                            
+                                              
+                                      </div>
+                                      <div class=" col-md-5 text-right">
+                                        <a id="all-model" (click) ="navigateTo('/model');" > <small class="dis-page">SEE ALL MODELS</small> </a>
+                                      <button id="create-model" type="button" class="btn btn-outline-primary sm-icons btn-sm ml-3 plus-circle-icon"  (click)="navigateToModel(null)">NEW MODEL</button>
+                                     
+                                      </div>
+                                  </div>
+                                  <!-- sub titles end-->
+                                  <div class="table-start table-responsive">
+                                          <table class="table table-bordered tables-view mb-2">
+                                              <thead class="tables-head">
+                                              <tr>
+                                                  <th scope="col">Model Name</th>
+                                                  <th scope="col">Status</th>
+                                                  <th scope="col">Last Modified</th>
+                                                  <th scope="col" class="tdb-r">Description</th>
+                                                  <th scope="col" class="tdboder-none-l"></th>
+                                                
+                                                  </tr>
+                                              </thead>
+                                              <tbody class="tables-boby">
+                                                    <tr *ngIf="!records || records.length == 0" class="no_data_found" >
+                                                        <td [colSpan]="6">No Data Found</td>
+                                                    </tr>
+                                                    <ng-container *ngFor="let record of modelRecordsSub; let i=index;">
+                                                        <tr class="colspan-cri-d">
+                                                            <td class="tdbreak">{{record['NAME']}}
+                                                                <ul class="progras">
+                                                                    <li [ngClass]="{'done':record['STATUS_ID'] > 21,'active':record['STATUS_ID'] == 21}"></li>
+                                                                    <li [ngClass]="{'done':record['STATUS_ID'] > 22,'active':record['STATUS_ID'] == 22}"></li>
+                                                                    <li [ngClass]="{'done':record['STATUS_ID'] > 23,'active':record['STATUS_ID'] == 23}"></li>
+                                                                </ul>
+                                                            </td>
+                                                            <td><span class="badge cri-badge" [ngClass]="{'badge-primary':record['STATUS'] === scenarioInProgressStatus,'under-review':record['STATUS'] === scenarioUnderReviewStatus,'danger-pro':record['STATUS'] === scenarioRejectedStatus,'complete':record['STATUS'] === scenarioCompletedStatus}">{{record['STATUS']}}</span></td>
+                                                            <td>{{record['LAST_MODIFIED_DATE'] | date:'MM/dd/yyyy HH:mm'}}</td>
+                                                            <td class="tdbreak tdb-r text-overlap">{{record['DESCRIPTION']}}</td>
+                                                            <td class="tdboder-none-l">
+                                                            <span class="del-edit ">
+                                                                <i (click)="navigateToModel(record);" id="model_edit_{{i}}">
+                                                                    <img  src="../../content/images/svg/edit.png" alt="Sem-icons">
+                                                                </i>
+                                                                <i *ngIf="record['ISDELETE'] !=null" id="model_delete_{{i}}" (click)="openDeleteModelDataModal(record);">
+                                                                    <img  src="../../content/images/svg/delete.png" alt="Sem-icons">
+                                                                </i>
+                                                                <!-- <i class="fa fa-pencil mr-3" aria-hidden="true" (click)="navigateToModel(record);"></i> -->
+                                                                <!-- <i class="fa fa-trash-o mr-3" aria-hidden="true" *ngIf="record['ISDELETE'] !=null" (click)="openDeleteModelDataModal(record);"></i> -->
+                                                            </span>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+                                                </tbody>
+                                          </table>
+                                          <div class="col-md-12 mt-4" *ngIf= "remainingModelsCount != 0">
+                                               <a (click) ="navigateTo('/model');" > + {{remainingModelsCount}} More <small class="dis-page">Models Need Attention</small></a>
+                                               
+
+                                          </div>  
+                              </div><!--responsive-table end-->
+                          </div><!--table row End-->
+        </div><!--col-md-9 End-->
+        <!--Right Side Start-->
+                   <div class="col-md-3">
+                             <!--sub titles-->
+                              <div class="form-row mb-2 mt-2">
+                                  <div class="side-titles  ml-3">
+                                       <strong class=" title-s">Activity </strong><br>
+                                       <small class="dis-page">RECENT ACTIVITY</small>
+                                   </div>
+                       <!--Recent Start--> 
+                                   <div class="dash-view viewcards-ds mt-3 ml-2" *ngFor =" let activity of activityList ">
+                                    <a (click) ="navigateToScenarioAtivity(activity);" id="navTo-scenario-activity">      
+                                    <div class="card cri-sidecards-dash mb-2">
+                                               <div class="card-body cri-card-dashboard d-flex flex-row" id="activity-id">
+                                                   <div class="p-1 mr-2"> 
+                                                        <img [src]='"content/images/dashboard/"+activity.imgPath+".png"' class="img-analys" alt="CRISIL">
+                                                    </div>
+                                                   <div class="p-1">
+                                                       <small class="st-num">
+                                                            <b>{{activity.title}}</b> 
+                                                       <p class="title2 text-overlap" placement="bottom" [ngbTooltip]="activity.subject">{{activity.subject}} </p>
+                                                     </small>
+                                                     <small class="title2">{{activity.date | date:'MM/dd/yyyy HH:mm'}}</small>
+                                                   </div>
+                                               </div>
+                                           </div><!--1st card end-->
+                                        </a> 
+                                    </div><!--dash-view mt-3 ml-3 end-->
+                                   <!--Recent End-->
+                                 </div><!--form-row rifhtside End-->
+                     <!-- form-row mb-2 mt-2 end-->
+                 </div><!--col-md-3 End-->
+                 <!--Right Side End-->
+       </div><!--content-view-->
+</div><!--cri-inner-container End-->
+<ng-template #deleteDataModal let-modal>
+  <div class="cri-modal-h modal-header">
+    <h4 class="cri-modal-titles modal-titles ml-4">Delete Scenario</h4>
+    <button id="delete-scenario" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure?</p>
+  </div>
+  <div class="modal-footer">
+    <button id="scenario-delete-yes-id" class="btn btn-success btn-sm" (click)="deleteScenario();">Yes</button>
+    <button id="scenario-delete-no-id" class="btn btn-light btn-sm" (click)="cancel();">No</button>
+  </div>
+</ng-template>
+
+<ng-template #deleteModelDataModal let-modal>
+        <div class="cri-modal-h modal-header">
+          <h4 class="cri-modal-titles modal-titles ml-4">Delete Model</h4>
+          <button id="delete-model" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="model-delete-yes-id" class="btn btn-success btn-sm" (click)="deleteModel();">Yes</button>
+          <button id="model-delete-no-id" class="btn btn-light btn-sm" (click)="cancel();">No</button>
+        </div>
+ </ng-template>

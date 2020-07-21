@@ -1,0 +1,58 @@
+<div class="cri-inner-container">
+        <div class="col-md-12">
+          <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess = false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <model-tabs [selectedTab]="3" [status]="33"></model-tabs>
+        <h5>OutPut Configuration</h5>
+        <div class="row mt-2" style="height:400px;">
+           <div class="row col-md-12">
+                <div class="col-md-3">
+                    Number of Outputs
+                </div>
+                <div class="col-md-9">
+                    <input type="text" [(ngModel)]="nofoutputs" (change) = "renderOutputConfig($event)" />
+                </div>
+           </div>
+
+           <div class="row col-md-12" *ngFor="let config of outputConfig;let i=index;">
+                <div class="col-md-3">
+                    {{config.label}}
+                </div>
+                <div class="col-md-9">
+                        <ng-select [items]="outputList"
+                        bindLabel="label"
+                        bindValue="value"
+                        appendTo="body"
+                        [multiple]="false"
+                        [clearable]="true"
+                        placeholder="Select"
+                        [(ngModel)]="config.outputModal">  
+                    </div>
+                </div>
+           </div>
+
+        <div class="mt-5">
+            <div class="row">
+                <div class="col-md-6 text-left"> 
+                  <button type="button" id="back" class=" btn btn-outline-danger" (click)="backtoTestOutput()">
+                                <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">Back</button>
+                  <button type="button" id="discard" class=" btn btn-outline-danger" (click)="navigatetoModels()">
+                      <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+                </div>
+                <div class="col-md-6 text-right"> <button id="next" (click)="nexttoTest();" type="button" class="cri-btn btn btn-outline-secondary btn-danger">Next &nbsp; </button></div>
+            </div>
+        </div>
+    </div>

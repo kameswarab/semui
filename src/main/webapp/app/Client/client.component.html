@@ -1,0 +1,233 @@
+<div class="cri-inner-container p-5">
+  <div class="wizards mt-0">
+    <div class="steps p-2 mb-2">
+      <div class="custom-control custom-radio custom-control-inline mr-0 dot-label">
+        <input type="radio" id="customRadioInline_1" class="custom-control-input" checked>
+        <label class="cus-active custom-control-label" for="customRadioInline_1">Create Client</label>
+      </div>
+    </div>
+  </div>
+  <section class="slide-2" id="slide-2">
+    <form name="stage1" role="form" novalidate (ngSubmit)="stage1.valid && save(stage1)" #stage1="ngForm"
+        autocomplete="off">
+      <div class="create-client mt-4">
+        <div class="main-view">
+          <jhi-alert></jhi-alert>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="inputPassword" class="cri-label">Client/Bank Name :<span class="text-danger"> </span></label>
+                <input type="text" class="form-control" pattern="[a-zA-Z][a-zA-Z ]+" placeholder="Client Name" id="clientName" 
+                  name="clientName" #clientName="ngModel"  [(ngModel)]="formData.clientName" [required]="true" >
+                <div *ngIf="(stage1.submitted || clientName.dirty) && clientName.invalid">
+                    <small class="form-text text-danger" *ngIf="clientName.errors.required">
+                      This field is required.
+                    </small>
+                    <small class="form-text text-danger" *ngIf="clientName.errors.pattern">
+                      This field allows valid text.
+                    </small>
+                  </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="inputPassword" class="cri-label">Client/Bank Location: <span class="text-danger">
+                    </span>
+                  </label>
+    
+                <input type="text" class="form-control" name="location" [(ngModel)]="formData.location" placeholder="Location"
+                pattern="[a-zA-Z][a-zA-Z ]+" #location="ngModel" id="location" [required]="true">
+    
+                <div *ngIf="(stage1.submitted || location.dirty) && location.invalid">
+                    <small class="form-text text-danger" *ngIf="location.errors.required">
+                      This field is required.
+                    </small>
+                    <small class="form-text text-danger" *ngIf="location.errors.pattern">
+                      This field allows valid text.
+                    </small>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="inputPassword" class="cri-label">Add IP : <span class="text-danger"> </span></label>
+                <span class="form-check fc">
+                  <input class="form-check-input" type="radio" (click)="resetOther(formData.ipType)" name="ipType"
+                    [(ngModel)]="formData.ipType" value="IP Address" #ipType="ngModel" id="ipType" [required]="true">
+                    <div *ngIf="(stage1.submitted || ipType.dirty) && ipType.invalid">
+                        <small class="form-text text-danger" *ngIf="ipType.errors.required">
+                          This field is required.
+                        </small>
+                    </div>
+                  <label class="cri-label" for="Radios1">
+                    IP Address
+                  </label>
+                </span>
+                <span class="form-check fc">
+                  <input class="form-check-input" type="radio" (click)="resetOther(formData.ipType)" name="ipType"
+                    [(ngModel)]="formData.ipType" value="IP Address Range" #ipType="ngModel" id="ipType" [required]="true">
+                    <div *ngIf="(stage1.submitted || ipType.dirty) && ipType.invalid">
+                        <small class="form-text text-danger" *ngIf="ipType.errors.required">
+                          This field is required.
+                        </small>
+                    </div>
+                  <label class="cri-label" for="Radios2">
+                    IP Address Range
+                  </label>
+                </span>
+              </div>
+              <div *ngIf="formData.ipType == 'IP Address'" class="form-group">
+                <input type="text" class="form-control" [(ngModel)]="formData.ipAddress" placeholder="IP Address"
+                #ipAddress="ngModel" id="ipAddress" name="ipAddress" [required]="true" [pattern]="ipformat">
+                <div *ngIf="(stage1.submitted || ipAddress.dirty) && ipAddress.invalid">
+                    <small class="form-text text-danger" *ngIf="ipAddress.errors.required">
+                      This field is required.
+                    </small>
+                    <small class="form-text text-danger" *ngIf="ipAddress.errors.pattern">
+                      This field allows valid text.
+                    </small>
+                  </div>
+              </div>
+              <div *ngIf="formData.ipType == 'IP Address Range'" class="form-group">
+                <div class="form-group multiple-form-group input-group ipfield" *ngFor="let ip of formData.ipRanges;let i=index;">
+    
+                  <input type="text" [(ngModel)]="ip.ipAddr" class="form-control col" placeholder="Ex: 127.87.37.25/35" 
+                  #ipAddr="ngModel" id="ipAddr_{{i}}" name="ipAddr_{{i}}" [required]="true" [pattern]="ipRangeformat">
+                  
+                  <div *ngIf="(stage1.submitted || ipAddr.dirty) && ipAddr.invalid" class="mt-1 pt-1">
+                      <small class=" text-danger" *ngIf="ipAddr.errors.required">
+                        This field is required.
+                      </small>
+                      <small class=" text-danger" *ngIf="ipAddr.errors.pattern">
+                        This field allows valid Pattern.
+                      </small>
+                    </div>
+    
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger btntxt  btnheight ml-1" (click)="addIpRange()">ADD IP TO
+                      BUCKET</button>
+                    <button type="button" *ngIf="formData.ipRanges.length > 1" class="btn btn-outline-danger btntxt btnheight" (click)="deleteColumn(i)">DELETE IP FROM
+                      BUCKET</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" *ngFor="let module of formData.moduleList;let i=index;">
+            <div class="row">
+              <!-- <div class="col-md-6">
+                <label for="inputPassword" class="cri-label">Select Module : <span class="text-danger"> </label>
+                <select class="form-control" [(ngModel)]="module.moduleId" name ="moduleId_{{i}}" #moduleId="ngModel" [required]="true">
+                  <option value="-1">---Please select module---</option>
+                  <option value="0">Select All</option>
+                  <option *ngFor="let module_ of modulesData" [ngValue]="module_[0]">{{module_[1]}}</option>
+                </select>
+                <div *ngIf="(stage1.submitted) && (module.moduleId == -1)">
+                    <small class="form-text text-danger">
+                      This field is required.
+                    </small>
+                </div>
+              </div> -->
+              <div class="form-group col-md-4">
+                <label for="" class="cri-label">Grace period (in days):</label>
+                <input class="form-control" type="text" [(ngModel)]="module.grace" #grace="ngModel" [required]="true"
+                pattern="^[0-9]*$" name = "grace_{{i}}" id = "grace_{{i}}">
+                <div *ngIf="(stage1.submitted || grace.dirty) && grace.invalid">
+                    <small class="form-text text-danger" *ngIf="grace.errors.required">
+                      This field is required.
+                    </small>
+                    <small class="form-text text-danger" *ngIf="grace.errors.pattern">
+                      This field allows valid number.
+                    </small>
+                  </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="" class="cri-label">From:</label>
+                <div class="input-group">
+                  <input class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="start1Date" [(ngModel)]="module.fdate"
+                  [required]="true" ngbDatepicker  #fdate="ngbDatepicker" (click)="fdate.toggle()" [minDate]="startDate">
+                  <!-- <div class="input-group-prepend ">
+                    <div class="input-group-text" (click)="fdate.toggle()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g opacity="0.3">
+                      <rect x="7" y="9" width="4" height="4" fill="#375889"/>
+                      <path d="M13.0909 2.45455H12.3636V1H10.9091V2.45455H3.63636V1H2.18182V2.45455H1.45455C0.654545 2.45455 0 3.10909 0 3.90909V14.5455C0 15.3455 0.654545 16 1.45455 16H13.0909C13.8909 16 14.5455 15.3455 14.5455 14.5455V3.90909C14.5455 3.10909 13.8909 2.45455 13.0909 2.45455ZM13.0909 14.5455H1.45455V6.09091H13.0909V14.5455Z" fill="#375889"/>
+                      </g>
+                      </svg>
+                    </div>
+                  </div> -->
+                </div>
+                <!-- <div *ngIf="(stage1.submitted || fdate.dirty) && fdate.invalid">
+                  <small class="form-text text-danger" *ngIf="fdate.errors.required">
+                    This field is required.
+                  </small>
+                </div> -->
+              </div>
+              <div class="form-group col-md-4">
+                <label for="" class="cri-label">To:</label>
+                <div class="input-group">
+                  <input class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="module.tdate"
+                  [required]="true" ngbDatepicker  #tdate="ngbDatepicker" (click)="tdate.toggle()">
+                  <!-- <div class="input-group-prepend ">
+                    <div class="input-group-text" (click)="tdate.toggle()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g opacity="0.3">
+                      <rect x="7" y="9" width="4" height="4" fill="#375889"/>
+                      <path d="M13.0909 2.45455H12.3636V1H10.9091V2.45455H3.63636V1H2.18182V2.45455H1.45455C0.654545 2.45455 0 3.10909 0 3.90909V14.5455C0 15.3455 0.654545 16 1.45455 16H13.0909C13.8909 16 14.5455 15.3455 14.5455 14.5455V3.90909C14.5455 3.10909 13.8909 2.45455 13.0909 2.45455ZM13.0909 14.5455H1.45455V6.09091H13.0909V14.5455Z" fill="#375889"/>
+                      </g>
+                      </svg>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+              <div class="form-group btngrp col-md-4 text-right" *ngIf="false">
+                <span>
+                  <button type="button" class="btn btn-danger btntxt" (click)="addModule(i)">ADD MODULE</button>
+                </span>
+                <span>
+                  <button type="button" *ngIf="formData.moduleList.length > 1" class="btn btn-outline-danger btntxt" (click)="deleteModule(i)">REMOVE MODULE</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row attachment-div">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="Attachment" class="cri-label">Attachment:(if any)</label>
+                <div class="wrapper clientadminwrapper">
+                  <div class="files clientadminfiles">
+                    <div class="cont">
+                      <i class="material-icons ">Description</i>
+                      <div class="tit">
+                        Attach or drag and drop data sheet
+                      </div>
+                      <div class="desc">
+                        Support File Format: .PDF. Max file size: 10MB
+                      </div>
+                    </div>
+                    <output id="list"></output><input  #fileUpload type="file" class="form-control-file"  accept=".pdf" (change)="browsFile($event)">
+                  </div>
+                  <div *ngIf="!isUpdate">{{filePathtoDownload}}</div>
+                  <a href="JavaScript:void(0);" *ngIf="isUpdate && filePathtoDownload != 'null'" (click)="downloadFile(filePathtoDownload)">{{filePathtoDownload}}</a>
+                </div>								
+                </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class=" col-md-4 text-left mt-4 mb-4 ">
+              <button type="button" class="btn btn-outline cri-btn-outline" (click)="clearClientScreen(stage1)" >
+                <img src="../../content/images/svg/delete.png" alt="semicons" class="discard-img">
+                DISCARD
+              </button>
+            </div>
+            <div class="col-md-8 mt-4 mb-4 text-right">
+              <button *ngIf="!isUpdate" class="btn btn-danger btntxt" >SAVE CLIENT</button>
+              <button *ngIf="isUpdate" class="btn btn-danger btntxt" >UPDATE CLIENT</button>
+              <button type="button" class=" btn btn-outline-danger pl-4 pr-4 btntxt" routerLink="/administrationHome/clientList">BACK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>

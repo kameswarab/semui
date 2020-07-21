@@ -1,0 +1,11 @@
+.btn-cta {
+    background: #d6002a;
+    color: #fff;
+    padding: 0.4rem 1.8rem;
+    font-size: 12px !important;
+}
+.btn-outline-cta {
+    border: 0.05rem solid #d6002a;
+    color: #d6002a;
+    font-size: 12px !important;
+}

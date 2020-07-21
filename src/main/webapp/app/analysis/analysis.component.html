@@ -1,0 +1,554 @@
+
+<div class="cri-inner-container">
+    <div class="row">
+        <div class="col-md-12"[hidden]="fullscreen"> 
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+                    <i class="fa-exclamation-triangle-icon" aria-hidden="true"></i> {{displayFailureMessage}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6" [hidden]="fullscreen">
+            <h1 class="cri-main-heading">  
+                <img src="../../content/images/svg/analysis-heading.png" alt="sem-icons">
+                <strong class="title-s color9" routerLink="/analysisList">Analysis </strong>
+                <i class="fa-angle-right-icon rightangleicon" aria-hidden="true"></i>
+                <strong class="title-s ">{{selectedAnalysisList.length>0?selectedAnalysisList[0]['name']:''}}</strong>
+            </h1>
+            <small class="cri-label">Create, Compare across various types of analysis</small>
+        </div><!--hearder-title End-->
+
+
+        <div class="col-md-6 mt-4" *ngIf="selectedAnalysis['type'] != analysisTypeScenario " [hidden]="fullscreen"> 
+            <div class=" d-flex justify-content-end">
+                <small *ngIf="false" class="title mr-3 align-self-center">View</small>
+                <span *ngIf="false" class="align-self-center mr-2" (click)="showOrHideMultiple('HIDE', null);" [ngClass]="{'view-icon2': multipleGraphs,'view-icon': !multipleGraphs}">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g *ngIf="!multipleGraphs" opacity="1">
+                            <rect x="3.85938" y="3.86133" width="14.28" height="14.28" rx="1" fill="#375889"/>
+                        </g>
+                        <g *ngIf="multipleGraphs" opacity="0.3">
+                            <rect x="3.85938" y="3.86133" width="14.28" height="14.28" rx="1" fill="#375889"/>
+                        </g>
+                    </svg>
+                </span>
+                <span *ngIf="false" class="align-self-center" (click)="showOrHideMultiple('SHOW', null);" [ngClass]="{'view-icon2': !multipleGraphs,'view-icon': multipleGraphs}">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g *ngIf="!multipleGraphs" opacity="0.3">
+                            <rect x="2" y="2" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                            <rect x="11.6016" y="2" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                            <rect x="2" y="11.5996" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                            <rect x="11.6016" y="11.5996" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                        </g>
+                        <g *ngIf="multipleGraphs" opacity="1">
+                            <rect x="2" y="2" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                            <rect x="11.6016" y="2" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                            <rect x="2" y="11.5996" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                            <rect x="11.6016" y="11.5996" width="6.4" height="6.4" rx="1" fill="#375889"/>
+                        </g>
+                    </svg>
+                </span>
+            </div>
+        </div>
+    </div><!--1st row End-->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="content-view row ">
+                <div class="col-md-4" [hidden]="fullscreen">
+                    <div class="accordion-cards">
+                        <ngb-accordion [closeOthers]="true" class="analysis" #acc="ngbAccordion" [activeIds]="activeIds" (panelChange)="toggleSetAccordian($event)">
+                            <ngb-panel *ngFor="let analysis of selectedAnalysisList;let i=index;" id="analysis_id_{{analysis.id}}">
+                                <ng-template ngbPanelTitle>
+                                     <strong class="accordion-title analysis-title">
+                                        <ng-container *ngIf="selectedAnalysisList.length > 1">{{i+1}}. &nbsp;</ng-container>{{analysis.name}}
+                                    </strong>
+                                    <button (click)="removeAnalysis(analysis.id)" class="accordion-del btn btn-link btn-sm" >
+                                            <img class="discard-btn" src="../../content/images/svg/delete-sm.png" alt="sem-icons">Discard</button>
+                                  </ng-template>
+                                  
+                                <ng-template ngbPanelContent>
+                                       
+                                    <div class="form-row analy-accord-openb" *ngIf="analysis.type == analysisTypeScenario">
+                                        <div class="form-group col-12 mt-2">
+                                            <label class="customlabel">SCENARIO TYPE</label>
+                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                <label class="btn btn-secondary" [ngClass]="{'active': master.value == analysis['selectionObj'].scenarioType}" (click)="sceanrioTypeChange(master.value, analysis);"
+                                                    *ngFor="let master of scenarioTypeList">
+                                                    <input type="radio" name="options_scenario" [value]="master.value" autocomplete="off" checked>{{master.label}}
+                                                </label>
+                                            </div>
+                                        </div> 
+                                        <div class="form-group col-12 mt-2">
+                                            <label class="customlabel">SELECT SCENARIO </label>
+                                            <custom-multi-select 
+                                                [items] = "analysis.selectionObj.scenarioList"
+                                                [bindValue] = "'value'"
+                                                [bindLabel] = "'label'"
+                                                [multiple] = "analysis['scenarioMultiple'] == 'T' ? true : false"
+                                                [maxSelection] = "analysis['scenarioMax']"
+                                                [inputName] = "'Scenarios'"
+                                                [selectedItems] = "analysis.selectionObj.selectedScenarios"
+                                                [searchForItems] = "true"
+                                                [searchForSelectedItems] = "false"
+                                                [selectAllItems] =  "false"
+                                                (selectChange) = "analysis.selectionObj.selectedScenarios = $event"
+                                                (change) = "changeScenarios(analysis)">
+                                            </custom-multi-select>
+                                        </div>
+
+                                        <div class="form-group col-12 mt-2" *ngIf="analysis.id == analysisPropagationTree">
+                                            <label for="staticEmail" class="customlabel">ASSET CLASS</label>
+                                            <custom-multi-select 
+                                                [items] = "assetClassListForScenario"
+                                                [bindValue] = "'value'"
+                                                [bindLabel] = "'label'"
+                                                [multiple] = "true" 
+                                                [inputName] = "'Asset Class'"
+                                                [selectedItems] = "analysis['selectionObj'].selectedAssetClassList"
+                                                [searchForItems] = "true"
+                                                [searchForSelectedItems] = "true"
+                                                (selectChange) = "analysis['selectionObj'].selectedAssetClassList = $event"
+                                                (change)="getRiskFactorList(analysis)" >
+                                            </custom-multi-select>
+                                        </div>
+
+                                        <div class="form-group col-12 mt-2" *ngIf="analysis.riskFactorSelection == 'T' || analysis.id == analysisPropagationTree">
+                                            <label for="staticEmail" class="customlabel">SELECT RISK FACTOR(S)</label>
+                                            <custom-multi-select 
+                                                [items] = "analysis['selectionObj'].riskFactorList"
+                                                [bindValue] = "'value'"
+                                                [bindLabel] = "'label'"
+                                                [multiple] = "analysis['riskFactorMultiple'] == 'T'" 
+                                                [inputName] = "'Riskfactors'"
+                                                [selectedItems] = "analysis['selectionObj'].selectedRiskFactorList"
+                                                [searchForItems] = "true"
+                                                [searchForSelectedItems] = "true"
+                                                (selectChange) = "analysis['selectionObj'].selectedRiskFactorList = $event" >
+                                            </custom-multi-select>
+                                        </div>
+                                        <div class="form-group col-12 mt-2" *ngIf="analysis.id == analysisRateCurve && analysis['selectionObj'].scenarioType == scenarioProjectionType">
+                                            <label for="staticEmail" class="customlabel">PROJECTION PERIOD</label>
+                                            <div class="select-wrapper">
+                                                <ng-select
+                                                    bindLabel="label"
+                                                    bindValue="value"
+                                                    appendTo="body"
+                                                    placeholder="Select"
+                                                    [clearable]="false"
+                                                    [(ngModel)]="analysis['selectionObj'].projectionPeriod">
+                                                    <ng-container>
+                                                        <ng-option *ngFor="let period of analysis['selectionObj'].shockPeriods | keyvalue"  [ngValue]="period.key">{{period.key}}</ng-option>
+                                                    </ng-container>
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12 mt-2" *ngIf="analysis.id == analysisRateCurve">
+                                            <label for="staticEmail" class="customlabel">CURVE FAMILY</label>
+                                            <div class="select-wrapper">
+                                                    <ng-select [items]="analysis['selectionObj'].curveFamilySelListOnScenario"
+                                                    bindLabel="label"
+                                                    bindValue="value"
+                                                    appendTo="body"
+                                                    placeholder="Select"
+                                                    [clearable]="false"
+                                                    [(ngModel)]="analysis['selectionObj'].curveFamily">
+                                                    </ng-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <button type="button" class="btn btn-danger btn-block" (click)="analyze(analysis)">ANALYZE</button>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <button type="button" class="btn btn-outline-danger btn-block" (click)="clearFilters(analysis)">RESET</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-row analy-accord-openb" *ngIf="analysis.type == analysisTypeTimeSeries">
+                                        <div class="form-group col-12 mt-2">
+                                            <label for="staticEmail" class="customlabel">ASSET CLASS</label>
+                                            <custom-multi-select 
+                                                [items] = "assetClassList"
+                                                [bindValue] = "'value'"
+                                                [bindLabel] = "'label'"
+                                                [multiple] = "true" 
+                                                [inputName] = "'Asset Class'"
+                                                [selectedItems] = "analysis['selectionObj'].selectedAssetClassList"
+                                                [searchForItems] = "true"
+                                                [searchForSelectedItems] = "true"
+                                                (selectChange) = "analysis['selectionObj'].selectedAssetClassList = $event"
+                                                (change)="assestClassChange(analysis)">
+                                            </custom-multi-select>
+                                        </div> 
+                                        <div class="form-group col-12 mt-2">
+                                            <label for="staticEmail" class="customlabel">RISK FACTOR TYPE</label>
+                                            <custom-multi-select 
+                                                [items] = "analysis['selectionObj'].riskFactorTypeList"
+                                                [bindValue] = "'value'"
+                                                [bindLabel] = "'label'"
+                                                [multiple] = "true" 
+                                                [inputName] = "'RISK FACTOR TYPE'"
+                                                [selectedItems] = "analysis['selectionObj'].selectedRiskFactorTypeList"
+                                                [searchForItems] = "true"
+                                                [searchForSelectedItems] = "true"
+                                                (selectChange) = "analysis['selectionObj'].selectedRiskFactorTypeList = $event"
+                                                (change)="getRiskFactorList(analysis)">
+                                            </custom-multi-select>
+                                        </div>
+                                        <div class="form-group col-12 mt-2">
+                                            <label for="staticEmail" class="customlabel">SELECT RISK FACTOR(S)
+                                                <span  *ngIf="analysis.id == analysisCorrelation " class=" tooltipbottom-tablebtm-small ml-2 analysis-tolltip info-icon-2">
+                                                  <div class="bottom-btm error-message-small">
+                                                      <small class="pop-text ">{{maxLimitMessage}}</small>
+                                                    </div>
+                                                </span>
+                                            </label>
+                                            <custom-multi-select 
+                                                [items] = "analysis['selectionObj'].riskFactorList"
+                                                [bindValue] = "'value'"
+                                                [bindLabel] = "'label'"
+                                                [multiple] = "analysis['riskFactorMultiple'] == 'T'" 
+                                                [maxSelection] = "analysis['riskFactorMax']"
+                                                [inputName] = "'Riskfactors'"
+                                                [selectedItems] = "analysis['selectionObj'].selectedRiskFactorList"
+                                                [searchForItems] = "true"
+                                                [searchForSelectedItems] = "analysis.id != analysisHistogram ? true : false"
+                                                [selectAllItems] = "(analysis.id == analysisHistogram || analysis.id == analysisAcfPlot) ? false : true"
+                                                [serverSideSearch] = "true"
+                                                [searchItemStr] = "analysis['selectionObj'].searchString"
+                                                (search) = "searchData($event)"
+                                                (selectChange) = "analysis['selectionObj'].selectedRiskFactorList = $event">
+                                            </custom-multi-select>
+                                        </div>
+                                        <div class="form-group col-12 analysis-additional-filters">
+                                            <ngb-accordion class="analysis" #acc="ngbAccordion" >
+                                                <ngb-panel id="sub_filters">
+                                                    <ng-template ngbPanelTitle>
+                                                        <strong class="accordion-title analysis-title">Additional Filters</strong>
+                                                    </ng-template>
+                                                    <ng-template ngbPanelContent>
+                                                        <div id="filter-anal" class="col-md-12 sub-filter">
+                                                            <div class="select-filter-analysis">
+                                                                <div id="scrool-3">
+                                                                    <div class=" row mr-0 ml-0">
+                                                                        <div class="col">
+                                                                            <label class="cri-label" for="inputState">START DATE</label>
+                                                                            <div class="input-group" id="startDate">
+                                                                                <input class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="analysis['selectionObj'].startDate"
+                                                                                    ngbDatepicker [minDate]="minDate" [maxDate]="maxDate" #d1="ngbDatepicker" readonly="true" (click)="d1.toggle()">
+                                                                                <div class="input-group-prepend ">
+                                                                                    <div class="input-group-text" (click)="d1.toggle()">
+                                                                                         <img src="../../content/images/svg/clalender2.png" alt="sem-icons">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <label class="cri-label" for="inputState">END DATE</label>
+                                                                            <div class="input-group" id="endDate">
+                                                                                <input class="form-control form-control-sm" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="analysis['selectionObj'].endDate"
+                                                                                    ngbDatepicker [minDate]="minDate" [maxDate]="maxDate" #d2="ngbDatepicker" readonly="true" (click)="d2.toggle()">
+                                                                                <div class="input-group-prepend ">
+                                                                                    <div class="input-group-text" (click)="d2.toggle()">
+                                                                                        <img src="../../content/images/svg/clalender2.png" alt="sem-icons">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class=" row mr-0 ml-0">
+                                                                        <div class="col">
+                                                                            <label class="cri-label" for="inputState">LEVEL/RETURNS</label>
+                                                                            <div class="select-wrapper">
+                                                                                <ng-select [items]="levelOrReturnsList" 
+                                                                                    bindLabel="label"
+                                                                                    bindValue="label"
+                                                                                    appendTo="body" 
+                                                                                    [(ngModel)]= "analysis['selectionObj'].levelOrReturns">
+                                                                                </ng-select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col" *ngIf= "analysis['selectionObj'].levelOrReturns == 'RETURNS'">
+                                                                            <label class="cri-label" for="inputState">RETURNS TYPE</label>
+                                                                            <div class="select-wrapper">
+                                                                                <ng-select [items]="returnTypeList" 
+                                                                                    bindLabel="label" 
+                                                                                    bindValue="label"
+                                                                                    appendTo="body" 
+                                                                                    [(ngModel)]= "analysis['selectionObj'].returnsType">
+                                                                                </ng-select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class=" row mr-0 ml-0" *ngIf= "analysis['selectionObj'].levelOrReturns == 'RETURNS'">
+                                                                        <div class="col">
+                                                                            <label class="cri-label" for="inputState">FREQUENCY</label>
+                                                                            <div class="select-wrapper">
+                                                                                <ng-select [items]="frequencyList" 
+                                                                                        bindLabel="label" 
+                                                                                        bindValue="value"
+                                                                                        appendTo="body" 
+                                                                                        [(ngModel)]= "analysis['selectionObj'].frequency">
+                                                                                </ng-select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <label class="cri-label" for="inputState">OVERLAPING</label>
+                                                                            <div class="select-wrapper">
+                                                                                <ng-select [items]="overlappingList" 
+                                                                                        bindLabel="label" 
+                                                                                        bindValue="label"
+                                                                                        appendTo="body" 
+                                                                                        [(ngModel)]= "analysis['selectionObj'].overlapOrNonOverlap">
+                                                                                </ng-select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-template>
+                                                </ngb-panel>
+                                            </ngb-accordion>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <button type="button" class="btn btn-danger btn-block" (click)="analyze(analysis)">ANALYZE</button>                                          
+                                        </div>
+                                        <div class="form-group col-6">                                          
+                                            <button type="button" class="btn btn-outline-danger btn-block" (click)="clearFilters(analysis)">RESET</button>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngb-panel>
+                        </ngb-accordion>
+                        <div class="btn-foot text-center analysis-div position-relative">
+                            <button #toggleButton (click)="toggleMenu($event)" *ngIf="selectedAnalysis['type'] != analysisTypeScenario && selectedAnalysis['id'] != analysisCorrelation && selectedAnalysisList.length < 4" 
+                                class="btn btn-outline-primary sm-icons mr-2 add-analysis" type="button"><i class="fa-plus-icon mr-3" aria-hidden="true"></i>ADD ANALYSIS</button>
+                            <div id="scrool-3" class="addnalysislist" *ngIf="isAddAnalysis">
+                                <div class="card addnalysiscard">
+                                    <div class="card-body">
+                                        <ul class="add-ul-anal">
+                                            <li class="addtitle-analysis">AVAILABLE ANALYSIS</li>
+                                            <ng-cotainer *ngFor="let analysis of analysisTypeConfigList">
+                                                <li *ngIf="addAnalysisCheck(analysis)">
+                                                    <div class="cri-card-body d-flex flex-row" (click)="addNewAnalysisPopup(analysis);">
+                                                        <div class="p-2"> <img [src]='"content/images/analysisicons/"+analysis.id+".png"' class="img-analys" alt="CRISIL"> </div>
+                                                        <div class="p-2"><small class="st-num analis-list d-flex align-items-center"> <p class="title2">{{analysis.name}}</p> </small></div>
+                                                    </div>
+                                                </li>
+                                            </ng-cotainer>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--accordion-cards-->
+                </div><!--Accoridion End-->
+                <!--Right side view-->
+                <div [ngClass]="{'col-md-12' : fullscreen, 'col-md-8' : !fullscreen}">
+                    <div class="row">
+                       <ng-container *ngFor="let analysis of selectedAnalysisList;let i=index;">
+                            <div class="dash-board-analysis" [ngClass]="{'col-md-6':selectedAnalysisList.length>1 && !fullscreen && multipleGraphs, 'col-md-12':selectedAnalysisList.length==1 || fullscreen || !multipleGraphs}" [hidden] = "analysis['showOrHideOutput'] == 'hide'" >
+                                <div class="form-row">
+                                    <div class="col d-flex align-items-center">
+                                        <strong *ngIf="selectedAnalysisList.length > 1" class="accordion-title analysis-title">{{i+1}}. &nbsp;{{analysis.name}}</strong>
+                                    </div>
+                                    <div class="text-right" *ngIf="!analysis.nullData">
+                                        <div id="filter-anal" class="select-filter-analysismain" *ngIf="analysis['selectionObj'].showPlottedRiskfactors && analysis['selectionObj'].plottedRiskfactors.length > 0">
+                                            <div class="card select-filter-analysis">
+                                                <div class="card-body overflow-auto" id="scrool-3">
+                                                    <ul class="analysis-select2" *ngIf ="analysis.id != analysisPropagationTree">
+                                                        <div class="allselect-scenario2">
+                                                            <ng-container *ngFor="let rf of analysis['selectionObj'].plottedRiskfactors;let i=index;">
+                                                                <li class="analysis-chart-legend" *ngIf="rf.rfName.indexOf('_BASE') == -1 " [ngClass]="{'analysis-chart-legend-disable' : !rf.show}" (click) = "showOrHideSeries(rf, analysis['selectionObj'].plottedRiskfactors, analysis.id);">
+                                                                    <span class="b-check" [style.backgroundColor] ="rf.color"></span>{{rf.rfName}}
+                                                                </li>
+                                                            </ng-container>
+                                                        </div>
+                                                    </ul>
+                                                    <div class="analysis-select2 row" *ngIf ="analysis.id == analysisPropagationTree">
+                                                        <ul class="graph-color col-md-6 mb-0"> 
+                                                            <li *ngFor="let rf of analysis['selectionObj'].plottedRiskfactors">
+                                                                <img [src]='"content/images/analysisicons/"+rf.label+".png"' class="graph-img pr-2">{{getAssetClassName(rf.value)}}
+                                                            </li>
+                                                            <!-- <li *ngIf="analysis['selectionObj'].plottedRiskfactors.indexOf(1)!=-1"><img [src]='"content/images/analysisicons/circle.png"' class="graph-img pr-2">EQ</li>
+                                                            <li *ngIf="analysis['selectionObj'].plottedRiskfactors.indexOf(2)!=-1"><img [src]='"content/images/analysisicons/square2.png"' class="graph-img pr-2">IR</li>
+                                                            <li *ngIf="analysis['selectionObj'].plottedRiskfactors.indexOf(3)!=-1"><img [src]='"content/images/analysisicons/diamond2.png"' class="graph-img pr-2">CR</li>
+                                                            <li *ngIf="analysis['selectionObj'].plottedRiskfactors.indexOf(4)!=-1"><img [src]='"content/images/analysisicons/triangle2.png"' class="graph-img pr-2">FX</li>
+                                                            <li *ngIf="analysis['selectionObj'].plottedRiskfactors.indexOf(5)!=-1"><img [src]='"content/images/analysisicons/triangle-down.png"' class="graph-img pr-2">CM</li>
+                                                            <li *ngIf="analysis['selectionObj'].plottedRiskfactors.indexOf(6)!=-1"><img [src]='"content/images/analysisicons/cross.png"' class="graph-img pr-2">SP</li> -->
+                                                        </ul>
+                                                        <ul class="graph-color2 mt-2 col-md-6 mb-0">
+                                                            <li *ngIf="propagationColorCode.indexOf('lowest')!=-1" class="highest"><i class="fa-circle mr-2" aria-hidden="true"></i>0-1σ</li>
+                                                            <li *ngIf="propagationColorCode.indexOf('lower')!=-1"  class="higher"><i class="fa-circle mr-2" aria-hidden="true"></i>1-2σ</li>
+                                                            <li *ngIf="propagationColorCode.indexOf('higher')!=-1"  class="lower"><i class="fa-circle mr-2" aria-hidden="true"></i>2-3σ</li>
+                                                            <li *ngIf="propagationColorCode.indexOf('highest')!=-1" class="lowest"><i class="fa-circle mr-2" aria-hidden="true"></i>3σ+</li>
+                                                        </ul>
+                                                    </div>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        <button (click)="analysis['selectionObj'].showPlottedRiskfactors = !analysis['selectionObj'].showPlottedRiskfactors" *ngIf="analysis['viewType'] == 'G' && analysis.id != analysisComparision && analysis['selectionObj'].plottedRiskfactors.length > 0"
+                                        [attr.aria-expanded]="!analysis['selectionObj'].showPlottedRiskfactors" aria-controls="filter-anal" type="button" class="btn btn btn-outline-primary btn-sm sm-icons filter-icon">
+                                           
+                                        </button>
+                                        <button  type="button" class="btn btn btn-outline-primary btn-sm sm-icons" (click)="analyze(analysis)">
+                                            <i class="fa-repeat" aria-hidden="true"></i>
+                                        </button>
+                                        <button  type="button" class="btn btn btn-outline-primary btn-sm sm-icons" *ngIf="analysis['viewType'] == 'G' && analysis.id != analysisPropagationTree " (click)="download(analysis.id,analysis.name)">
+                                            <i class="fa-download-icon" aria-hidden="true"></i>
+                                        </button>
+                                        <button  type="button" class="btn btn btn-outline-primary btn-sm sm-icons" (click)="expandGraph(analysis);">
+                                            <i class="fa" [ngClass]="{'fa-expand' : !fullscreen, 'fa-compress' : fullscreen}" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div *ngIf="analysis.nullData" class="col-md-12 p-0 m-0 dash-board-analysis" [ngClass]="{'multiple':selectedAnalysisList.length>1 && !fullscreen && multipleGraphs, 'single':selectedAnalysisList.length==1 || fullscreen || !multipleGraphs}">
+                                    <div class="graph-views search-null size-100">
+                                        <span class="svg-img">
+                                            <img src="../../content/images/svg/search-analysis.png" alt="sem-icon"></br>
+                                            <small class="caption mt-4 mb-4">Select configuration in the left panel to being analysis</small>
+                                        </span>
+                                    </div><!--search null End-->
+                                </div>
+                                <div class="col-md-12 p-0 m-0 dash-board-analysis" [ngClass]="{'multiple':selectedAnalysisList.length>1 && !fullscreen && multipleGraphs, 'single':selectedAnalysisList.length==1 || fullscreen || !multipleGraphs}" *ngIf="!analysis.nullData">
+                                    <div class="p-0 size-100" *ngIf="analysis['viewType'] == 'T'">
+                                        <ag-grid-angular 
+                                            style="width: 100%; height: 100%;" 
+                                            class="ag-theme-balham"
+                                            [rowData]="rowData"
+                                            [gridOptions]="gridOptions"
+                                            [columnDefs]="columnDefs"
+                                            [cacheBlockSize]="cacheBlockSize"
+                                            [maxBlocksInCache]="maxBlocksInCache"
+                                            [pagination]="true"
+                                            [defaultColDef]="defaultColDef"
+                                            [sideBar]="sideBar"
+                                            (rowClicked)="onRowClicked($event, analysis)"
+                                            (gridReady)="onGridReady($event)">
+                                        </ag-grid-angular>
+                                    </div> 
+                                    <div class="p-0 size-100" *ngIf="analysis['viewType'] == 'G'"> 
+                                        <div class="size-100">
+                                            <div id ="plotlyChart_{{analysis.id}}" class="size-100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class=" graph-pop" *ngIf="riskFactorInfoDiv">
+                        <div class=" col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title graph-pop-titl">{{riskFactorInfo['NAME']}}
+                                        <a class="close text-right" aria-label="Close" (click)="riskFactorInfoDiv = false">
+                                            <span aria-hidden="true">&times;</span>
+                                        </a>
+                                    </h5>
+                                    <div class="row">
+                                        <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">ASSET CLASS</span><br>
+                                            <span class="namele--g">{{riskFactorInfo['ASSET_CLASS']}}</span>
+                                        </div>
+                                        <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">RF CATEGORY</span><br>
+                                            <span class="namele--g">{{riskFactorInfo['CATEGORY']}}</span>
+                                        </div>
+                                        <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">SHOCK VALUE</span><br>
+                                            <div class="m-0 p-0 col-md-12" *ngFor="let shock of getShocksValues(riskFactorInfo, 'SHOCK')">
+                                                <span class="namele--g col-md-6 pl-0">{{shock[0]}}
+                                                </span>
+                                                <span class="namele--g col-md-6">{{shock[1]}}
+                                                </span>
+                                            </div>
+                                        </div>  
+                                        <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">STD SHOCK VALUE</span><br>
+                                            <div class="m-0 p-0 col-md-12" *ngFor="let shock of getShocksValues(riskFactorInfo, 'STD_SHOCK')">
+                                                <span class="namele--g col-md-6">{{shock[0]}}
+                                                </span>
+                                                <span class="namele--g col-md-6">{{shock[1]}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">R SQUARE</span><br>
+                                            <span class="namele--g">{{riskFactorInfo['R_SQ']}}</span>
+                                        </div>
+                                        <!-- <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">UNDERLING MODEL</span><br>
+                                            <span class="namele--g">EQ</span>
+                                        </div> -->  
+                                        <!-- <div class=" col-md-6 mb-4">
+                                            <span class="title-name-g">R SQUARE</span><br>
+                                            <span class="namele--g">EQ</span>
+                                        </div> -->
+                                        <div class="col-md-12 mb-4">
+                                            <span class="title-name-g">ADDITIONAL DETAILS</span><br>
+                                            <span class="namele--g">{{riskFactorInfo['rfInfoAdditionalData']}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #popupChartModal let-modal>
+    <div class="modal-header">
+        <h5 for="staticEmail" class="modal-title">{{modalHeader}}</h5>
+        <a class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+        </a>
+    </div>
+    <div class="modal-body grap-analysis">
+        <div class="form-row">
+            <div class="col d-flex align-items-center">
+                <strong *ngIf="false" class="accordion-title analysis-title"></strong>
+            </div>
+            <div class="text-right">
+                <div id="filter-anal" class="select-filter-analysismain" *ngIf="showPopupPlottedRiskfactors && popupPlottedRiskfactors.length > 0">
+                    <div class="card select-filter-analysis">
+                        <div class="card-body overflow-auto" id="scrool-3">
+                            <ul class="analysis-select2">
+                                <div class="allselect-scenario2">
+                                    <ng-container *ngFor="let rf of popupPlottedRiskfactors;let i=index;">
+                                        <li class="analysis-chart-legend" *ngIf="rf.rfName.indexOf('_BASE') == -1 " [ngClass]="{'analysis-chart-legend-disable' : !rf.show}" (click) = "showOrHideSeries(rf, popupPlottedRiskfactors, 'POPUP');">
+                                            <span class="b-check" [style.backgroundColor] ="rf.color"></span>{{rf.rfName}}
+                                        </li>
+                                    </ng-container>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <button  type="button" class="btn btn btn-outline-primary btn-sm sm-icons" (click)="download('POPUP',modalHeader)">
+                    <i class="fa-download-icon" aria-hidden="true"></i>
+                </button>
+                <button (click)="showPopupPlottedRiskfactors = !showPopupPlottedRiskfactors" type="button" class="btn btn btn-outline-primary btn-sm sm-icons filter-icon">
+                  
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12 size-100" id="plotlyPopupChart"></div>
+    </div>
+</ng-template> 
+
+<ng-template #popupModal let-modal>
+    <div class="modal-header">
+        <label for="staticEmail" class="customlabel">RISK FACTORS</label>
+        <a class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+        </a>
+    </div>
+    <div class="modal-body">
+        <scenario-output [selectedScenarioFromAnalysis]="selectedScenarioForOutputData"></scenario-output>
+    </div>
+    <div class="modal-footer">
+    </div> 
+</ng-template> 

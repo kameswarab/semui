@@ -1,0 +1,123 @@
+<!-- <div class="form-row contentBox"> -->
+ 
+    <div class="cri-inner-container">
+           
+        <div class="row">
+                 <div class="col-md-12"> 
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+                                <i class="fa-exclamation-triangle-icon" aria-hidden="true"></i> {{displayFailureMessage}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+            <div class=" col-md-6">
+                <h1 class="cri-main-heading">
+                        <img  src="../../content/images/svg/analysis-heading.png" alt="Sem-icons">
+                       <strong>Analysis  </strong> </h1>
+                <small class="cri-label">Select a chart  below to start analysis</small>
+            </div>  
+            <div class="col-md-6"> </div><!--use this for right side button-->
+                <div class="col-md-12"> <div class="content-divider"></div> 
+            </div>
+            <div class="row col-md-12 pr-0">               
+                <h4 class="col-md-12 analysis-heading">SCENARIO ANALYSIS</h4>
+                <div class="col-sm-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_COMPARISION);">
+                            <div class="col-md-4"> 
+                                    <img  src="../../content/images/svg/Scenario-Comparison.png" alt="Sem-icons">      
+                                 </div>
+                            <div class="col-md-8"><strong>Scenario <br>Comparison</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_RATE_CURVE);">
+                            <div class="col-md-4"> 
+                                    <img  src="../../content/images/svg/rate-curve.png" alt="Sem-icons">  
+                                 </div>
+                            <div class="col-md-8"><strong>Rate <br>Curve</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_PREDICTION);">
+                            <div class="col-md-4">
+                                    <img  src="../../content/images/svg/Scenario-Prediction.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8"><strong>Scenario <br>Prediction</strong></div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="col-sm-3 pr-0">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_PROPAGATION);">
+                            <div class="col-md-4">
+                                    <img  src="../../content/images/svg/ShockPropagationTree.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8"><strong>Shock Propagation <br>Tree</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--Scenario Analysis row End-->
+            <!--Time Series Analysis start-->
+            <div class="row col-md-12 mt-3 pr-0">
+                <h4 class="col-md-12 analysis-heading">TIME SERIES ANALYSIS</h4>
+                <div class="col-sm-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_ACF);">
+                            <div class="col-md-4">  
+                                 <img  src="../../content/images/svg/Acfplot.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8"><strong>ACF Plot - <br>Seasonality</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_BOX);">
+                            <div class="col-md-4"> 
+                                    <img  src="../../content/images/svg/boxplot.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8"><strong>Box Plot <br>Outliers</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_RATE_CORRELATION);">
+                            <div class="col-md-4"> 
+                                 <img  src="../../content/images/svg/CorrelationMatrix.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8"><strong>Correlation Matrix <br>Heat Map </strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 pr-0">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_HISTOGRAM);">
+                            <div class="col-md-4"> 
+                                    <img  src="../../content/images/svg/histogram.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8 pt-2"><strong>Histogram</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 mt-3">
+                    <div class="card cri-cards">
+                        <div class="card-body cri-card-body d-flex flex-row" (click)="getAnalysis(ANALYSIS_TYPE_TIMESERIES);">
+                            <div class="col-md-4"> 
+                                    <img  src="../../content/images/svg/time-series.png" alt="Sem-icons">
+                                 </div>
+                            <div class="col-md-8"><strong>Time Series<br>Plot</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--Time Series Analysis row End-->
+        </div><!--mainrow end-->
+    </div><!--stepcontainer end-->
+<!-- <div class="form-row contentBox"> -->
+ 

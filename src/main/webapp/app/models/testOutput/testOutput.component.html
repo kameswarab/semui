@@ -1,0 +1,274 @@
+<div class="cri-inner-container">
+        <div class="col-md-12">
+          <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess = false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure = false">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <model-tabs [selectedTab]="4" [status]=status></model-tabs>
+        <!-- <h5>Test Output</h5> -->
+        <div class="row mt-2">
+                
+                    <div class="content-table col-md-12">
+                        <ngb-accordion #acc="ngbAccordion" [activeIds]="activeIds">
+                            <ngb-panel id="toggle-1" title="Inputs">
+                                <ng-template ngbPanelContent>
+                                        <div class="test-rmodel">
+
+                                                <div class="row col-md-12 mt-3 ml-3">
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" id="customRadioInline1" name="singleInput" [(ngModel)]="inputData" [value]="true" [checked]="inputData" class="custom-control-input">
+                                                        <label class="custom-control-label rmpoc-label" for="customRadioInline1"> Single Input</label>
+                                                      </div>
+                                                      <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" id="customRadioInline2" name="bulkInput" [(ngModel)]="inputData" [value]="false" [checked]="!inputData" class="custom-control-input">
+                                                        <label class="custom-control-label rmpoc-label" for="customRadioInline2">Bulk Input</label>
+                                                      </div>
+
+                                                        <!-- <div class="col-md-6">
+                                                            <input type="radio" name="singleInput" [(ngModel)]="inputData" [value]="true" [checked]="inputData"/> Single Input
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="radio" name="bulkInput" [(ngModel)]="inputData" [value]="false" [checked]="!inputData"/> Bulk Input
+                                                        </div> -->
+                                                    </div>
+
+
+                                            <div class="col-md-12"*ngIf="inputData">
+                                                <div class="outersection mt-4 col-md-12 row" *ngFor="let rmodel of rmodelData;let i=index;">
+                                                        <strong class="col-md-12">{{rmodel['outerLabel']}}</strong>
+                                                    <div class="col-md-6" *ngFor="let data of rmodel['inputJson'];let j=index;">
+                                                        <div class="form-group">
+                                                
+                                                            <div class="col-md-12 p-0"  *ngIf="data.fieldType ==  'text'">
+                                                                    <label class="customlabel">{{data.fieldName}}</label>
+                                                                <input type="text" class="form-control " [(ngModel)]="data.fieldValue" minlength="1" pattern="^[_'.A-Za-z-]$"  placeholder="Enter Text"/>
+                                                            </div>
+                                                            <div class="col-md-12 p-0"  *ngIf="data.fieldType == 'number'">
+                                                                    <label class="customlabel">{{data.fieldName}}</label>
+                                                                <input type="number" class="form-control " [(ngModel)]="data.fieldValue" minlength="1" pattern="^[0-9]{1,100}$%"  placeholder="Enter Number"/>
+                                                            </div>
+                                                        
+                                                            <div class="col-md-12 p-0" *ngIf="data.fieldType == 'select'">
+                                                                    <label class="customlabel">{{data.fieldName}}</label>
+                                                                <div class="select-wrapper2">
+                                                                    <select></select>
+                                                                        
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" *ngIf="!inputData">
+                                                            <div *ngFor="let data of rmodelData;let j=index;">
+                                                                <div class="col-md-12 mt-2 mb-4 pl-3 browse-line">
+                                            
+                                                                        <div class="wrapper-mdm">
+                                                                            <div class="files">
+                                                                                <div class="cont-mdm">
+                                                                                    <div class="tit">
+                                                                                        <i class="fa fa-upload" aria-hidden="true"></i><span class="color89"> Browse</span> Or Drag And Drop Your File here
+                                                                                    </div>
+                                                                                </div>
+                                                                                <input #fileupload type="file" class="file-upload-field" [(ngModel)]="data.uploadedFileName"(change)="browsFile($event,data)" accept=".csv">
+                                                                            </div>
+                                                                        </div>
+                                                                        <span class="upload-mdm">
+                                                                                    <!-- <button class="btn btn-outline-primary btn-sm sm-icons btn-sm " (click)="executeRFileBulk()"> Upload</button> -->
+                                                                                <span class="customlabel">File Name :<small>{{data.uploadedFileName}}</small></span>
+                                                                                
+                                                                            </span>
+                                                            
+                                                                    </div>
+                                                                </div>
+                                            </div>
+                                         
+                                         <div class="col-md-12 mb-3 text-right"><button id="next" (click)="execute();" type="button" class="cri-btn btn btn-outline-secondary btn-danger">Execute &nbsp; </button></div>
+                                          </div>
+                                </ng-template>
+                            </ngb-panel>
+                            <ngb-panel id="toggle-2" title="Test">
+                                <ng-template ngbPanelContent>
+                                    <!-- <div class="p-4">
+                                    <div>
+                                        <h4>Chart Information:</h4>
+                                        <div  *ngIf = "content" [innerHTML]="content | sanitizeHtml" runScripts></div>
+                                    </div>
+                                    <div>
+                                            <div class="mt-2">
+                                                <ng-select [items]="customersList"
+                                                bindLabel="CustomerId"
+                                                bindValue="Score"
+                                                appendTo="body"
+                                                [multiple]="false"
+                                                [clearable]="true"
+                                                placeholder="Select"
+                                                (change)="renderGuageChart($event)"
+                                                [(ngModel)]="guageChart">  
+                                            </div>
+                                            <div id="gd" class="mt-4 bt-4"></div>
+                                            <div>Default Value : {{default}}</div>
+                                    </div>
+                                </div> -->
+                                <div class="p-3">
+                                        <h5>OutPut</h5>
+                                </div>
+
+                                <div class="table-start table-responsive col-md-12" *ngIf="records.length > 0">
+                                        <table class="table table-bordered tables-view mb-2 ">
+                                          <thead class="tables-head">
+                                            <tr>
+                                              <th scope="col" *ngFor="let result of resultList;">{{result.label}}</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody class="tables-boby">
+                                            <tr *ngIf="!records || records.length == 0" class="no_data_found" >
+                                                <td [colSpan]="6">No Data Found</td>
+                                            </tr>
+                                            <ng-container *ngFor="let record of recordsSub; let i=index;">
+                                              <tr [ngClass]="{'colspan-cri':record['COLLAPSED']}">
+                                                    <ng-container *ngFor="let res of resultList; let j=index;">
+                                                        <td>{{record[res.label]}}</td>
+                                                    </ng-container>
+                                              </tr>
+                                            </ng-container>
+                                          </tbody>
+                                        </table>
+                                        <div class="fotter-btn ">
+                                          <div class="col-md-12 row ">
+                                            <div class="col-md-12">
+                                              <nav class="c-pagination">
+                                                  <ul class="c-pagination__list pl-3" *ngIf="pager.pages && pager.pages.length">
+                                                    <li class="c-pagination__prev" [ngClass]="{disabled:pager.currentPage === 1}">
+                                                      <a (click)="setPage(pager.currentPage - 1)"><i aria-hidden="true" class="fa-long-arrow-left-icon"></i></a>
+                                                    </li>
+                                                    <li *ngFor="let page of pager.pages" class="c-pagination__item">
+                                                      <a (click)="setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                                                    </li>
+                                                    <li class="c-pagination__next" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                                      <a (click)="setPage(pager.currentPage + 1)"><i aria-hidden="true" class="fa-long-arrow-right-icon"></i></a>
+                                                    </li>
+                                                    <li class="c-pagination__next">
+                                                      <a><small class="dis-page">Displaying {{pager.startIndex + 1}} to {{pager.endIndex + 1}} Of {{pager.totalItems}} Records</small></a>
+                                                    </li>
+                                                </ul>
+                                              </nav>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                
+                                 
+                                <div class="row col-md-12" *ngIf="records.length > 0">
+                                    <div class="mt-4 col-md-8 mb-4">
+                                        <div class="row col-md-12">
+                                            
+                                            <div class="col-md-3 pt-2">Create your own chart</div>
+                                            <div class="col-md-4">
+                                                   
+                                                            <ng-select [items]="chartsList"
+                                                            bindLabel="label"
+                                                            bindValue="value"
+                                                            appendTo="body"
+                                                            [multiple]="false"
+                                                            [clearable]="true"
+                                                            placeholder="Select"
+                                                            (change) = "selectChartConfig($event)"
+                                                            [(ngModel)]="chartType">  
+                                                 
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-12 mt-2" *ngIf="chartSelection == 'barchart'">
+                                            <div class="col-md-3 pt-2">X-Axis</div>
+                                            <div class="col-md-4">
+                                                    <ng-select [items]="resultList"
+                                                    bindLabel="label"
+                                                    bindValue="label"
+                                                    appendTo="body"
+                                                    [multiple]="false"
+                                                    [clearable]="true"
+                                                    placeholder="Select"
+                                                    [(ngModel)]="xaxis"> 
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-12 mt-2" *ngIf="chartSelection == 'barchart'">
+                                                <div class="col-md-3 pt-2" >Y-Axis</div>
+                                                <div class="col-md-4">
+                                                        <ng-select [items]="resultList"
+                                                        bindLabel="label"
+                                                        bindValue="label"
+                                                        appendTo="body"
+                                                        [multiple]="false"
+                                                        [clearable]="true"
+                                                        placeholder="Select"
+                                                        (change) = "showChart();"
+                                                        [(ngModel)]="yaxis"> 
+                                                </div>
+                                                <!-- <div class=" col-md-4 pt-2" *ngIf="chartSelection == 'barchart'">
+                                                    <button id="chart" (click)="showChart();" type="button" class="cri-btn btn btn-outline-secondary btn-danger">Show Chart </button>
+                                            </div> -->
+                                            </div>
+                                           
+                                        </div>
+                                  
+                                </div>
+                                    <div class="col-md-12" *ngIf="isShowChart == true && records.length > 0">
+                                        <highcharts-chart
+                                        [Highcharts] = "highcharts" 
+                                        [options] = "chartOptions" 
+                                        style = "width: 100%; height: 100%; display: block;">
+                                      </highcharts-chart>
+                                    </div>
+                                    <div id="gd" class="col-md-12 mt-2 d-flex justify-content-center" *ngIf="records.length > 0"></div>
+
+                                   
+                                            <!-- <div class="row col-md-12" *ngFor="let result of resultList;let i=index;">
+                                                    <div class="col-md-3">
+                                                        {{result.label}}
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                            <ng-select [items]="chartsList"
+                                                            bindLabel="label"
+                                                            bindValue="value"
+                                                            appendTo="body"
+                                                            [multiple]="false"
+                                                            [clearable]="true"
+                                                            placeholder="Select"
+                                                            [(ngModel)]="result.chartType">  
+                                                        </div>
+                                                    </div>
+                                               </div> -->
+                                </div>
+                                </ng-template>
+                            </ngb-panel>
+                        </ngb-accordion>
+                 </div>
+                 <div class="mt-5">
+                    <div class="row">
+                        <div class="col-md-3 text-left"> 
+                          </div>
+                        <div class="col-md-9 text-right"> 
+                          <button type="button" id="back" class=" btn btn-danger" (click)="backtoInput()">
+                              <img src="../../../content/images/svg/previous2.png" alt="sem-icons"> Back</button>
+                          <button type="button" id="discard" class=" btn btn-danger" (click)="navigatetoModels()">
+                     <img src="../../../content/images/svg/delete.png" alt="semicons" class="discard-img">DISCARD</button>
+                 
+                          <button id="next" type="button" class="cri-btn btn btn-primary" (click)="publishModel()">PUBLISH &nbsp; </button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+       
+    </div>

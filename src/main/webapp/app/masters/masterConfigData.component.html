@@ -1,0 +1,375 @@
+<div class="form-row form-start">
+    <div class="col-md-12">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" *ngIf="isSuccess==true">
+            <i class="fa-check"></i> {{displaySuccessMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isSuccess=false">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="isFailure==true">
+            <i class="fa-exclamation-triangle-icon"></i> {{displayFailureMessage}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="isFailure=false">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="cri-inner-container">
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="header-title">
+                <div class="col-md-12 mb-3 p-0">
+                    <h5>
+                        <span>
+                            <img src="../../content/images/svg/datautility-heading.png" alt="sem-icons">
+                        </span>
+                        <strong class="title-s ml-1 color9" routerLink="/dataUtility"> Data Utility </strong>
+                        <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+                        <strong class="title-s ml-1 color9" (click)="discard()"> Master Data Configuration </strong>
+                        <i class="fa-angle-right-icon ml-1  rightangleicon" aria-hidden="true"></i>
+
+
+
+                        <strong class="title-s ml-1 bolder" *ngIf="masterConfigData.masterId == 0"> New </strong>
+                        <strong class="title-s ml-1 bolder" *ngIf="masterConfigData.masterId != 0"> Edit </strong>
+                    </h5>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-1 search-clr">
+                <button class="btn btn-primary btn-sm mt-1 search-bt mb-3 " (click)="expand()">Search</button>
+        </div>
+        <div class="form-row col-md-9" *ngIf="!searchclr">
+           
+                <div class=" form-group col-md-6" >
+                     <span class="customlabel bolder">SEARCH TABLE</span><span class="text-danger"> * </span>
+                    <section id="search">
+                        <label for="search-input"><i class="fa-search-icon" aria-hidden="true"></i><span class="sr-only">Search text</span></label>
+                        <input id="search-input" [(ngModel)]="searchInputVal" class="form-control input-lg" placeholder="search text" autocomplete="off" spellcheck="false" autocorrect="off" [required]="searchInputVal">
+                    </section>
+                </div>
+                <div class=" form-group col-sm-0">
+                    <button class="btn btn-outline-primary cri-btn mt-4 get-btn" (click)="getMasterDataForConfig()"><span class="ml-1 font-weight-bold">GET</span></button>
+                </div>
+            </div> 
+    </div>
+   
+    
+    <div class="form-row">
+        <div class=" form-group col-md-3">
+            <span class="customlabel bolder">SELECT TABLE</span><span class="text-danger"> * </span>
+            <div class="select-wrapper  mt-1">
+                <!-- <select class="form-control form-control-sm" [required]="masterConfigData.masterTName"
+                    [(ngModel)]="masterConfigData.masterTName" [disabled]="masterConfigData.masterId != 0"
+                    (change)="getColumnList()">
+                    <option value=null>Select</option>
+                    <option *ngFor="let master of masterTableList" [ngValue]="master">{{master}}</option>
+                </select> -->
+                    <ng-select [items]="filteredMasterTableList"
+                            [required]="masterConfigData.masterTName"
+                            [disabled]="masterConfigData.masterId != 0"
+                            bindLabel="filteredMasterTableList"
+                            bindValue="filteredMasterTableList"
+                            appendTo="body"
+                            placeholder="Select"
+                            [clearable]="true"
+                            (change)="getColumnList()"
+                            [(ngModel)]="masterConfigData.masterTName">
+                    </ng-select> 
+                                       
+                          
+            </div>
+
+        </div>
+
+        <div class=" form-group col-md-3">
+            <span class="customlabel bolder">DISPLAY NAME</span><span class="text-danger"> * </span>
+            <div class=" mt-1">
+                <input class="form-control form-control-sm" [required]="masterConfigData.masterTableDisplayName"
+                    [(ngModel)]="masterConfigData.masterTableDisplayName" />
+            </div>
+
+        </div>
+        <div class=" form-group col-md-3">
+            <span class="customlabel bolder">WORK FLOW REQUIRED?</span><span class="text-danger"> * </span>
+            <div class="dotted-divider-bottom"></div>
+            <div class="custom-control custom-switch mt-3">
+                <input type="checkbox" class="custom-control-input" id="masterConfigData.workflowReq"
+                    name="masterConfigData.workflowReq" [(ngModel)]="masterConfigData.workflowReq"
+                    [required]="masterConfigData.workflowReq" />
+                <label class="custom-control-label customlabel pt-1" for="masterConfigData.workflowReq">Yes</label>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="form-row" *ngIf="masterConfigData.workflowReq === true">
+        <div class="col-md-3 form-group">
+
+            <span class="customlabel bolder">PRE APPROVED TABLE NAME</span>
+            <!-- tablelistname -->
+            <div class="select-wrapper  mt-1">
+                <!-- <select class="form-control form-control-sm" [required]="masterConfigData.preAppMasterTName"
+                    [(ngModel)]="masterConfigData.preAppMasterTName">
+                    <option value='NA'>Select</option>
+                    <option *ngFor="let master of masterTableList" [ngValue]="master">{{master}}</option>
+                </select> -->
+                <ng-select [items]="filteredMasterTableList"
+                        [required]="masterConfigData.preAppMasterTName"
+                        bindLabel="filteredMasterTableList"
+                        bindValue="masterConfigData.preAppMasterTName"
+                        appendTo="body"
+                        placeholder="Select"
+                        [clearable]="true"
+                        [(ngModel)]="masterConfigData.preAppMasterTName">
+                </ng-select>
+            </div>
+        </div>
+        <div class="col-md-3 form-group">
+
+            <span class="customlabel bolder">APPROVAL REQUIRED BY</span>
+            <div class="select-wrapper  mt-1">
+                <!-- <select class="form-control form-control-sm" [required]="masterConfigData.approvalReqBy"
+                    [(ngModel)]="masterConfigData.approvalReqBy">
+                    <option value='NA'>Select</option>
+                    <option *ngFor="let master of roleList" [ngValue]="master.value">{{master.label}}</option>
+                </select> -->
+                <ng-select [items]="roleList"
+                        [required]="masterConfigData.approvalReqBy"
+                        bindLabel="label"
+                        bindValue="value"
+                        appendTo="body"
+                        placeholder="Select"
+                        [clearable]="true"
+                        [(ngModel)]="masterConfigData.approvalReqBy ">
+                </ng-select>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-table accordiantable accordiantable2 mb-2" id="style-3"
+        *ngFor="let configDtoTemp of masterConfigList;let i=index;let isFirst=first;let isLast=last;">
+        <ngb-accordion [closeOthers]="true" activeIds="static-1">
+            <ngb-panel id="static-1">
+                <ng-template ngbPanelTitle>
+                    <div class="panel-head-title">
+                        <span class="customlabel bolder">{{configDtoTemp.displayColumnName}}</span>
+                    </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                    <div class="row p-3 m-0 form-group">
+                        <div class="col-md-3">
+                            <span class="customlabel bolder ">COLUMN NAME</span>
+                            <div class="select-wrapper  mt-1 p-0">
+                               <!--  <select class="form-control form-control-sm" [required]="configDtoTemp.columnName"
+                                    [(ngModel)]="configDtoTemp.columnName">
+                                    <option value=null>Select</option>
+                                    <option *ngFor="let column of columnList" [ngValue]="column.columnName">
+                                        {{column.columnName}}</option>
+                                </select> -->
+                                    <ng-select [items]="columnList"
+                                        [required]="configDtoTemp.columnName"
+                                        bindLabel="columnName"
+                                        bindValue="columnName"
+                                        appendTo="body"
+                                        placeholder="Select"
+                                        [clearable]="true"
+                                        [(ngModel)]="configDtoTemp.columnName">
+                                    </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row p-3 m-0 form-group">
+                        <div class="col-md-3">
+                            <span class="customlabel bolder">COLUMN DISPLAY NAME</span>
+                            <input class="form-control mb-3 mt-1" placeholder="Select Column Display Name"
+                                name="configDtoTemp.displayColumnName" [(ngModel)]="configDtoTemp.displayColumnName"
+                                [disabled]="configDtoTemp.columnType == 'pk'"
+                                [required]="configDtoTemp.displayColumnName" /> &nbsp;&nbsp;
+                            <span class="customlabel bolder">COLUMN TYPE</span>
+                            <span class="text-danger"> * </span>
+                            <div class="select-wrapper mt-1">
+                               <!--  <select class="form-control form-control-sm" [required]="configDtoTemp.columnType"
+                                    [(ngModel)]="configDtoTemp.columnType"
+                                    (change)="configDtoTemp.columnType == 'pk' ? configDtoTemp.displayColumnName = 'Id' : configDtoTemp.displayColumnName = ''">
+                                    <option value=null>Select</option>
+                                    <option *ngFor="let column of columnTypeList" [ngValue]="column.value">
+                                        {{column.label}}</option>
+                                </select> -->
+                                        <ng-select [items]="columnTypeList"
+                                            [required]="configDtoTemp.columnType"
+                                            bindLabel="label"
+                                            bindValue="value"
+                                            appendTo="body"
+                                            placeholder="Select"
+                                            [clearable]="true"
+                                            (change)="configDtoTemp.columnType == 'pk' ? configDtoTemp.displayColumnName = 'Id' : configDtoTemp.displayColumnName = ''"
+                                            [(ngModel)]="configDtoTemp.columnType">
+                                        </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <span class="customlabel bolder">COLUMN SETTINGS</span>
+                            <div class="dotted-divider-bottom"></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="dupRecordCanExist_{{i}}"
+                                            name="dupRecordCanExist_{{i}}" [required]="configDtoTemp.dupRecordCanExist"
+                                            [(ngModel)]="configDtoTemp.dupRecordCanExist" />
+                                        <label class="custom-control-label customlabel pt-1"
+                                            for="dupRecordCanExist_{{i}}">Duplicate Can Exist?</label>
+                                    </div>
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="filterEnabled_{{i}}"
+                                            name="filterEnabled_{{i}}" value="filterEnabled_{{i}}"
+                                            [required]="configDtoTemp.filterEnabled"
+                                            [(ngModel)]="configDtoTemp.filterEnabled" />
+                                        <label class="custom-control-label customlabel pt-1"
+                                            for="filterEnabled_{{i}}">Enable Filter?</label>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="sortEnabled_{{i}}"
+                                            name="sortEnabled_{{i}}" [required]="configDtoTemp.sortEnabled"
+                                            [(ngModel)]="configDtoTemp.sortEnabled" />
+                                        <label class="custom-control-label customlabel pt-1"
+                                            for="sortEnabled_{{i}}">Enable Sort?</label>
+                                    </div>
+                                    <div class="custom-control custom-switch mt-3">
+                                        <input type="checkbox" class="custom-control-input" id="required_{{i}}"
+                                            name="required_{{i}}" value="required_{{i}}"
+                                            [required]="configDtoTemp.required" [(ngModel)]="configDtoTemp.required">
+                                        <label class="custom-control-label customlabel pt-1" for="required_{{i}}">Data
+                                            Required?</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!-- <button   class="btn btn-outline-custom float-right btn-sm ml-2" >
+                                <i class="fa fa-trash-o mr-2"></i> <span class="ml-1 font-weight-bold">DELETE COLUMN</span></button> -->
+                        </div>
+                    </div>
+
+                    <div class="row p-3 m-0 form-group">
+                        <div class="col-md-3 form-group"
+                            *ngIf="configDtoTemp.columnType != 'pk' && configDtoTemp.columnType == 'select'">
+                            <span class="customlabel bolder">SELECT REFERENCE TABLE</span>
+                            <!-- <select class="form-control form-control-sm" [required]="configDtoTemp.selectTableReference"
+                                [(ngModel)]="configDtoTemp.selectTableReference"
+                                (change)="getRefColumnList(configDtoTemp)" (ngInit)="getRefColumnList(configDtoTemp)">
+                                <option value='NA'>Select</option>
+                                <option *ngFor="let master of masterTableList" [ngValue]="master">{{master}}</option>
+                            </select> -->
+                            <ng-select [items]="masterTableList"
+                                [required]="configDtoTemp.selectTableReference"
+                                bindLabel="masterTableList"
+                                bindValue="masterTableList"
+                                appendTo="body"
+                                placeholder="Select"
+                                [clearable]="true"
+                                (change)="getRefColumnList(configDtoTemp)" 
+                                (ngInit)="getRefColumnList(configDtoTemp)"
+                                [(ngModel)]="configDtoTemp.selectTableReference">
+                            </ng-select>
+
+                        </div>
+                        <div class="col-md-3 form-group"
+                            *ngIf="configDtoTemp.columnType != 'pk' && configDtoTemp.columnType == 'select'">
+                            <span class="customlabel bolder">SAVE COLUMN</span>
+                           <!--  <select class="form-control form-control-sm" [required]="configDtoTemp.saveRefColumnName"
+                                [(ngModel)]="configDtoTemp.saveRefColumnName">
+                                <option value='NA'>Select</option>
+                                <option *ngFor="let column of configDtoTemp.referenceTableColumnList"
+                                    [ngValue]="column.columnName">{{column.columnName}}</option>
+                            </select> -->
+                            <ng-select [items]="configDtoTemp.referenceTableColumnList"
+                                [required]="configDtoTemp.saveRefColumnName"
+                                bindLabel="columnName"
+                                bindValue="columnName"
+                                appendTo="body"
+                                placeholder="Select"
+                                [clearable]="true"
+                                [(ngModel)]="configDtoTemp.saveRefColumnName">
+                            </ng-select>
+                        </div>
+                        <div class="col-md-3 form-group"
+                            *ngIf="configDtoTemp.columnType != 'pk' && configDtoTemp.columnType == 'select'">
+                            <span class="customlabel bolder">REFERENCE DISPLAY COLUMN</span>
+                            <!-- <select class="form-control form-control-sm" [required]="configDtoTemp.displayRefColumnName"
+                                [(ngModel)]="configDtoTemp.displayRefColumnName">
+                                <option value='NA'>Select</option>
+                                <option *ngFor="let column of configDtoTemp.referenceTableColumnList"
+                                    [ngValue]="column.columnName">{{column.columnName}}</option>
+                            </select> -->
+                                <ng-select [items]="configDtoTemp.referenceTableColumnList"
+                                    [required]="configDtoTemp.displayRefColumnName"
+                                    bindLabel="columnName"
+                                    bindValue="columnName"
+                                    appendTo="body"
+                                    placeholder="Select"
+                                    [clearable]="true"
+                                    [(ngModel)]="configDtoTemp.displayRefColumnName">
+                                </ng-select>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-md-12 text-right mb-4">
+                        <button class=" btn btn-outline-primary btn-sm mr-3" (click)="addColumn()" *ngIf="isLast"><span class="btn-text-rs"></span><span class="btn-text-rs">ADD COLUMN</span></button>
+                        <!-- <button class="btn btn-outline-danger btn-sm mr-1" (click)="deleteColumn(i)" *ngIf = "masterConfigList.length > 1"><i class="fa fa-minus-circle mr-2" aria-hidden="true"></i><span class="btn-text-rs"></span><span class="btn-text-rs">REMOVE</span></button> -->
+                        <button class=" btn btn-outline-primary btn-sm mr-3" (click)="deleteColumn(i)"
+                            *ngIf="masterConfigList.length > 1"><img src="../../content/images/svg/delete.png"
+                                alt="semicons" class="discard-img"><span class="btn-text-rs"></span><span
+                                class="btn-text-rs">DELETE COLUMN</span></button>
+                    </div>
+                </ng-template>
+            </ngb-panel>
+
+        </ngb-accordion>
+    </div>
+
+
+
+
+    <!-- table start content-table end-->
+
+    <div class="row col-md-12 pr-0  mb-4 mt-3">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-row">
+
+                        <div class="form-group col-md-6">
+
+                        </div>
+
+                        <div class="form-group col-md-6 pr-0">
+                            <div class="next-pre mb-3 mt-4 text-right">
+                                <button type="button" class="cri-btn btn btn-outline-danger mr-3"
+                                    (click)="discard()"><img src="../../content/images/svg/delete.png" alt="semicons"
+                                        class="discard-img">DISCARD</button>
+                                <button type="button" class="cri-btn btn btn-outline-danger btn-danger"
+                                    (click)="saveMasterConfigData()"><img src="../../content/images/svg/save-white.png"
+                                        alt="semicons">SAVE DATA </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--first row-end-->
+                </div>
+            </div>
+        </div>
+
+    </div>

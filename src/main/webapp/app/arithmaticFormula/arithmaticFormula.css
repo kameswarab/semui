@@ -1,0 +1,460 @@
+.ui-autocomplete {
+    list-style: none;
+    background-color: gainsboro;
+    width: 80px;
+    padding-left: 10px;
+}
+
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
+/* model.css */
+
+/*! calc */
+/* .calc {
+	background:#e4e4e4;
+	border-radius:5px !important;
+	padding:5px;
+	border:1px solid #d3d3d3;
+	margin-top:9px;
+	-webkit-box-shadow: 0px 4px 9px -2px rgba(0,0,0,0.39);
+	-moz-box-shadow: 0px 4px 9px -2px rgba(0,0,0,0.39);
+	box-shadow: 0px 4px 9px -2px rgba(0,0,0,0.39);
+}
+.calc ul.calcfr, .calc ul.calcsr  {
+	width:27px; 
+}
+.formula_builder_div ul.calcfr, .calc ul.calcsr  {
+	width:27px; 
+}
+.formula_builder_div  textarea.form-control {
+	background:#f1f5f7; border-radius:5px !important;     margin-bottom: 10px; max-height: 58px;
+    max-width: 100%;
+-webkit-box-shadow: inset 0px 4px 19px -2px rgba(0,0,0,0.19) !important;
+-moz-box-shadow: inset 0px 4px 19px -2px rgba(0,0,0,0.19) !important;
+box-shadow: inset 0px 4px 19px -2px rgba(0,0,0,0.19) !important;
+}
+
+.calc ul  li .btn {
+	line-height: 0 !important;
+    padding: 3px 0;
+    background: #f1f5f7;
+    border-radius: 5px !important;
+    color: #717171;
+    height: 22px;
+    border: 1px solid #bfbfbf;
+    width: 104%;
+    font-size: 13px;
+}
+.calc ul  li .btn:hover,.calc ul  li .btn.active {
+background:#4481b8; color:#fff;
+-webkit-box-shadow: inset 0px 3px 8px -3px rgba(0,0,0,0.2);
+-moz-box-shadow: inset 0px 3px 8px -3px rgba(0,0,0,0.2);
+box-shadow: inset 0px 3px 8px -3px rgba(0,0,0,0.2);
+}
+.calc ul li {
+list-style:none; margin-bottom:5px;
+display:block; border-radius:5px !important;
+-webkit-box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+-moz-box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+}
+ 
+.calc ul {
+padding: 0; float:left; margin: 0 2px;
+}
+.formula_builder_div  ul {
+    padding: 0; float:left; margin: 0 2px;
+    }
+
+.calc .calcblack .btn {
+        background: rgb(137,143,161); 
+        background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzg5OGZhMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkyJSIgc3RvcC1jb2xvcj0iIzc2N2U4OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM2OTZlNzgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+        background: -moz-linear-gradient(top,  rgba(137,143,161,1) 0%, rgba(118,126,137,1) 92%, rgba(105,110,120,1) 100%); 
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(137,143,161,1)), color-stop(92%,rgba(118,126,137,1)), color-stop(100%,rgba(105,110,120,1))); 
+        background: -webkit-linear-gradient(top,  rgba(137,143,161,1) 0%,rgba(118,126,137,1) 92%,rgba(105,110,120,1) 100%); 
+        background: -o-linear-gradient(top,  rgba(137,143,161,1) 0%,rgba(118,126,137,1) 92%,rgba(105,110,120,1) 100%); 
+        background: -ms-linear-gradient(top,  rgba(137,143,161,1) 0%,rgba(118,126,137,1) 92%,rgba(105,110,120,1) 100%); 
+        background: linear-gradient(to bottom,  rgba(137,143,161,1) 0%,rgba(118,126,137,1) 92%,rgba(105,110,120,1) 100%); 
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#898fa1', endColorstr='#696e78',GradientType=0 ); 
+        color:#fff;
+    } */
+/* custom.css */
+/* .btn {
+    padding: 4px 12px;
+}
+ul{
+    list-style: none;
+}
+.calc ul.calctr {
+	width:44px; 
+}
+.calc ul.calcfourr, .calc ul.calcfiver  {
+	width:56px;  
+}
+
+.calc ul.calcfourr1, .calc ul.calcfiver1 {
+    width: 26%;
+}
+#formulaBar td {
+    padding:0;
+}
+
+#formulaBuilderDiv input{
+        border: none;
+    background: rgb(241, 245, 247);
+    max-height: 16px;
+}
+.formula_builder_div{
+    min-height: 60px;
+    max-height:210px;
+    margin-bottom: 5px;
+    border-radius: 5px !important;
+    -webkit-box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+    box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+    border: 1px solid #e4e4e4;
+    background: #d2d2d2;
+    padding: 4px 0;
+    word-wrap: break-word;
+}
+.formula_builder_div ul li .pclose {
+    color: #ff1f00;
+    top: -4px;
+    position: relative;
+    display: none;
+}
+.formula_builder_div ul li:hover .pclose {
+      display: inline;
+} 
+#formulaBuilderDiv li{
+    display: inline-block !important;
+    padding: 1px 5px;
+    margin-right: 2px;
+    background: #f1f5f7;
+    list-style:none; margin-bottom:5px;
+    border-radius:5px !important;
+    -webkit-box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+    box-shadow: 0px 3px 8px -3px rgba(0,0,0,0.2);
+}
+ 
+.form-control, .createModel.createModelSmall input, .EnterModelSmall input, input[type="text"] {
+    height: 32px;
+    padding: 4px 10px;
+}
+.form-control, .createModel.createModelSmall input, .createModel input, .EnterModelSmall input, .input-group .input-icon.right > .form-control, .input-group .form-control {
+    height: 32px;
+    padding: 4px 7px;
+} */
+/*   
+body, body.modal-open, .mt-radio, .mt-checkbox, .gc-grid, .modal-body, .flexDataGridVirtualBodyContainer label, .dropdown-menu, .form-control {
+	font-family: "segoeui", calibri, arial, sans-serif !important;
+	font-size: 14px !important;
+} */
+/*! IE Hack Code */ /*  
+@media screen and (max-width:1441px) {
+    _:-ms-fullscreen, :root .DepTaxonomyfield {
+        width:42%;
+    }
+    _:-ms-fullscreen, :root .DepPeriod {
+        width:58%;
+    }
+    
+    _:-ms-fullscreen, :root option:hover {
+        background-color: #26a0da;
+    }
+    _:-ms-fullscreen, :root option:checked {
+                background-color: #fff;
+               color: #000;
+            }
+    _:-ms-fullscreen, :root option:checked:hover {
+                background-color:  #26a0da;
+               color: #000;
+            }
+            
+            _:-ms-fullscreen, :root .dark-bg {
+                background-color:#95989a;
+                color:#000;
+                       }
+                       
+                          _:-ms-fullscreen, :root .navigation-left {
+                position: relative;
+                top: 0px;
+                       }
+                        _:-ms-fullscreen, :root .navigation-right {
+                position: relative;
+               left:5px;
+               top:0px;
+                       }
+                                
+      _:-ms-fullscreen, :root .corner-cut::after{                                        
+        content: "";
+        display: block;
+        height: 160px !important;
+        position: absolute;
+        top: 0px;
+        left: 2px;         
+            }               
+    }
+    @media screen and (max-width:1441px) {
+        body.modal-open, .modal-body, .flexDataGridVirtualBodyContainer label, body, .gc-grid, .has-error, .btn, .table thead tr th, .table td, .form-control, output, .mt-radio, .mt-checkbox, .datasetSideContent label, .nav-tabs > li > a, .nav-pills > li > a, .ui-widget.ui-widget-content, .topbt ul.tbinner li.dropdown ul li a, .form-control,
+        .taxonomyPopup .companyPreview label, .insp-container  .panel-title, .insp-container, .clab-container {
+            font-size: 12px !important;
+        }
+        
+        h3.mainheading { 
+            font-size: 20px;
+        }
+        h2.heading {
+            font-size: 13px;
+        }
+        
+        .para .btn-main {
+            height: 34px;
+            padding: 7px 10px;
+        }
+        .btn-main {
+            padding: 9px 30px;
+        }
+        
+        .btn-main-new {
+        
+            padding: 9px 5px;
+        }
+        
+        .btn-main-new {
+        
+        background: #fff;
+        color: #999;
+        height: 34px;
+        padding: 7px 13px;
+      
+    }
+    
+    .btn-main-indent {
+            color: #999;
+        height: 24px;
+        padding: 5px 6px 2px;
+    }
+    
+    .btn-main-indent:hover, .btn-main-indent:focus, .btn-main-indent:active {
+        color: #fff;
+        background-color: #0ba89f;
+    }
+    .btn-main-new:hover, .btn-main-new:focus, .btn-main-new:active {
+        color: #fff;
+        background-color: #0ba89f;
+    }
+        
+        .alert {
+            padding: 7px;
+        }
+        .form-control, .createModel.createModelSmall input, .createModel input, .EnterModelSmall input, .input-group .input-icon.right > .form-control, .input-group .form-control {
+            height: 32px;
+            padding: 4px 7px;
+        }
+        .createTop .chosen-container-single .chosen-single {
+            height: 28px;
+        }
+        .page-sidebar-fixed .page-sidebar {
+            left: 90px;
+            top: 60px; 
+        }
+        
+        .smart-modal .modal-body {
+         max-height: 450px;
+        }
+        .tag-table.table .btn.btn-main {
+            line-height: 11px;
+        }
+        
+        .datasetPopup .insp-container1 .nav-tabs {
+        margin: 0 0 20px;
+        }
+        .companyNames #searchValCompany, .companyNames #searchTypeCompany {
+        height: 30px !important;
+        width: 100%;
+        }
+        .companyPreview .companyDetails label span, .industryDetails label span {
+        margin: 3px 0 0;
+        }
+        .datasetSideContent .panel-title {
+        font-size: 12px;
+        }
+        .datasetSideContent .panel-group .panel-heading i {
+        font-size: 20px;
+        }
+        .companyPreview .companyDetails label span, .industryDetails label span {
+        font-size: 13px;
+        }
+        .datasetSideContent .datepicker {
+        margin-top: 10px !important;
+        }
+        .periodSelect .mt-radio {
+        margin-bottom: 3px;
+        }
+        .page-sidebar-fixed .page-sidebar .datasetSideContent .form-control {
+        height: 30px;
+        margin-bottom: 10px;
+        }
+        .displaySetting .textCurrency {
+        margin: 10px 0;
+        }
+        .createTop .col-md-1 {
+        width: 10%;
+        margin-top: 6px;
+        }
+        .createReportTop.createTop label {
+            width: 10%;
+        }
+        .createReportTop.createTop .col-md-10 {
+        width: 89%;
+    }
+        .createTop .col-md-11 {
+        width: 90%;
+        }
+        .createTop .input-icon > i {
+        margin-top: 8px;
+        }
+        .createTop .col-md-11 input {
+        height: 30px;
+        padding: 3px 10px;
+        }
+        .insp-container1 .insp-group-layout {
+        min-height: 80px;
+        }
+        .topbt ul.tbinner li a {
+            padding: 8px 9px 7px 9px;
+        }
+        .breadcrumb>li.reportButtons {
+        margin-right: 0;
+        }
+        .menu_scroll {
+        width: 765px;}
+        .icon {
+        margin-right: 5px;
+    }
+        .companyDetails em {
+            font-size: 12px;
+        }
+        .totalCount, .modal .modal-content h3.totalCount {
+        font-size: 14px; 
+        margin-bottom: 5px;
+        }
+        .companyPreview .companyDetails label span {
+            color: #666;
+            font-size: 13px;
+        }
+        .companydetailsBlock .sboxes {
+            width: 30%;
+        }
+        .industryDetails .companyPreview label em {
+            font-size: 12px;
+        }
+        .industryDetails .companyPreview label span {
+            color: #666;
+            font-size: 13px;
+        width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        white-space: nowrap;
+        margin-bottom: 5px;
+        }
+        .frequencyConversation {
+            width: 200px;
+        }
+        .table-report-Addline thead tr th {
+            background: #3f536e;
+        }
+    
+    
+    .datasetPopup .close-modal {
+        position: fixed;
+        width: 22px;
+        height: 22px;
+        background-color: #ef4a4a;
+        top: 25px;
+        right: 25px;
+        cursor: pointer;
+    }
+    
+    .ui-autocomplete {
+        z-index: 99999;
+        background: #fff !important;
+    }
+    
+    .closed {
+        position: fixed;
+        top: -12px;
+        right: -28px;
+        cursor: hand;
+    }
+    
+    .btn-icon-only {
+        height: 24px;
+        width: 24px;
+        text-align: center;
+        padding: 2PX;
+    }
+    .ui-autocomplete {
+                height: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-right: 20px;
+        }
+    .menu1{padding: 0px 4px;
+        
+        list-style-type: none;
+        line-height: 20px;}
+       .menu1 li a {
+           vertical-align: top;
+       }
+    .datasearchDetails {
+        min-height: 315px;
+    }
+    
+    .createDataset, .updateDataset {
+        padding: 30px 60px 30px 50px;
+       
+    }
+    .datasetPopup.modal .modal-content {
+        margin: 35px;
+        width: auto;
+    }
+    .datasetPopup.contributorsPopup .close-modal {
+        right: 4%;
+        top: 43px;
+    }
+    .datasetPopup .close-modal {
+        right: 2%;
+    }
+    .createNewModelPopup .companyPreview .form-group.serviceLabel {
+        margin: 0 0 8px;
+    } 
+    .historical {
+        margin-left: 0;
+    }
+    .btnSideClose a {
+        font-size: 20px;
+    }
+    .page-footer {
+        height: 30px;
+    }
+    .page-footer span {
+        font-size: 12px;
+    }
+    .page-footer img {
+        width: 20%;
+    }
+    .page-sidebar-fixed .page-footer {
+        padding-top: 5px;
+    }
+    
+    .peerCompanyList li {
+        width: 15%;
+        padding: 6px;
+    }
+    } */
